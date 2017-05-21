@@ -11,6 +11,7 @@ import (
 var (
 	epicKey  = flag.String("epic", "", "JIRA epic key")
 	jiraHost = flag.String("jira-host", "", "JIRA hostname")
+	server   = flag.Bool("server", false, "start an epic graph server daemon instead of printing a single epic's graph")
 )
 
 func main() {
@@ -24,14 +25,20 @@ func main() {
 	}
 
 	flag.Parse()
-	if len(*epicKey) == 0 {
-		log.Fatal("-epic flag is required")
-	}
 	if len(*jiraHost) == 0 {
 		log.Fatal("-jira-host flag is required")
 	}
+	if !*server && len(*epicKey) == 0 {
+		log.Fatal("-epic flag is required")
+	}
 
-	if err := graph.PrintGraph(user, pass, *jiraHost, *epicKey); err != nil {
-		log.Fatalf("failed to print graph: %v", err)
+	if !*server {
+		if err := graph.PrintGraph(user, pass, *jiraHost, *epicKey); err != nil {
+			log.Fatalf("failed to print graph: %v", err)
+		}
+	} else {
+		if err := graph.StartServer(user, pass, *jiraHost); err != nil {
+			log.Fatalf("server failed with error: %v", err)
+		}
 	}
 }
