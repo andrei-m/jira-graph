@@ -6,7 +6,8 @@ import (
 )
 
 type issue struct {
-	key, summary string
+	key, summary  string
+	blockedByKeys []string
 }
 
 type jiraClient struct {
