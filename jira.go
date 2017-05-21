@@ -6,7 +6,11 @@ import (
 )
 
 type issue struct {
-	key, summary  string
+	Key           string `json:"key"`
+	Type          string `json:"type"`
+	Summary       string `json:"summary"`
+	Status        string `json:"status"`
+	Assignee      string `json:"assignee"`
 	blockedByKeys []string
 }
 

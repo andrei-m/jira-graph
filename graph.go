@@ -33,12 +33,12 @@ func issuesToBlocksGraph(issues []issue) map[string][]string {
 	blocksGraph := map[string][]string{}
 	for _, iss := range issues {
 		for _, blockedBy := range iss.blockedByKeys {
-			blocksGraph[blockedBy] = append(blocksGraph[blockedBy], iss.key)
+			blocksGraph[blockedBy] = append(blocksGraph[blockedBy], iss.Key)
 		}
 
-		_, exists := blocksGraph[iss.key]
+		_, exists := blocksGraph[iss.Key]
 		if !exists {
-			blocksGraph[iss.key] = []string{}
+			blocksGraph[iss.Key] = []string{}
 		}
 	}
 	return blocksGraph
@@ -50,7 +50,7 @@ func getIssues(jc jiraClient, epicKey string) ([]issue, error) {
 	getAndClose := func(startAt int) ([]byte, error) {
 		q := url.Values{
 			"jql":     []string{fmt.Sprintf(`"Epic Link" = %s`, epicKey)},
-			"fields":  []string{"summary", "issuelinks"},
+			"fields":  []string{"summary", "issuelinks", "assignee", "status", "issuetype"},
 			"startAt": []string{strconv.Itoa(startAt)},
 		}
 		resp, err := jc.Get("/rest/api/2/search", q)
@@ -71,8 +71,18 @@ func getIssues(jc jiraClient, epicKey string) ([]issue, error) {
 
 		for _, parsedIssue := range parsed.Get("issues").Array() {
 			key := parsedIssue.Get("key").String()
-			summary := parsedIssue.Get("fields.summary").String()
-			iss := issue{key: key, summary: summary}
+			fields := parsedIssue.Get("fields")
+			summary := fields.Get("summary").String()
+			status := fields.Get("status.name").String()
+			assignee := fields.Get("assignee.displayName").String()
+			issueType := fields.Get("issuetype.name").String()
+			iss := issue{
+				Key:      key,
+				Type:     issueType,
+				Summary:  summary,
+				Status:   status,
+				Assignee: assignee,
+			}
 
 			parsedBlocks := parsedIssue.Get(`fields.issuelinks.#[type.name=="Blocks"]#.inwardIssue.key`).Array()
 			iss.blockedByKeys = make([]string, len(parsedBlocks))

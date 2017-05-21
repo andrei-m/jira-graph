@@ -23,6 +23,11 @@ type graphController struct {
 	jc jiraClient
 }
 
+type graphResponse struct {
+	Issues []issue             `json:"issues"`
+	Graph  map[string][]string `json:"graph"`
+}
+
 func (gc graphController) getEpicGraph(c *gin.Context) {
 	issues, err := getIssues(gc.jc, c.Param("key"))
 	if err != nil {
@@ -35,6 +40,9 @@ func (gc graphController) getEpicGraph(c *gin.Context) {
 		return
 	}
 
-	blocksGraph := issuesToBlocksGraph(issues)
-	c.JSON(http.StatusOK, blocksGraph)
+	resp := graphResponse{
+		Issues: issues,
+		Graph:  issuesToBlocksGraph(issues),
+	}
+	c.JSON(http.StatusOK, resp)
 }
