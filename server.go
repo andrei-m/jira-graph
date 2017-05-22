@@ -15,7 +15,13 @@ func StartServer(user, pass, jiraHost string) error {
 	gc := graphController{jc}
 
 	r := gin.Default()
-	r.GET("/epics/:key", gc.getEpicGraph)
+	r.LoadHTMLGlob("templates/*")
+	r.StaticFile("/app.js", "./static/app.js")
+	r.StaticFile("/style.css", "./static/style.css")
+
+	r.GET("/api/epics/:key", gc.getEpicGraph)
+	r.GET("/epics/:key", gc.getEpic)
+
 	return r.Run()
 }
 
@@ -45,4 +51,10 @@ func (gc graphController) getEpicGraph(c *gin.Context) {
 		Graph:  issuesToBlocksGraph(issues),
 	}
 	c.JSON(http.StatusOK, resp)
+}
+
+func (gc graphController) getEpic(c *gin.Context) {
+	c.HTML(http.StatusOK, "index.tmpl", gin.H{
+		"epicKey": c.Param("key"),
+	})
 }
