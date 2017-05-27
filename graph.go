@@ -84,7 +84,7 @@ func getIssues(jc jiraClient, epicKey string) ([]issue, error) {
 				Assignee: assignee,
 			}
 
-			parsedBlocks := parsedIssue.Get(`fields.issuelinks.#[type.name=="Blocks"]#.inwardIssue.key`).Array()
+			parsedBlocks := fields.Get(`issuelinks.#[type.name=="Blocks"]#.inwardIssue.key`).Array()
 			iss.blockedByKeys = make([]string, len(parsedBlocks))
 			for i := range parsedBlocks {
 				iss.blockedByKeys[i] = parsedBlocks[i].String()
