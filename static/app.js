@@ -1,25 +1,13 @@
 (function() {
     function statusToRGB(s) {
-        if (s == 'Backlog') {
-            return '#66cc33';
+        if (s == 'Backlog' || s == 'Ready for Dev') {
+            return '#ffffff';
         }
-        if (s == 'Ready For Dev') {
-            return '#e7ff33';
-        }
-        if (s == 'In Progress') {
-            return '#00ff00';
-        }
-        if (s == 'In QA on feature branch') {
-            return '#750099';
-        }
-        if (s == 'In Code Review') {
-            return '#009999';
-        }
-        if (s == 'Resolved, on staging') {
-            return '#ff69b4';
+        if (s == 'In Progress' || s == 'In QA on feature branch' || s == 'In Code Review' || s == 'Resolved, on staging') {
+            return '#35e82c';
         }
         if (s == 'Closed') {
-            return '#eeeeee';
+            return '#959595';
         }
         return '#000000';
     }
@@ -65,13 +53,14 @@
                     style: {
                         'content': 'data(id)',
                         'text-opacity': 0.8,
-                        'text-valign': 'center',
-                        'color': 'white',
-                        'text-outline-width': 2,
-                        'text-outline-color': '#11479e',
+                        'color': '#000000',
+                        'font-size': 18,
+                        'font-weight': 'bold',
                         'background-color': function(ele) {
                             return statusToRGB(ele.data('status'))
-                        }
+                        },
+                        'border-width': 1,
+                        'border-color': '#000000'
                     }
                 },
 
