@@ -87,6 +87,13 @@
             window.location.href = 'https://clypdinc.atlassian.net/browse/' + key;
         });
 
+        cy.on('mouseover', 'node', function() {
+            document.body.style.cursor = 'pointer';
+        });
+
+        cy.on('mouseout', 'node', function() {
+            document.body.style.cursor = 'default';
+        });
     }
 
     window.onload = function() {
