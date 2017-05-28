@@ -54,7 +54,20 @@ func (gc graphController) getEpicGraph(c *gin.Context) {
 }
 
 func (gc graphController) getEpic(c *gin.Context) {
+	key := c.Param("key")
+	issue, err := getSingleIssue(gc.jc, key)
+	if err != nil {
+		ebs, ok := err.(errBadStatus)
+		if ok {
+			if ebs.statusCode == http.StatusNotFound {
+				c.HTML(http.StatusNotFound, "404.tmpl", gin.H{})
+				return
+			}
+		}
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
-		"epicKey": c.Param("key"),
+		"issue": issue,
 	})
 }
