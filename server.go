@@ -67,6 +67,12 @@ func (gc graphController) getEpic(c *gin.Context) {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
+
+	if issue.Type != "Epic" {
+		c.HTML(http.StatusNotFound, "404.tmpl", gin.H{})
+		return
+	}
+
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
 		"issue": issue,
 	})
