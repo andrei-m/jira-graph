@@ -1,7 +1,9 @@
 package graph
 
 import (
+	"fmt"
 	"net/http"
+	"net/url"
 
 	"gopkg.in/gin-gonic/gin.v1"
 )
@@ -21,6 +23,7 @@ func StartServer(user, pass, jiraHost string) error {
 
 	r.GET("/api/epics/:key", gc.getEpicGraph)
 	r.GET("/epics/:key", gc.getEpic)
+	r.GET("/epics/:key/details", gc.redirectToJIRA)
 
 	return r.Run()
 }
@@ -77,4 +80,14 @@ func (gc graphController) getEpic(c *gin.Context) {
 		"issue":    issue,
 		"jiraHost": gc.jc.host,
 	})
+}
+
+func (gc graphController) redirectToJIRA(c *gin.Context) {
+	key := c.Param("key")
+	u := url.URL{
+		Scheme: "https",
+		Host:   gc.jc.host,
+		Path:   fmt.Sprintf("/browse/%s", key),
+	}
+	c.Redirect(http.StatusFound, u.String())
 }

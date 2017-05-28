@@ -84,7 +84,7 @@
 
         cy.on('tap', 'node', function() {
             var key = this.data('id');
-            window.location.href = 'https://clypdinc.atlassian.net/browse/' + key;
+            window.location.href = '/epics/' + key + '/details';
         });
 
         cy.on('mouseover', 'node', function() {
