@@ -74,6 +74,7 @@ func (gc graphController) getEpic(c *gin.Context) {
 	}
 
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
-		"issue": issue,
+		"issue":    issue,
+		"jiraHost": gc.jc.host,
 	})
 }
