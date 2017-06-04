@@ -9,26 +9,6 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-func PrintGraph(user, pass, jiraHost, epicKey string) error {
-	jc := jiraClient{
-		host: jiraHost,
-		user: user,
-		pass: pass,
-	}
-
-	issues, err := getIssues(jc, epicKey)
-	if err != nil {
-		return err
-	}
-	blocksGraph := issuesToBlocksGraph(issues)
-
-	for blocking, blocked := range blocksGraph {
-		fmt.Printf("%s -> %v\n", blocking, blocked)
-	}
-
-	return nil
-}
-
 func issuesToBlocksGraph(issues []issue) map[string][]string {
 	blocksGraph := map[string][]string{}
 	for _, iss := range issues {
