@@ -1,20 +1,23 @@
 package graph
 
 import (
-	"fmt"
 	"net/http"
 	"net/url"
+	"path"
 
 	"gopkg.in/gin-gonic/gin.v1"
 )
 
-func StartServer(user, pass, jiraHost string) error {
+func StartServer(user, pass, jiraHost, defaultProject string) error {
 	jc := jiraClient{
 		host: jiraHost,
 		user: user,
 		pass: pass,
 	}
-	gc := graphController{jc}
+	gc := graphController{
+		jc:             jc,
+		defaultProject: defaultProject,
+	}
 
 	r := gin.Default()
 	r.LoadHTMLGlob("templates/*")
@@ -25,12 +28,14 @@ func StartServer(user, pass, jiraHost string) error {
 	r.GET("/epics/:key", gc.getEpic)
 	r.GET("/epics/:key/details", gc.redirectToJIRA)
 	r.GET("/projects/:project/epics", gc.listEpics)
+	r.GET("/", gc.index)
 
 	return r.Run()
 }
 
 type graphController struct {
-	jc jiraClient
+	jc             jiraClient
+	defaultProject string
 }
 
 type graphResponse struct {
@@ -88,7 +93,7 @@ func (gc graphController) redirectToJIRA(c *gin.Context) {
 	u := url.URL{
 		Scheme: "https",
 		Host:   gc.jc.host,
-		Path:   fmt.Sprintf("/browse/%s", key),
+		Path:   path.Join("browse", key),
 	}
 	c.Redirect(http.StatusFound, u.String())
 }
@@ -105,4 +110,8 @@ func (gc graphController) listEpics(c *gin.Context) {
 		"project": project,
 		"epics":   epics,
 	})
+}
+
+func (gc graphController) index(c *gin.Context) {
+	c.Redirect(http.StatusFound, path.Join("projects", gc.defaultProject, "epics"))
 }

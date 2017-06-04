@@ -9,9 +9,10 @@ import (
 )
 
 var (
-	epicKey  = flag.String("epic", "", "JIRA epic key")
-	jiraHost = flag.String("jira-host", "", "JIRA hostname")
-	server   = flag.Bool("server", false, "start an epic graph server daemon instead of printing a single epic's graph")
+	epicKey        = flag.String("epic", "", "JIRA epic key")
+	jiraHost       = flag.String("jira-host", "", "JIRA hostname")
+	server         = flag.Bool("server", false, "start an epic graph server daemon instead of printing a single epic's graph")
+	defaultProject = flag.String("default-project", "MAIN", "the default JIRA project to use for the index page")
 )
 
 func main() {
@@ -37,7 +38,7 @@ func main() {
 			log.Fatalf("failed to print graph: %v", err)
 		}
 	} else {
-		if err := graph.StartServer(user, pass, *jiraHost); err != nil {
+		if err := graph.StartServer(user, pass, *jiraHost, *defaultProject); err != nil {
 			log.Fatalf("server failed with error: %v", err)
 		}
 	}
