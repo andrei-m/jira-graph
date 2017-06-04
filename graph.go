@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"strconv"
 
 	"github.com/tidwall/gjson"
 )
@@ -89,23 +88,11 @@ func getSingleIssue(jc jiraClient, key string) (issue, error) {
 func getIssues(jc jiraClient, epicKey string) ([]issue, error) {
 	result := []issue{}
 
-	getAndClose := func(startAt int) ([]byte, error) {
-		q := url.Values{
-			"jql":     []string{fmt.Sprintf(`"Epic Link" = %s`, epicKey)},
-			"fields":  []string{"summary", "issuelinks", "assignee", "status", "issuetype"},
-			"startAt": []string{strconv.Itoa(startAt)},
-		}
-		resp, err := jc.Get("/rest/api/2/search", q)
-		if err != nil {
-			return nil, err
-		}
-		defer resp.Body.Close()
-
-		return ioutil.ReadAll(resp.Body)
-	}
+	jql := fmt.Sprintf(`"Epic Link" = %s`, epicKey)
+	fields := []string{"summary", "issuelinks", "assignee", "status", "issuetype"}
 
 	for {
-		b, err := getAndClose(len(result))
+		b, err := jc.Search(jql, fields, len(result))
 		if err != nil {
 			return nil, err
 		}

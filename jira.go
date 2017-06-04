@@ -1,8 +1,10 @@
 package graph
 
 import (
+	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strconv"
 )
 
 type issue struct {
@@ -39,4 +41,19 @@ func (j jiraClient) Get(path string, q url.Values) (*http.Response, error) {
 
 	client := &http.Client{}
 	return client.Do(req)
+}
+
+func (j jiraClient) Search(jql string, fields []string, startAt int) ([]byte, error) {
+	q := url.Values{
+		"jql":     []string{jql},
+		"fields":  fields,
+		"startAt": []string{strconv.Itoa(startAt)},
+	}
+	resp, err := j.Get("/rest/api/2/search", q)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	return ioutil.ReadAll(resp.Body)
 }
