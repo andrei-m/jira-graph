@@ -1,4 +1,3 @@
-* epics index page, separate active epics from completed epics
 * Add pop-up card ahead of navigation
 * Add popup ahead of navigation
 ** Describe assignee, labels, type, etc.

@@ -24,6 +24,7 @@ func StartServer(user, pass, jiraHost string) error {
 	r.GET("/api/epics/:key", gc.getEpicGraph)
 	r.GET("/epics/:key", gc.getEpic)
 	r.GET("/epics/:key/details", gc.redirectToJIRA)
+	r.GET("/projects/:project/epics", gc.listEpics)
 
 	return r.Run()
 }
@@ -90,4 +91,18 @@ func (gc graphController) redirectToJIRA(c *gin.Context) {
 		Path:   fmt.Sprintf("/browse/%s", key),
 	}
 	c.Redirect(http.StatusFound, u.String())
+}
+
+func (gc graphController) listEpics(c *gin.Context) {
+	project := c.Param("project")
+	epics, err := getEpics(gc.jc, project)
+	if err != nil {
+		c.HTML(http.StatusNotFound, "500.tmpl", gin.H{})
+		return
+	}
+
+	c.HTML(http.StatusOK, "list_epics.tmpl", gin.H{
+		"project": project,
+		"epics":   epics,
+	})
 }

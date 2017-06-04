@@ -14,6 +14,12 @@ type issue struct {
 	blockedByKeys []string
 }
 
+type epic issue
+
+func (e epic) IsActive() bool {
+	return e.Status == "Development Active"
+}
+
 type jiraClient struct {
 	host, user, pass string
 }
