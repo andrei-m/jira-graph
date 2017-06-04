@@ -1,0 +1,8 @@
+* epics index page, separate active epics from completed epics
+* Add pop-up card ahead of navigation
+* Add popup ahead of navigation
+** Describe assignee, labels, type, etc.
+* Filter or highlighting for critical path and unblocked work
+
+* look into D3 force directed graphs for organizing
+* look into gephi
