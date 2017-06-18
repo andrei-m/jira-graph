@@ -15,8 +15,12 @@
     function showPopup(pos, issue) {
         var popupKey = document.getElementById('popup-key');
         popupKey.innerHTML = '<a href="/epics/' + issue.key + '/details">' + issue.key + '</a>';
+
         var popupSummary = document.getElementById('popup-summary');
         popupSummary.textContent = issue.summary;
+
+        var popupStatus = document.getElementById('popup-status');
+        popupStatus.style.backgroundColor = statusToRGB(issue.status);
 
         var popup = document.getElementById('popup');
         popup.style.left = pos.x + 'px';
@@ -110,6 +114,7 @@
             showPopup(evt.renderedPosition, {
                 key: this.data('id'),
                 summary: this.data('summary'),
+                status: this.data('status'),
             });
         });
 

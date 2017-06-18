@@ -63,10 +63,15 @@ div#popup {
   position: absolute;
   border: 1px solid #ccc;
   border-radius: 3px;
-  padding: 5px;
+  padding: 5px 5px 5px 13px;
   width: 180px;
   height: 100px;
   opacity: 0.8;
+}
+
+div#popup:hover {
+  border: 1px solid #999;
+  background-color: #fff;
 }
 
 div#popup-summary {
@@ -81,7 +86,11 @@ div#popup-key a {
   padding-top: 5px;
 }
 
-div#popup:hover {
-  border: 1px solid #999;
-  background-color: #fff;
+div#popup-status {
+  width: 3px;
+  left: 5px;
+  top: 5px;
+  bottom: 5px;
+  height: auto;
+  position: absolute;
 }
