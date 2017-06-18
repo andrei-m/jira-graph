@@ -57,3 +57,25 @@ span.epic-status-tooltip {
 div.epic-status:hover span.epic-status-tooltip {
   visibility: visible;
 }
+
+div#popup {
+  z-index: 1000;
+  position: absolute;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 5px;
+  width: 180px;
+  height: 100px;
+  opacity: 0.8;
+}
+
+div#popup-key a {
+  color: #808080;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+div#popup:hover {
+  border: 1px solid #999;
+  background-color: #fff;
+}

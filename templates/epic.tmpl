@@ -14,6 +14,9 @@
       <a href="https://{{ .jiraHost}}/browse/{{ .issue.Key }}">{{ .issue.Key }} - {{ .issue.Summary }}</a>
     </h1>
     <div id="cy"></div>
+    <div id="popup" style="visibility:hidden">
+      <div id="popup-key"></div>
+    </div>
     <!-- Load application code at the end to ensure DOM is loaded -->
     <script src="../app.js"></script>
   </body>

@@ -12,6 +12,22 @@
         return '#000000';
     }
 
+    function showPopup(pos, issue) {
+        var popupKey = document.getElementById('popup-key');
+        popupKey.innerHTML = '<a href="/epics/' + issue.key + '/details">' + issue.key + '</a>';
+
+        var popup = document.getElementById('popup');
+        popup.style.left = pos.x + 'px';
+        var y = pos.y - popup.offsetHeight;
+        popup.style.top = y + 'px';
+        popup.style.visibility = 'visible';
+    }
+
+    function hidePopup() {
+        var popup = document.getElementById('popup');
+        popup.style.visibility = 'hidden';
+    }
+
     function renderGraph(data) {
         var issues = data.issues.map(function(elem) {
             return {
@@ -82,12 +98,20 @@
             },
         });
 
-        cy.on('tap', 'node', function() {
-            var key = this.data('id');
-            window.location.href = '/epics/' + key + '/details';
+        cy.on('tap', function(evt) {
+            if (evt.target === cy) {
+                hidePopup();
+            }
         });
 
-        cy.on('mouseover', 'node', function() {
+        cy.on('tap', 'node', function(evt) {
+            var key = this.data('id');
+            showPopup(evt.renderedPosition, {
+                key: key
+            });
+        });
+
+        cy.on('mouseover', 'node', function(evt) {
             document.body.style.cursor = 'pointer';
         });
 
