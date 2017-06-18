@@ -69,7 +69,7 @@ func getIssues(jc jiraClient, epicKey string) ([]issue, error) {
 	result := []issue{}
 
 	jql := fmt.Sprintf(`"Epic Link" = %s`, epicKey)
-	fields := []string{"summary", "issuelinks", "assignee", "status", "issuetype"}
+	fields := []string{"summary", "issuelinks", "assignee", "status", "issuetype", jc.estimateField}
 
 	for {
 		b, err := jc.Search(jql, fields, len(result))
@@ -85,12 +85,14 @@ func getIssues(jc jiraClient, epicKey string) ([]issue, error) {
 			status := fields.Get("status.name").String()
 			assignee := fields.Get("assignee.displayName").String()
 			issueType := fields.Get("issuetype.name").String()
+			estimate := int(fields.Get(jc.estimateField).Int())
 			iss := issue{
 				Key:      key,
 				Type:     issueType,
 				Summary:  summary,
 				Status:   status,
 				Assignee: assignee,
+				Estimate: estimate,
 			}
 
 			parsedBlocks := fields.Get(`issuelinks.#[type.name=="Blocks"]#.inwardIssue.key`).Array()

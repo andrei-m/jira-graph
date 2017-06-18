@@ -8,11 +8,12 @@ import (
 	"gopkg.in/gin-gonic/gin.v1"
 )
 
-func StartServer(user, pass, jiraHost, defaultProject string) error {
+func StartServer(user, pass, jiraHost, defaultProject, estimateField string) error {
 	jc := jiraClient{
-		host: jiraHost,
-		user: user,
-		pass: pass,
+		host:          jiraHost,
+		user:          user,
+		pass:          pass,
+		estimateField: estimateField,
 	}
 	gc := graphController{
 		jc:             jc,

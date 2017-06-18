@@ -13,6 +13,7 @@ type issue struct {
 	Summary       string `json:"summary"`
 	Status        string `json:"status"`
 	Assignee      string `json:"assignee"`
+	Estimate      int    `json:"estimate"` // note that this doesn't differentiate between '0' and unset
 	blockedByKeys []string
 }
 
@@ -23,7 +24,10 @@ func (e epic) IsActive() bool {
 }
 
 type jiraClient struct {
-	host, user, pass string
+	host          string
+	user          string
+	pass          string
+	estimateField string
 }
 
 func (j jiraClient) Get(path string, q url.Values) (*http.Response, error) {
