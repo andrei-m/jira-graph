@@ -83,16 +83,21 @@ func getIssues(jc jiraClient, epicKey string) ([]issue, error) {
 			fields := parsedIssue.Get("fields")
 			summary := fields.Get("summary").String()
 			status := fields.Get("status.name").String()
-			assignee := fields.Get("assignee.displayName").String()
+
+			assignee := fields.Get("assignee")
+			assigneeName := assignee.Get("displayName").String()
+			assigneeImage := assignee.Get("avatarUrls.24x24").String()
+
 			issueType := fields.Get("issuetype.name").String()
 			estimate := int(fields.Get(jc.estimateField).Int())
 			iss := issue{
-				Key:      key,
-				Type:     issueType,
-				Summary:  summary,
-				Status:   status,
-				Assignee: assignee,
-				Estimate: estimate,
+				Key:           key,
+				Type:          issueType,
+				Summary:       summary,
+				Status:        status,
+				Assignee:      assigneeName,
+				AssigneeImage: assigneeImage,
+				Estimate:      estimate,
 			}
 
 			parsedBlocks := fields.Get(`issuelinks.#[type.name=="Blocks"]#.inwardIssue.key`).Array()

@@ -13,6 +13,7 @@ type issue struct {
 	Summary       string `json:"summary"`
 	Status        string `json:"status"`
 	Assignee      string `json:"assignee"`
+	AssigneeImage string `json:"assigneeImage"`
 	Estimate      int    `json:"estimate"` // note that this doesn't differentiate between '0' and unset
 	blockedByKeys []string
 }
