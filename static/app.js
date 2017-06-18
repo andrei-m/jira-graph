@@ -15,6 +15,8 @@
     function showPopup(pos, issue) {
         var popupKey = document.getElementById('popup-key');
         popupKey.innerHTML = '<a href="/epics/' + issue.key + '/details">' + issue.key + '</a>';
+        var popupSummary = document.getElementById('popup-summary');
+        popupSummary.textContent = issue.summary;
 
         var popup = document.getElementById('popup');
         popup.style.left = pos.x + 'px';
@@ -105,9 +107,9 @@
         });
 
         cy.on('tap', 'node', function(evt) {
-            var key = this.data('id');
             showPopup(evt.renderedPosition, {
-                key: key
+                key: this.data('id'),
+                summary: this.data('summary'),
             });
         });
 
