@@ -79,11 +79,24 @@ div#popup-summary {
   word-wrap: break-word;
 }
 
-div#popup-key a {
+div.popup-container {
+  padding-top: 5px;
+}
+
+span#popup-key a {
   color: #808080;
   font-size: 12px;
   text-decoration: none;
-  padding-top: 5px;
+}
+
+span#popup-estimate {
+  background-color: #cccccc;
+  font-size: 11px;
+  padding: 3px 5px 2px 5px;
+  line-height: 0.99;
+  font-weight: bold;
+  border-radius: 2em;
+  display: inline-block;
 }
 
 div#popup-status {

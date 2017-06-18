@@ -22,6 +22,9 @@
         var popupStatus = document.getElementById('popup-status');
         popupStatus.style.backgroundColor = statusToRGB(issue.status);
 
+        var popupEstimate = document.getElementById('popup-estimate');
+        popupEstimate.textContent = issue.estimate === 0 ? '-' : issue.estimate;
+
         var popup = document.getElementById('popup');
         popup.style.left = pos.x + 'px';
         var y = pos.y - popup.offsetHeight;
@@ -115,6 +118,7 @@
                 key: this.data('id'),
                 summary: this.data('summary'),
                 status: this.data('status'),
+                estimate: this.data('estimate'),
             });
         });
 
