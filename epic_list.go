@@ -27,15 +27,15 @@ func getEpics(jc jiraClient, project string) ([]epic, error) {
 
 			assignee := fields.Get("assignee")
 			assigneeName := assignee.Get("displayName").String()
-			assigneeImage := assignee.Get("avatarUrls.24x24").String()
+			assigneeImageURL := assignee.Get("avatarUrls.24x24").String()
 
 			e := epic{
-				Key:           key,
-				Type:          "Epic",
-				Summary:       summary,
-				Status:        status,
-				Assignee:      assigneeName,
-				AssigneeImage: assigneeImage,
+				Key:              key,
+				Type:             "Epic",
+				Summary:          summary,
+				Status:           status,
+				Assignee:         assigneeName,
+				AssigneeImageURL: assigneeImageURL,
 			}
 
 			result = append(result, e)

@@ -8,14 +8,14 @@ import (
 )
 
 type issue struct {
-	Key           string `json:"key"`
-	Type          string `json:"type"`
-	Summary       string `json:"summary"`
-	Status        string `json:"status"`
-	Assignee      string `json:"assignee"`
-	AssigneeImage string `json:"assigneeImage"`
-	Estimate      int    `json:"estimate"` // note that this doesn't differentiate between '0' and unset
-	blockedByKeys []string
+	Key              string `json:"key"`
+	Type             string `json:"type"`
+	Summary          string `json:"summary"`
+	Status           string `json:"status"`
+	Assignee         string `json:"assignee"`
+	AssigneeImageURL string `json:"assigneeImageURL"`
+	Estimate         int    `json:"estimate"` // note that this doesn't differentiate between '0' and unset
+	blockedByKeys    []string
 }
 
 type epic issue
