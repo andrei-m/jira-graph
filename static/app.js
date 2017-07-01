@@ -27,7 +27,7 @@
 
         if (issue.assignee != "") {
             var popupAvatar = document.getElementById('popup-avatar');
-            popupAvatar.innerHTML = '<img src="' + issue.assigneeImageURL + '" alt="Assignee: ' + issue.assignee + '" data-tooltip="Assignee: ' + issue.assignee + '">';
+            popupAvatar.innerHTML = '<img src="' + issue.assigneeImageURL + '" alt="Assignee: ' + issue.assignee + '" title="Assignee: ' + issue.assignee + '">';
         }
 
         var popup = document.getElementById('popup');
