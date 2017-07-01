@@ -108,3 +108,10 @@ div#popup-status {
   height: auto;
   position: absolute;
 }
+
+span#popup-avatar img {
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+}

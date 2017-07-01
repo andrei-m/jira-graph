@@ -25,6 +25,11 @@
         var popupEstimate = document.getElementById('popup-estimate');
         popupEstimate.textContent = issue.estimate === 0 ? '-' : issue.estimate;
 
+        if (issue.assignee != "") {
+            var popupAvatar = document.getElementById('popup-avatar');
+            popupAvatar.innerHTML = '<img src="' + issue.assigneeImageURL + '" alt="Assignee: ' + issue.assignee + '" data-tooltip="Assignee: ' + issue.assignee + '">';
+        }
+
         var popup = document.getElementById('popup');
         popup.style.left = pos.x + 'px';
         var y = pos.y - popup.offsetHeight;
@@ -119,6 +124,8 @@
                 summary: this.data('summary'),
                 status: this.data('status'),
                 estimate: this.data('estimate'),
+                assignee: this.data('assignee'),
+                assigneeImageURL: this.data('assigneeImageURL')
             });
         });
 
