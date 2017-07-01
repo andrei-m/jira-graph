@@ -25,9 +25,11 @@
         var popupEstimate = document.getElementById('popup-estimate');
         popupEstimate.textContent = issue.estimate === 0 ? '-' : issue.estimate;
 
+        var popupAvatar = document.getElementById('popup-avatar');
         if (issue.assignee != "") {
-            var popupAvatar = document.getElementById('popup-avatar');
             popupAvatar.innerHTML = '<img src="' + issue.assigneeImageURL + '" alt="Assignee: ' + issue.assignee + '" title="Assignee: ' + issue.assignee + '">';
+        } else {
+            popupAvatar.innerHTML = '';
         }
 
         var popup = document.getElementById('popup');
