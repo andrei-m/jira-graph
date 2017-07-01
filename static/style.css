@@ -65,7 +65,7 @@ div#popup {
   border-radius: 3px;
   padding: 5px 5px 5px 13px;
   width: 180px;
-  height: 100px;
+  height: 110px;
   opacity: 0.8;
   background-color: #fff;
 }
@@ -78,6 +78,8 @@ div#popup:hover {
 div#popup-summary {
   color: #333;
   word-wrap: break-word;
+  max-height: 75%;
+  overflow: hidden;
 }
 
 div.popup-container {
