@@ -67,11 +67,12 @@ div#popup {
   width: 180px;
   height: 100px;
   opacity: 0.8;
+  background-color: #fff;
 }
 
 div#popup:hover {
   border: 1px solid #999;
-  background-color: #fff;
+  opacity: 1.0;
 }
 
 div#popup-summary {
