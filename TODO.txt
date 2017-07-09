@@ -1,7 +1,7 @@
-* Add pop-up card ahead of navigation
-* Add popup ahead of navigation
-** Describe assignee, labels, type, etc.
 * Filter or highlighting for critical path and unblocked work
 
 * look into D3 force directed graphs for organizing
 * look into gephi
+
+* Clean up the epic list page - use similar style to the pop-up cards
+* quick package script that bundles the binary with 'static' and 'templates'
