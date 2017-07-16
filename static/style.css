@@ -65,7 +65,7 @@ div#popup {
   border-radius: 3px;
   padding: 5px 5px 5px 13px;
   width: 180px;
-  height: 110px;
+  max-height: 140px;
   opacity: 1.0;
   background-color: #fff;
 }
@@ -73,7 +73,7 @@ div#popup {
 div#popup-summary {
   color: #333;
   word-wrap: break-word;
-  max-height: 75%;
+  max-height: 95px;
   overflow: hidden;
 }
 
@@ -104,6 +104,11 @@ div#popup-status {
   bottom: 5px;
   height: auto;
   position: absolute;
+}
+
+div#popup-status-text {
+  color: #333;
+  font-style: italic;
 }
 
 span#popup-avatar img {

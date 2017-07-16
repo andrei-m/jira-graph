@@ -22,6 +22,9 @@
         var popupStatus = document.getElementById('popup-status');
         popupStatus.style.backgroundColor = statusToRGB(issue.status);
 
+        var popupStatusText = document.getElementById('popup-status-text');
+        popupStatusText.textContent = issue.status;
+
         var popupType = document.getElementById('popup-type');
         popupType.innerHTML = '<img src="' + issue.typeImageURL + '" alt="Issue Type: ' + issue.type + '" title="Issue Type: ' + issue.type + '">';
 

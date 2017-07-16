@@ -5,4 +5,3 @@
 
 * Clean up the epic list page - use similar style to the pop-up cards
 * quick package script that bundles the binary with 'static' and 'templates'
-* incorporate status text on each card
