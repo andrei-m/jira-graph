@@ -16,6 +16,8 @@ type issue struct {
 	Assignee         string `json:"assignee"`
 	AssigneeImageURL string `json:"assigneeImageURL"`
 	Estimate         int    `json:"estimate"` // note that this doesn't differentiate between '0' and unset
+	Priority         string `json:"priority"`
+	PriorityImageURL string `json:"priorityImageURL"`
 	blockedByKeys    []string
 }
 

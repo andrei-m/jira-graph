@@ -34,7 +34,7 @@ func (e errBadStatus) Error() string {
 
 func getSingleIssue(jc jiraClient, key string) (issue, error) {
 	q := url.Values{
-		"fields": []string{"summary", "status", "issuetype"},
+		"fields": []string{"summary", "status", "issuetype", "priority"},
 	}
 	resp, err := jc.Get(fmt.Sprintf("/rest/api/2/issue/%s", key), q)
 	if err != nil {
@@ -55,16 +55,23 @@ func getSingleIssue(jc jiraClient, key string) (issue, error) {
 	fields := parsed.Get("fields")
 	summary := fields.Get("summary").String()
 	status := fields.Get("status.name").String()
+
 	issueType := fields.Get("issuetype")
 	issueTypeName := issueType.Get("name").String()
-	issueTypeImageURL := fields.Get("issuetype.iconUrl").String()
+	issueTypeImageURL := issueType.Get("iconUrl").String()
+
+	priority := fields.Get("priority")
+	priorityName := priority.Get("name").String()
+	priorityImageURL := priority.Get("iconUrl").String()
 
 	iss := issue{
-		Key:          key,
-		Type:         issueTypeName,
-		TypeImageURL: issueTypeImageURL,
-		Summary:      summary,
-		Status:       status,
+		Key:              key,
+		Type:             issueTypeName,
+		TypeImageURL:     issueTypeImageURL,
+		Summary:          summary,
+		Status:           status,
+		Priority:         priorityName,
+		PriorityImageURL: priorityImageURL,
 	}
 	return iss, nil
 }
@@ -73,7 +80,7 @@ func getIssues(jc jiraClient, epicKey string) ([]issue, error) {
 	result := []issue{}
 
 	jql := fmt.Sprintf(`"Epic Link" = %s`, epicKey)
-	fields := []string{"summary", "issuelinks", "assignee", "status", "issuetype", jc.estimateField}
+	fields := []string{"summary", "issuelinks", "assignee", "status", "issuetype", "priority", jc.estimateField}
 
 	for {
 		b, err := jc.Search(jql, fields, len(result))
@@ -95,7 +102,13 @@ func getIssues(jc jiraClient, epicKey string) ([]issue, error) {
 			issueType := fields.Get("issuetype")
 			issueTypeName := issueType.Get("name").String()
 			issueTypeImageURL := issueType.Get("iconUrl").String()
+
+			priority := fields.Get("priority")
+			priorityName := priority.Get("name").String()
+			priorityImageURL := priority.Get("iconUrl").String()
+
 			estimate := int(fields.Get(jc.estimateField).Int())
+
 			iss := issue{
 				Key:              key,
 				Type:             issueTypeName,
@@ -105,6 +118,8 @@ func getIssues(jc jiraClient, epicKey string) ([]issue, error) {
 				Assignee:         assigneeName,
 				AssigneeImageURL: assigneeImageURL,
 				Estimate:         estimate,
+				Priority:         priorityName,
+				PriorityImageURL: priorityImageURL,
 			}
 
 			parsedBlocks := fields.Get(`issuelinks.#[type.name=="Blocks"]#.inwardIssue.key`).Array()
