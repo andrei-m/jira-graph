@@ -112,3 +112,9 @@ span#popup-avatar img {
   height: 24px;
   vertical-align: middle;
 }
+
+span#popup-type img {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+}

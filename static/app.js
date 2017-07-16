@@ -22,6 +22,9 @@
         var popupStatus = document.getElementById('popup-status');
         popupStatus.style.backgroundColor = statusToRGB(issue.status);
 
+        var popupType = document.getElementById('popup-type');
+        popupType.innerHTML = '<img src="' + issue.typeImageURL + '" alt="Issue Type: ' + issue.type + '" title="Issue Type: ' + issue.type + '">';
+
         var popupEstimate = document.getElementById('popup-estimate');
         popupEstimate.textContent = issue.estimate === 0 ? '-' : issue.estimate;
 
@@ -127,7 +130,9 @@
                 status: this.data('status'),
                 estimate: this.data('estimate'),
                 assignee: this.data('assignee'),
-                assigneeImageURL: this.data('assigneeImageURL')
+                assigneeImageURL: this.data('assigneeImageURL'),
+                type: this.data('type'),
+                typeImageURL: this.data('typeImageURL')
             });
         });
 

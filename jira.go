@@ -10,6 +10,7 @@ import (
 type issue struct {
 	Key              string `json:"key"`
 	Type             string `json:"type"`
+	TypeImageURL     string `json:"typeImageURL"`
 	Summary          string `json:"summary"`
 	Status           string `json:"status"`
 	Assignee         string `json:"assignee"`

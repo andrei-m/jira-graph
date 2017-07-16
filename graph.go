@@ -55,12 +55,16 @@ func getSingleIssue(jc jiraClient, key string) (issue, error) {
 	fields := parsed.Get("fields")
 	summary := fields.Get("summary").String()
 	status := fields.Get("status.name").String()
-	issueType := fields.Get("issuetype.name").String()
+	issueType := fields.Get("issuetype")
+	issueTypeName := issueType.Get("name").String()
+	issueTypeImageURL := fields.Get("issuetype.iconUrl").String()
+
 	iss := issue{
-		Key:     key,
-		Type:    issueType,
-		Summary: summary,
-		Status:  status,
+		Key:          key,
+		Type:         issueTypeName,
+		TypeImageURL: issueTypeImageURL,
+		Summary:      summary,
+		Status:       status,
 	}
 	return iss, nil
 }
@@ -88,11 +92,14 @@ func getIssues(jc jiraClient, epicKey string) ([]issue, error) {
 			assigneeName := assignee.Get("displayName").String()
 			assigneeImageURL := assignee.Get("avatarUrls.24x24").String()
 
-			issueType := fields.Get("issuetype.name").String()
+			issueType := fields.Get("issuetype")
+			issueTypeName := issueType.Get("name").String()
+			issueTypeImageURL := issueType.Get("iconUrl").String()
 			estimate := int(fields.Get(jc.estimateField).Int())
 			iss := issue{
 				Key:              key,
-				Type:             issueType,
+				Type:             issueTypeName,
+				TypeImageURL:     issueTypeImageURL,
 				Summary:          summary,
 				Status:           status,
 				Assignee:         assigneeName,
