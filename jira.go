@@ -8,16 +8,17 @@ import (
 )
 
 type issue struct {
-	Key              string `json:"key"`
-	Type             string `json:"type"`
-	TypeImageURL     string `json:"typeImageURL"`
-	Summary          string `json:"summary"`
-	Status           string `json:"status"`
-	Assignee         string `json:"assignee"`
-	AssigneeImageURL string `json:"assigneeImageURL"`
-	Estimate         int    `json:"estimate"` // note that this doesn't differentiate between '0' and unset
-	Priority         string `json:"priority"`
-	PriorityImageURL string `json:"priorityImageURL"`
+	Key              string   `json:"key"`
+	Type             string   `json:"type"`
+	TypeImageURL     string   `json:"typeImageURL"`
+	Summary          string   `json:"summary"`
+	Status           string   `json:"status"`
+	Assignee         string   `json:"assignee"`
+	AssigneeImageURL string   `json:"assigneeImageURL"`
+	Estimate         int      `json:"estimate"` // note that this doesn't differentiate between '0' and unset
+	Priority         string   `json:"priority"`
+	PriorityImageURL string   `json:"priorityImageURL"`
+	Labels           []string `json:"labels"`
 	blockedByKeys    []string
 }
 
