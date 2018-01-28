@@ -41,6 +41,20 @@
             popupAvatar.innerHTML = '';
         }
 
+        var popupLabels = document.getElementById('popup-labels');
+        if (issue.labels != null) {
+            var labelsHTML = '<ul>';
+
+            for (i = 0; i < issue.labels.length; i++) {
+                labelsHTML += '<li>' + issue.labels[i] + '</li>';
+            }
+
+            labelsHTML += '</ul>';
+            popupLabels.innerHTML = labelsHTML;
+        } else {
+            popupLabels.innerHTML = '';
+        }
+
         var popup = document.getElementById('popup');
         popup.style.left = pos.x + 'px';
         var y = pos.y - popup.offsetHeight;
@@ -140,7 +154,8 @@
                 type: this.data('type'),
                 typeImageURL: this.data('typeImageURL'),
                 priority: this.data('priority'),
-                priorityImageURL: this.data('priorityImageURL')
+                priorityImageURL: this.data('priorityImageURL'),
+                labels: this.data('labels')
             });
         });
 
