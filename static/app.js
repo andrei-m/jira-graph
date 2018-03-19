@@ -14,7 +14,7 @@
 
     function showPopup(pos, issue) {
         var popupKey = document.getElementById('popup-key');
-        popupKey.innerHTML = '<a href="/epics/' + issue.key + '/details">' + issue.key + '</a>';
+        popupKey.innerHTML = '<a href="/epics/' + issue.key + '/details" target="_blank">' + issue.key + '</a>';
 
         var popupSummary = document.getElementById('popup-summary');
         popupSummary.textContent = issue.summary;
