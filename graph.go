@@ -116,7 +116,7 @@ func getIssues(jc jiraClient, epicKey string) ([]issue, error) {
 			priorityName := priority.Get("name").String()
 			priorityImageURL := priority.Get("iconUrl").String()
 
-			estimate := int(fields.Get(jc.estimateField).Int())
+			estimate := fields.Get(jc.estimateField).Float()
 
 			rawLabels := fields.Get("labels").Array()
 			labels := make([]string, len(rawLabels))
