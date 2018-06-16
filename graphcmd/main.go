@@ -12,6 +12,7 @@ var (
 	jiraHost       = flag.String("jira-host", "", "JIRA hostname")
 	defaultProject = flag.String("default-project", "MAIN", "the default JIRA project to use for the index page")
 	estimateField  = flag.String("estimate-field", "customfield_10004", "the name of the custom field for work estimation (story points, etc.)")
+	flaggedField   = flag.String("flagged-field", "customfield_10002", "the name of the custom field for impediment flagging")
 )
 
 func main() {
@@ -29,7 +30,7 @@ func main() {
 		log.Fatal("-jira-host flag is required")
 	}
 
-	if err := graph.StartServer(user, pass, *jiraHost, *defaultProject, *estimateField); err != nil {
+	if err := graph.StartServer(user, pass, *jiraHost, *defaultProject, *estimateField, *flaggedField); err != nil {
 		log.Fatalf("server failed with error: %v", err)
 	}
 }

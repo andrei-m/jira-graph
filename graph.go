@@ -89,6 +89,7 @@ func getIssues(jc jiraClient, epicKey string) ([]issue, error) {
 		"priority",
 		jc.estimateField,
 		"labels",
+		jc.flaggedField,
 	}
 
 	for {
@@ -118,6 +119,10 @@ func getIssues(jc jiraClient, epicKey string) ([]issue, error) {
 
 			estimate := fields.Get(jc.estimateField).Float()
 
+			flaggedObj := fields.Get(jc.flaggedField).Array()
+			//TODO: the 'Impediment' constant should be configurable alongside the field name
+			flagged := len(flaggedObj) == 1 && flaggedObj[0].Get("value").String() == "Impediment"
+
 			rawLabels := fields.Get("labels").Array()
 			labels := make([]string, len(rawLabels))
 			for i := range rawLabels {
@@ -136,6 +141,7 @@ func getIssues(jc jiraClient, epicKey string) ([]issue, error) {
 				Priority:         priorityName,
 				PriorityImageURL: priorityImageURL,
 				Labels:           labels,
+				Flagged:          flagged,
 			}
 
 			parsedBlocks := fields.Get(`issuelinks.#[type.name=="Blocks"]#.inwardIssue.key`).Array()

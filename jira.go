@@ -19,6 +19,7 @@ type issue struct {
 	Priority         string   `json:"priority"`
 	PriorityImageURL string   `json:"priorityImageURL"`
 	Labels           []string `json:"labels"`
+	Flagged          bool     `json:"flagged"`
 	blockedByKeys    []string
 }
 
@@ -33,6 +34,7 @@ type jiraClient struct {
 	user          string
 	pass          string
 	estimateField string
+	flaggedField  string
 }
 
 func (j jiraClient) Get(path string, q url.Values) (*http.Response, error) {
