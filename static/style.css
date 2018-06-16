@@ -70,6 +70,10 @@ div#popup {
   background-color: #fff;
 }
 
+div#popup.flagged {
+  background-color: #ffe380;
+}
+
 div#popup-summary {
   color: #333;
   word-wrap: break-word;
@@ -141,4 +145,9 @@ div#popup-labels ul li {
   border: 1px solid #ccc;
   border-radius: 3px;
   color: #0052cc;
+}
+
+span#popup-flagged {
+  font-size: 18px;
+  color: red;
 }

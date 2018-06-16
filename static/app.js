@@ -56,6 +56,16 @@
         }
 
         var popup = document.getElementById('popup');
+
+        var popupFlagged = document.getElementById('popup-flagged')
+        if (issue.flagged === true) {
+            popupFlagged.innerHTML = '⚑';
+            popup.classList.add('flagged');
+        } else {
+            popupFlagged.innerHTML = '';
+            popup.classList.remove('flagged');
+        }
+
         popup.style.left = pos.x + 'px';
         var y = pos.y - popup.offsetHeight;
         popup.style.top = y + 'px';
@@ -155,7 +165,8 @@
                 typeImageURL: this.data('typeImageURL'),
                 priority: this.data('priority'),
                 priorityImageURL: this.data('priorityImageURL'),
-                labels: this.data('labels')
+                labels: this.data('labels'),
+                flagged: this.data('flagged')
             });
         });
 
