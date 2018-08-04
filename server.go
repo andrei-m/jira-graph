@@ -23,8 +23,7 @@ func StartServer(user, pass, jiraHost, defaultProject, estimateField, flaggedFie
 
 	r := gin.Default()
 	r.LoadHTMLGlob("templates/*")
-	r.StaticFile("/app.js", "./static/app.js")
-	r.StaticFile("/style.css", "./static/style.css")
+	r.Static("/assets", "./dist")
 
 	r.GET("/api/epics/:key", gc.getEpicGraph)
 	r.GET("/epics/:key", gc.getEpic)
