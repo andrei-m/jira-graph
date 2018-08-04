@@ -1,7 +1,7 @@
 <!DOCTYPE>
 <html>
   <head>
-    <title>{{ .epicKey }}</title>
+    <title>{{ .issue.Key }}</title>
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
     <link href="/assets/style.css" rel="stylesheet" />
   </head>
@@ -10,21 +10,6 @@
       <a href="https://{{ .jiraHost}}/browse/{{ .issue.Key }}" target="_blank">{{ .issue.Key }} - {{ .issue.Summary }}</a>
     </h1>
 	<div id="root"></div>
-    <div id="popup" style="visibility:hidden">
-      <div id="popup-summary"></div>
-      <div class="popup-container">
-        <span class="popup" id="popup-type"></span>
-        <span class="popup" id="popup-priority"></span>
-        <span class="popup" id="popup-flagged"></span>
-        <span id="popup-estimate"></span>
-        <span id="popup-key"></span>
-        <span id="popup-avatar"></span>
-        <div id="popup-status-text"></div>
-		<div id="popup-labels"></div>
-      </div>
-      <div id="popup-status"></div>
-    </div>
-    <!-- Load application code at the end to ensure DOM is loaded -->
     <script src="/assets/main.js"></script>
   </body>
 </html>

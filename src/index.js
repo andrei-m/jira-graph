@@ -18,18 +18,65 @@ function statusToRGB(s) {
     return '#000000';
 }
 
+class Popup extends React.Component {
+    render() {
+        if (this.props.selectedEpic == null) {
+            return <div className="empty"></div>
+        }
+
+        //TODO: a hack until offsetHeight can be figured out
+        const yOffset = 45
+
+        const style = {
+            left: this.props.selectedEpic.popupPosition.x + 'px',
+            top: (this.props.selectedEpic.popupPosition.y + yOffset) + 'px',
+        }
+
+        return (
+          <div className="popup" style={style}>
+            <div className="popup-summary">{this.props.selectedEpic.epic.summary}</div>
+            <div className="popup-container">
+              <PopupType type={this.props.selectedEpic.epic.type} typeImageURL={this.props.selectedEpic.epic.typeImageURL} />
+              <span className="popup popup-priority"></span>
+              <span className="popup popup-flagged"></span>
+              <span className="popup-estimate"></span>
+              <PopupKey epicKey={this.props.selectedEpic.epic.key} />
+              <span className="popup-avatar"></span>
+              <div className="popup-status-text">{this.props.selectedEpic.epic.status}</div>
+              <div className="popup-labels"></div>
+            </div>
+            <div className="popup-status"></div>
+          </div>
+        )
+    }
+}
+
+class PopupType extends React.Component {
+  render() {
+    const alt = 'IssueType: ' + this.props.type;
+    return (
+      <span className="popup popup-type">
+        <img src={this.props.typeImageURL} alt={alt} title={alt} />
+      </span>
+    )
+  }
+}
+
+class PopupKey extends React.Component {
+  render() {
+      const url = '/epics/' + this.props.epicKey + '/details';
+
+      return (
+        <span className="popup-key">
+          <a href={url} target="_blank">{this.props.epicKey}</a>
+        </span>
+      );
+  }
+}
+
 function showPopup(pos, issue) {
-    var popupKey = document.getElementById('popup-key');
-    popupKey.innerHTML = '<a href="/epics/' + issue.key + '/details" target="_blank">' + issue.key + '</a>';
-
-    var popupSummary = document.getElementById('popup-summary');
-    popupSummary.textContent = issue.summary;
-
     var popupStatus = document.getElementById('popup-status');
     popupStatus.style.backgroundColor = statusToRGB(issue.status);
-
-    var popupStatusText = document.getElementById('popup-status-text');
-    popupStatusText.textContent = issue.status;
 
     var popupType = document.getElementById('popup-type');
     popupType.innerHTML = '<img src="' + issue.typeImageURL + '" alt="Issue Type: ' + issue.type + '" title="Issue Type: ' + issue.type + '">';
@@ -71,16 +118,6 @@ function showPopup(pos, issue) {
         popupFlagged.innerHTML = '';
         popup.classList.remove('flagged');
     }
-
-    popup.style.left = pos.x + 'px';
-    var y = pos.y - popup.offsetHeight;
-    popup.style.top = y + 'px';
-    popup.style.visibility = 'visible';
-}
-
-function hidePopup() {
-    var popup = document.getElementById('popup');
-    popup.style.visibility = 'hidden';
 }
 
 class App extends React.Component {
@@ -137,19 +174,26 @@ class Graph extends React.Component {
     constructor(props) {
         super(props);
         this.myRef = React.createRef();
+        this.state = {
+            selectedEpic: null,
+        };
     }
 
     render() {
         return (
-            <div className = "cy" ref = {this.myRef} />
+            <div>
+          <div className = "cy" ref = {this.myRef} />
+          <Popup selectedEpic={this.state.selectedEpic} />
+        </div>
         );
     }
 
     componentDidMount() {
-        this.renderGraph(this.myRef.current, this.props.epic);
+        this.renderGraph(this.props.epic);
     }
 
-    renderGraph(root, data) {
+    renderGraph(data) {
+        const root = this.myRef.current;
         var issues = data.issues.map(function(elem) {
             return {
                 data: Object.assign({
@@ -219,26 +263,23 @@ class Graph extends React.Component {
             },
         });
 
-        cy.on('tap', function(evt) {
+        cy.on('tap', (evt) => {
             if (evt.target === cy) {
-                hidePopup();
+                this.setState({
+                    selectedEpic: null,
+                });
             }
         });
 
-        cy.on('tap', 'node', function(evt) {
-            showPopup(evt.renderedPosition, {
-                key: this.data('id'),
-                summary: this.data('summary'),
-                status: this.data('status'),
-                estimate: this.data('estimate'),
-                assignee: this.data('assignee'),
-                assigneeImageURL: this.data('assigneeImageURL'),
-                type: this.data('type'),
-                typeImageURL: this.data('typeImageURL'),
-                priority: this.data('priority'),
-                priorityImageURL: this.data('priorityImageURL'),
-                labels: this.data('labels'),
-                flagged: this.data('flagged')
+        cy.on('tap', 'node', (evt) => {
+            const epic = evt.target.data();
+            const position = evt.renderedPosition;
+            console.log(position);
+            this.setState({
+                selectedEpic: {
+                    epic: epic,
+                    popupPosition: position,
+                }
             });
         });
 
