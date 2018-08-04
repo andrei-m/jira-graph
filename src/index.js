@@ -142,111 +142,110 @@ class Graph extends React.Component {
     }
 
     componentDidMount() {
-      const node = this.myRef.current;
-      renderGraph(node, this.props.epic);
-    }
-}
-
-function renderGraph(root, data) {
-    var issues = data.issues.map(function(elem) {
-        return {
-            data: Object.assign({
-                id: elem.key
-            }, elem)
-        }
-    });
-
-    var issueEdges = [];
-    for (var i = 0; i < issues.length; i++) {
-        var blockingIssue = issues[i].data.id;
-        var blockedIssues = data.graph[blockingIssue];
-        for (var j = 0; j < blockedIssues.length; j++) {
-            var id = blockingIssue + '_blocks_' + blockedIssues[j];
-            issueEdges.push({
-                data: {
-                    id: id,
-                    source: blockingIssue,
-                    target: blockedIssues[j]
-                }
-            });
-        }
+      this.renderGraph(this.myRef.current, this.props.epic);
     }
 
-    var cy = cytoscape({
-        container: root,
+    renderGraph(root, data) {
+      var issues = data.issues.map(function(elem) {
+          return {
+              data: Object.assign({
+                  id: elem.key
+              }, elem)
+          }
+      });
 
-        boxSelectionEnabled: false,
-        autounselectify: true,
+      var issueEdges = [];
+      for (var i = 0; i < issues.length; i++) {
+          var blockingIssue = issues[i].data.id;
+          var blockedIssues = data.graph[blockingIssue];
+          for (var j = 0; j < blockedIssues.length; j++) {
+              var id = blockingIssue + '_blocks_' + blockedIssues[j];
+              issueEdges.push({
+                  data: {
+                      id: id,
+                      source: blockingIssue,
+                      target: blockedIssues[j]
+                  }
+              });
+          }
+      }
 
-        layout: {
-            name: 'dagre',
-            directed: true
-        },
+      var cy = cytoscape({
+          container: root,
 
-        style: [{
-                selector: 'node',
-                style: {
-                    'content': 'data(id)',
-                    'text-opacity': 0.8,
-                    'color': '#000000',
-                    'font-size': 18,
-                    'font-weight': 'bold',
-                    'background-color': function(ele) {
-                        return statusToRGB(ele.data('status'))
-                    },
-                    'border-width': 1,
-                    'border-color': '#000000'
-                }
-            },
+          boxSelectionEnabled: false,
+          autounselectify: true,
 
-            {
-                selector: 'edge',
-                style: {
-                    'curve-style': 'bezier',
-                    'width': 4,
-                    'target-arrow-shape': 'triangle',
-                    'line-color': '#9dbaea',
-                    'target-arrow-color': '#9dbaea'
-                }
-            }
-        ],
+          layout: {
+              name: 'dagre',
+              directed: true
+          },
 
-        elements: {
-            nodes: issues,
-            edges: issueEdges,
-        },
-    });
+          style: [{
+                  selector: 'node',
+                  style: {
+                      'content': 'data(id)',
+                      'text-opacity': 0.8,
+                      'color': '#000000',
+                      'font-size': 18,
+                      'font-weight': 'bold',
+                      'background-color': function(ele) {
+                          return statusToRGB(ele.data('status'))
+                      },
+                      'border-width': 1,
+                      'border-color': '#000000'
+                  }
+              },
 
-    cy.on('tap', function(evt) {
-        if (evt.target === cy) {
-            hidePopup();
-        }
-    });
+              {
+                  selector: 'edge',
+                  style: {
+                      'curve-style': 'bezier',
+                      'width': 4,
+                      'target-arrow-shape': 'triangle',
+                      'line-color': '#9dbaea',
+                      'target-arrow-color': '#9dbaea'
+                  }
+              }
+          ],
 
-    cy.on('tap', 'node', function(evt) {
-        showPopup(evt.renderedPosition, {
-            key: this.data('id'),
-            summary: this.data('summary'),
-            status: this.data('status'),
-            estimate: this.data('estimate'),
-            assignee: this.data('assignee'),
-            assigneeImageURL: this.data('assigneeImageURL'),
-            type: this.data('type'),
-            typeImageURL: this.data('typeImageURL'),
-            priority: this.data('priority'),
-            priorityImageURL: this.data('priorityImageURL'),
-            labels: this.data('labels'),
-            flagged: this.data('flagged')
-        });
-    });
+          elements: {
+              nodes: issues,
+              edges: issueEdges,
+          },
+      });
 
-    cy.on('mouseover', 'node', function(evt) {
-        document.body.style.cursor = 'pointer';
-    });
+      cy.on('tap', function(evt) {
+          if (evt.target === cy) {
+              hidePopup();
+          }
+      });
 
-    cy.on('mouseout', 'node', function() {
-        document.body.style.cursor = 'default';
-    });
+      cy.on('tap', 'node', function(evt) {
+          showPopup(evt.renderedPosition, {
+              key: this.data('id'),
+              summary: this.data('summary'),
+              status: this.data('status'),
+              estimate: this.data('estimate'),
+              assignee: this.data('assignee'),
+              assigneeImageURL: this.data('assigneeImageURL'),
+              type: this.data('type'),
+              typeImageURL: this.data('typeImageURL'),
+              priority: this.data('priority'),
+              priorityImageURL: this.data('priorityImageURL'),
+              labels: this.data('labels'),
+              flagged: this.data('flagged')
+          });
+      });
+
+      cy.on('mouseover', 'node', function(evt) {
+          document.body.style.cursor = 'pointer';
+      });
+
+      cy.on('mouseout', 'node', function() {
+          document.body.style.cursor = 'default';
+      });
+    }
 }
 
 ReactDOM.render(<App /> , document.getElementById('root'));
