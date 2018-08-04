@@ -83,6 +83,52 @@ function hidePopup() {
     popup.style.visibility = 'hidden';
 }
 
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      error: null,
+      isLoaded: false,
+      epic: {},
+    };
+  }
+
+  render() {
+    const { error, isLoaded, epic } = this.state;
+    if (error) {
+      return <div>Error: failed to fetch the epic</div>
+    } else if (!isLoaded) {
+      return <div>Loading...</div>
+    } else {
+      return <Graph epic={epic} />
+    }
+  }
+
+  componentDidMount() {
+    var pathparts = window.location.pathname.split('/');
+    var epicKey = pathparts[pathparts.length - 1];
+
+    console.log('loading ' + epicKey);
+    fetch("/api/epics/" + epicKey)
+      .then(res => res.json())
+      .then(
+        (result) => {
+          this.setState({
+            isLoaded: true,
+            epic: result,
+          });
+          console.log('loaded ' + epicKey);
+        },
+        (error) => {
+          this.setState({
+            isLoaded: false,
+            error: true,
+          });
+        }
+      )
+  }
+}
+
 class Graph extends React.Component {
     constructor(props) {
         super(props);
@@ -96,20 +142,8 @@ class Graph extends React.Component {
     }
 
     componentDidMount() {
-        const node = this.myRef.current;
-        const epicKey = this.props.epicKey
-        console.log('loading ' + epicKey);
-
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                var resp = JSON.parse(this.responseText);
-                renderGraph(node, resp);
-                console.log('loaded ' + epicKey);
-            }
-        }
-        xhr.open('GET', '/api/epics/' + epicKey, true);
-        xhr.send();
+      const node = this.myRef.current;
+      renderGraph(node, this.props.epic);
     }
 }
 
@@ -215,6 +249,4 @@ function renderGraph(root, data) {
     });
 }
 
-var pathparts = window.location.pathname.split('/');
-var epicKey = pathparts[pathparts.length - 1];
-ReactDOM.render( <Graph epicKey={epicKey} /> , document.getElementById('root'));
+ReactDOM.render(<App /> , document.getElementById('root'));
