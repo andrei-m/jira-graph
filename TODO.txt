@@ -3,5 +3,4 @@
 * look into D3 force directed graphs for organizing
 * look into gephi
 
-* Clean up the epic list page - use similar style to the pop-up cards
 * quick package script that bundles the binary with 'static' and 'templates'
