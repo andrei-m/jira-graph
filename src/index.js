@@ -97,9 +97,7 @@ class Graph extends React.Component {
 
     componentDidMount() {
         const node = this.myRef.current;
-
-        var pathparts = window.location.pathname.split('/');
-        var epicKey = pathparts[pathparts.length - 1];
+        const epicKey = this.props.epicKey
         console.log('loading ' + epicKey);
 
         var xhr = new XMLHttpRequest();
@@ -217,4 +215,6 @@ function renderGraph(root, data) {
     });
 }
 
-ReactDOM.render( < Graph / > , document.getElementById('root'));
+var pathparts = window.location.pathname.split('/');
+var epicKey = pathparts[pathparts.length - 1];
+ReactDOM.render( <Graph epicKey={epicKey} /> , document.getElementById('root'));
