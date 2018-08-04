@@ -1,0 +1,29 @@
+{
+  "name": "jira-graph",
+  "version": "1.0.0",
+  "description": "jira-graph ==========",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andrei-m/jira-graph.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andrei-m/jira-graph/issues"
+  },
+  "homepage": "https://github.com/andrei-m/jira-graph#readme",
+  "devDependencies": {
+    "webpack": "^4.16.4",
+    "webpack-cli": "^3.1.0"
+  },
+  "dependencies": {
+    "cytoscape": "^3.1.1",
+    "cytoscape-dagre": "^1.5.0",
+    "dagre": "^0.7.4"
+  }
+}
