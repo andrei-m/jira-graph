@@ -1,5 +1,7 @@
 import cytoscape from 'cytoscape';
 import dagre from 'cytoscape-dagre';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 cytoscape.use(dagre);
 
@@ -81,7 +83,39 @@ function hidePopup() {
     popup.style.visibility = 'hidden';
 }
 
-function renderGraph(data) {
+class Graph extends React.Component {
+    constructor(props) {
+        super(props);
+        this.myRef = React.createRef();
+    }
+
+    render() {
+        return (
+          <div className = "cy" ref = {this.myRef} />
+        );
+    }
+
+    componentDidMount() {
+        const node = this.myRef.current;
+
+        var pathparts = window.location.pathname.split('/');
+        var epicKey = pathparts[pathparts.length - 1];
+        console.log('loading ' + epicKey);
+
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var resp = JSON.parse(this.responseText);
+                renderGraph(node, resp);
+                console.log('loaded ' + epicKey);
+            }
+        }
+        xhr.open('GET', '/api/epics/' + epicKey, true);
+        xhr.send();
+    }
+}
+
+function renderGraph(root, data) {
     var issues = data.issues.map(function(elem) {
         return {
             data: Object.assign({
@@ -107,7 +141,7 @@ function renderGraph(data) {
     }
 
     var cy = cytoscape({
-        container: document.getElementById('cy'),
+        container: root,
 
         boxSelectionEnabled: false,
         autounselectify: true,
@@ -183,19 +217,4 @@ function renderGraph(data) {
     });
 }
 
-window.onload = function() {
-    var pathparts = window.location.pathname.split('/');
-    var epicKey = pathparts[pathparts.length - 1];
-    console.log('loading ' + epicKey);
-
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            var resp = JSON.parse(this.responseText);
-            renderGraph(resp);
-            console.log('loaded ' + epicKey);
-        }
-    }
-    xhr.open('GET', '/api/epics/' + epicKey, true);
-    xhr.send();
-}
+ReactDOM.render( < Graph / > , document.getElementById('root'));
