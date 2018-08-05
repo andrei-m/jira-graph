@@ -11,8 +11,8 @@
     "url": "git+https://github.com/andrei-m/jira-graph.git"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "andrie-m",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/andrei-m/jira-graph/issues"
   },
