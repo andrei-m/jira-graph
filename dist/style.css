@@ -42,6 +42,10 @@ div.popup-container {
   padding-top: 5px;
 }
 
+div.popup-container span {
+  margin-right: 2px;
+}
+
 span.popup-key a {
   color: #808080;
   font-size: 12px;
