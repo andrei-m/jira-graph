@@ -25,98 +25,116 @@ class Popup extends React.Component {
         }
 
         //TODO: a hack until offsetHeight can be figured out
-        const yOffset = 45
+        const yOffset = 45;
 
         const style = {
             left: this.props.selectedEpic.popupPosition.x + 'px',
             top: (this.props.selectedEpic.popupPosition.y + yOffset) + 'px',
         }
 
+        const epic = this.props.selectedEpic.epic;
+
+        var className = 'popup';
+        if (epic.flagged) {
+            className = className + ' flagged';
+        }
+
         return (
-          <div className="popup" style={style}>
-            <div className="popup-summary">{this.props.selectedEpic.epic.summary}</div>
+            <div className={className} style={style}>
+            <div className="popup-summary">{epic.summary}</div>
             <div className="popup-container">
-              <PopupType type={this.props.selectedEpic.epic.type} typeImageURL={this.props.selectedEpic.epic.typeImageURL} />
-              <span className="popup popup-priority"></span>
-              <span className="popup popup-flagged"></span>
-              <span className="popup-estimate"></span>
-              <PopupKey epicKey={this.props.selectedEpic.epic.key} />
-              <span className="popup-avatar"></span>
-              <div className="popup-status-text">{this.props.selectedEpic.epic.status}</div>
-              <div className="popup-labels"></div>
+              <PopupType type={epic.type} typeImageURL={epic.typeImageURL} />
+              <PopupPriority priority={epic.priority} priorityImageURL={epic.priorityImageURL} />
+              <span className="popup popup-flagged">{epic.flagged ? '⚑' : ''}</span>
+              <PopupEstimate estimate={epic.estimate} />
+              <PopupKey epicKey={epic.key} />
+              <PopupAssignee assignee={epic.assignee} assigneeImageURL={epic.assigneeImageURL} />
+              <div className="popup-status-text">{epic.status}</div>
+              <PopupLabels labels={epic.labels} />
             </div>
-            <div className="popup-status"></div>
+            <PopupStatus status={epic.status} />
           </div>
         )
     }
 }
 
 class PopupType extends React.Component {
-  render() {
-    const alt = 'IssueType: ' + this.props.type;
-    return (
-      <span className="popup popup-type">
+    render() {
+        const alt = 'Issue Type: ' + this.props.type;
+        return (
+            <span className="popup">
         <img src={this.props.typeImageURL} alt={alt} title={alt} />
       </span>
-    )
-  }
+        )
+    }
+}
+
+class PopupPriority extends React.Component {
+    render() {
+        const alt = 'Priority: ' + this.props.priority;
+        return (
+            <span className="popup">
+        <img src={this.props.priorityImageURL} alt={alt} title={alt} />
+      </span>
+        )
+    }
+}
+
+class PopupAssignee extends React.Component {
+    render() {
+        if (this.props.assignee === '') {
+            return <span className="popup-avatar" />
+        }
+
+        const alt = 'Assignee: ' + this.props.assignee;
+        return (
+            <span className="popup-avatar">
+        <img src={this.props.assigneeImageURL} alt={alt} title={alt} />
+      </span>
+        )
+    }
 }
 
 class PopupKey extends React.Component {
-  render() {
-      const url = '/epics/' + this.props.epicKey + '/details';
+    render() {
+        const url = '/epics/' + this.props.epicKey + '/details';
 
-      return (
-        <span className="popup-key">
+        return (
+            <span className="popup-key">
           <a href={url} target="_blank">{this.props.epicKey}</a>
         </span>
-      );
-  }
+        );
+    }
 }
 
-function showPopup(pos, issue) {
-    var popupStatus = document.getElementById('popup-status');
-    popupStatus.style.backgroundColor = statusToRGB(issue.status);
-
-    var popupType = document.getElementById('popup-type');
-    popupType.innerHTML = '<img src="' + issue.typeImageURL + '" alt="Issue Type: ' + issue.type + '" title="Issue Type: ' + issue.type + '">';
-
-    var popupPriority = document.getElementById('popup-priority');
-    popupPriority.innerHTML = '<img src="' + issue.priorityImageURL + '" alt="Priority: ' + issue.priority + '" title="Priority: ' + issue.priority + '">';
-
-    var popupEstimate = document.getElementById('popup-estimate');
-    popupEstimate.textContent = issue.estimate === 0 ? '-' : issue.estimate;
-
-    var popupAvatar = document.getElementById('popup-avatar');
-    if (issue.assignee != "") {
-        popupAvatar.innerHTML = '<img src="' + issue.assigneeImageURL + '" alt="Assignee: ' + issue.assignee + '" title="Assignee: ' + issue.assignee + '">';
-    } else {
-        popupAvatar.innerHTML = '';
+class PopupEstimate extends React.Component {
+    render() {
+        return (
+            <span className="popup-estimate">{this.props.estimate === 0 ? "-" : this.props.estimate}</span>
+        );
     }
+}
 
-    var popupLabels = document.getElementById('popup-labels');
-    if (issue.labels != null) {
-        var labelsHTML = '<ul>';
-
-        for (var i = 0; i < issue.labels.length; i++) {
-            labelsHTML += '<li>' + issue.labels[i] + '</li>';
+class PopupStatus extends React.Component {
+    render() {
+        const style = {
+            backgroundColor: statusToRGB(this.props.status),
         }
-
-        labelsHTML += '</ul>';
-        popupLabels.innerHTML = labelsHTML;
-    } else {
-        popupLabels.innerHTML = '';
+        return <div className="popup-status" style={style} />
     }
+}
 
-    var popup = document.getElementById('popup');
-
-    var popupFlagged = document.getElementById('popup-flagged')
-    if (issue.flagged === true) {
-        popupFlagged.innerHTML = '⚑';
-        popup.classList.add('flagged');
-    } else {
-        popupFlagged.innerHTML = '';
-        popup.classList.remove('flagged');
+class PopupLabels extends React.Component {
+    render() {
+        var labelListItems = [];
+        for (var i = 0; i < this.props.labels.length; i++) {
+            labelListItems.push(<li>{this.props.labels[i]}</li>);
+        }
+        return (
+            <div className="popup-labels">
+        <ul>{labelListItems}</ul>
+      </div>
+        );
     }
 }
 
