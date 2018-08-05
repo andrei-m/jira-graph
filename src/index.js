@@ -43,8 +43,8 @@ class Popup extends React.Component {
             <div className={className} style={style}>
             <div className="popup-summary">{epic.summary}</div>
             <div className="popup-container">
-              <PopupType type={epic.type} typeImageURL={epic.typeImageURL} />
-              <PopupPriority priority={epic.priority} priorityImageURL={epic.priorityImageURL} />
+              <PopupIcon alt={'Type: ' + epic.type} imageURL={epic.typeImageURL} />
+              <PopupIcon alt={'Priority: ' + epic.priority} imageURL={epic.priorityImageURL} />
               <span className="popup popup-flagged">{epic.flagged ? '⚑' : ''}</span>
               <PopupEstimate estimate={epic.estimate} />
               <PopupKey epicKey={epic.key} />
@@ -58,23 +58,11 @@ class Popup extends React.Component {
     }
 }
 
-class PopupType extends React.Component {
+class PopupIcon extends React.Component {
     render() {
-        const alt = 'Issue Type: ' + this.props.type;
         return (
             <span className="popup">
-        <img src={this.props.typeImageURL} alt={alt} title={alt} />
-      </span>
-        )
-    }
-}
-
-class PopupPriority extends React.Component {
-    render() {
-        const alt = 'Priority: ' + this.props.priority;
-        return (
-            <span className="popup">
-        <img src={this.props.priorityImageURL} alt={alt} title={alt} />
+        <img src={this.props.imageURL} alt={this.props.alt} title={this.props.alt} />
       </span>
         )
     }
