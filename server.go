@@ -26,6 +26,7 @@ func StartServer(user, pass, jiraHost, defaultProject, estimateField, flaggedFie
 	r.Static("/assets", "./dist")
 
 	r.GET("/api/epics/:key", gc.getEpicGraph)
+	r.GET("/api/epics/:key/related", gc.getRelatedEpics)
 	r.GET("/epics/:key", gc.getEpic)
 	r.GET("/epics/:key/details", gc.redirectToJIRA)
 	r.GET("/", gc.index)
@@ -100,4 +101,14 @@ func (gc graphController) redirectToJIRA(c *gin.Context) {
 
 func (gc graphController) index(c *gin.Context) {
 	c.Redirect(http.StatusFound, path.Join("projects", gc.defaultProject, "epics"))
+}
+
+func (gc graphController) getRelatedEpics(c *gin.Context) {
+	issues, err := getRelatedEpics(gc.jc, c.Param("key"))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"status": http.StatusText(http.StatusInternalServerError)})
+		return
+	}
+	//TODO: handle a non existent-requested epic as a 404
+	c.JSON(http.StatusOK, issues)
 }
