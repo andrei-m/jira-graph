@@ -6,9 +6,10 @@
     <link href="/assets/style.css" rel="stylesheet" />
   </head>
   <body>
-    <h1>
-      <a href="https://{{ .jiraHost}}/browse/{{ .issue.Key }}" target="_blank">{{ .issue.Key }} - {{ .issue.Summary }}</a>
-    </h1>
+	<h1>
+	  <span id="menu-container"></span>
+	  <a href="https://{{ .jiraHost}}/browse/{{ .issue.Key }}" target="_blank">{{ .issue.Key }} - {{ .issue.Summary }}</a>
+	</h1>
 	<div id="root"></div>
     <script src="/assets/main.js"></script>
   </body>

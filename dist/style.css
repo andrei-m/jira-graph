@@ -12,11 +12,10 @@ h1 {
   height: 100%;
   left: 0;
   top: 0;
-  z-index: 999;
 }
 
 div.popup {
-  z-index: 1000;
+  z-index: 1;
   position: absolute;
   border: 1px solid #999;
   border-radius: 3px;
@@ -115,4 +114,45 @@ span.popup-flagged {
 
 div.empty {
   display: none;
+}
+
+#menu-container label {
+  margin-right: 3px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+input#menu-toggle {
+  display: none;
+}
+
+.menu {
+  display: none;
+  position: fixed;
+  opacity: 1.0;
+  margin-left: 5px;
+  background-color: white;
+  min-width: 100px;
+  max-width: 500px;
+  border: 1px solid #999;
+  border-radius: 3px;
+  padding: 5px;
+  z-index: 1;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.menu a {
+  display: block;
+  text-decoration: none;
+  margin-bottom: 2px;
+  line-height: 90%;
+}
+
+.menu a img {
+  vertical-align: middle;
+}
+
+#menu-toggle:checked + .menu {
+  display: block;
 }

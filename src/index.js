@@ -126,7 +126,7 @@ class PopupLabels extends React.Component {
     }
 }
 
-class App extends React.Component {
+class GraphApp extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -165,6 +165,88 @@ class App extends React.Component {
                         epic: result,
                     });
                     console.log('loaded ' + epicKey);
+                },
+                (error) => {
+                    this.setState({
+                        isLoaded: false,
+                        error: true,
+                    });
+                }
+            )
+    }
+}
+
+class Menu extends React.Component {
+    render() {
+        return (
+            <span>
+      <label htmlFor="menu-toggle">&#9776;</label>
+		<input type="checkbox" id="menu-toggle" />
+		<div className="menu">
+			Related epics
+			<hr />
+            <RelatedEpics />
+		</div>
+      </span>
+        )
+    }
+}
+
+class RelatedEpics extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            error: null,
+            isLoaded: false,
+            epics: {},
+        };
+    }
+
+    render() {
+        const {
+            error,
+            isLoaded,
+            epics
+        } = this.state;
+        if (error) {
+            return <div>Error: failed to fetch related epics</div>;
+        } else if (!isLoaded) {
+            return <div>Loading...</div>;
+        } else {
+            if (epics.length == 0) {
+                return <div>none!</div>;
+            }
+
+            var anchors = [];
+            for (var i = 0; i < epics.length; i++) {
+                const url = '/epics/' + epics[i].key;
+                anchors.push(
+                    <a href={url}>
+                    <img src={epics[i].typeImageURL} />
+                    {epics[i].key} - {epics[i].summary}
+                  </a>
+                );
+            }
+
+            return <div>{anchors}</div>;
+        }
+    }
+
+    componentDidMount() {
+        //TODO: DRY - pass in from above
+        var pathparts = window.location.pathname.split('/');
+        var epicKey = pathparts[pathparts.length - 1];
+
+        console.log('loading related epics for ' + epicKey);
+        fetch("/api/epics/" + epicKey + "/related")
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    this.setState({
+                        isLoaded: true,
+                        epics: result,
+                    });
+                    console.log('loaded related epics for ' + epicKey);
                 },
                 (error) => {
                     this.setState({
@@ -299,4 +381,5 @@ class Graph extends React.Component {
     }
 }
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<GraphApp />, document.getElementById('root'));
+ReactDOM.render(<Menu />, document.getElementById('menu-container'));
