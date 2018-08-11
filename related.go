@@ -38,11 +38,7 @@ func getRelatedEpics(jc jiraClient, epicKey string) ([]issue, error) {
 	}
 
 	epicJQL := fmt.Sprintf("(%s) AND type=Epic AND key != %s ORDER BY key", strings.Join(milestoneClauses, " OR "), epicKey)
-	fields = []string{
-		"summary",
-		"issuetype",
-	}
-
+	fields = jc.getRequestFields()
 	result := []issue{}
 	for {
 		b, err := jc.Search(epicJQL, fields, len(result))
@@ -53,21 +49,7 @@ func getRelatedEpics(jc jiraClient, epicKey string) ([]issue, error) {
 		parsed := gjson.ParseBytes(b)
 
 		for _, parsedIssue := range parsed.Get("issues").Array() {
-			key := parsedIssue.Get("key").String()
-			fields := parsedIssue.Get("fields")
-			summary := fields.Get("summary").String()
-
-			issueType := fields.Get("issuetype")
-			issueTypeName := issueType.Get("name").String()
-			issueTypeImageURL := issueType.Get("iconUrl").String()
-
-			iss := issue{
-				Key:          key,
-				Type:         issueTypeName,
-				TypeImageURL: issueTypeImageURL,
-				Summary:      summary,
-			}
-			result = append(result, iss)
+			result = append(result, jc.unmarshallIssue(parsedIssue))
 		}
 
 		total := parsed.Get("total").Int()

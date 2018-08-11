@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+
+	"github.com/tidwall/gjson"
 )
 
 type issue struct {
@@ -61,4 +63,64 @@ func (j jiraClient) Search(jql string, fields []string, startAt int) ([]byte, er
 	defer resp.Body.Close()
 
 	return ioutil.ReadAll(resp.Body)
+}
+
+func (j jiraClient) getRequestFields() []string {
+	return []string{
+		"assignee",
+		"issuelinks",
+		"issuetype",
+		"labels",
+		"priority",
+		"status",
+		"summary",
+		j.estimateField,
+		j.flaggedField,
+	}
+}
+
+func (j jiraClient) unmarshallIssue(r gjson.Result) issue {
+	key := r.Get("key").String()
+	fields := r.Get("fields")
+	summary := fields.Get("summary").String()
+	status := fields.Get("status.name").String()
+
+	assignee := fields.Get("assignee")
+	assigneeName := assignee.Get("displayName").String()
+	assigneeImageURL := assignee.Get("avatarUrls.24x24").String()
+
+	issueType := fields.Get("issuetype")
+	issueTypeName := issueType.Get("name").String()
+	issueTypeImageURL := issueType.Get("iconUrl").String()
+
+	priority := fields.Get("priority")
+	priorityName := priority.Get("name").String()
+	priorityImageURL := priority.Get("iconUrl").String()
+
+	estimate := fields.Get(j.estimateField).Float()
+
+	flaggedObj := fields.Get(j.flaggedField).Array()
+	//TODO: the 'Impediment' constant should be configurable alongside the field name
+	flagged := len(flaggedObj) == 1 && flaggedObj[0].Get("value").String() == "Impediment"
+
+	rawLabels := fields.Get("labels").Array()
+	labels := make([]string, len(rawLabels))
+	for i := range rawLabels {
+		labels[i] = rawLabels[i].String()
+	}
+
+	return issue{
+		Key:              key,
+		Type:             issueTypeName,
+		TypeImageURL:     issueTypeImageURL,
+		Summary:          summary,
+		Status:           status,
+		Assignee:         assigneeName,
+		AssigneeImageURL: assigneeImageURL,
+		Estimate:         estimate,
+		Priority:         priorityName,
+		PriorityImageURL: priorityImageURL,
+		Labels:           labels,
+		Flagged:          flagged,
+	}
 }
