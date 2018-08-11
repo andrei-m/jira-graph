@@ -179,7 +179,7 @@ class GraphApp extends React.Component {
 class Menu extends React.Component {
     render() {
         return (
-            <span>
+            <span className="menu-container">
       <label htmlFor="menu-toggle">&#9776;</label>
 		<input type="checkbox" id="menu-toggle" />
 		<div className="menu">
@@ -381,5 +381,23 @@ class Graph extends React.Component {
     }
 }
 
-ReactDOM.render(<GraphApp />, document.getElementById('root'));
-ReactDOM.render(<Menu />, document.getElementById('menu-container'));
+class App extends React.Component {
+	render() {
+		const issueURL = "https://" + this.props.jiraHost + "/browse/" + this.props.issueKey;
+		const issueLabel = this.props.issueKey + " - " + this.props.issueSummary;
+		return (
+			<div>
+				<h1>
+					<Menu />
+					<a href={issueURL} target="_blank">{issueLabel}</a>
+				</h1>
+				<GraphApp />
+			</div>
+		)
+	}
+}
+
+var root = document.getElementById('root');
+ReactDOM.render(<App issueKey={root.dataset.issueKey}
+		issueSummary={root.dataset.issueSummary}
+		jiraHost={root.dataset.jiraHost} />, root);

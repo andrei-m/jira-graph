@@ -116,7 +116,7 @@ div.empty {
   display: none;
 }
 
-#menu-container label {
+.menu-container label {
   margin-right: 3px;
   font-size: 20px;
   cursor: pointer;
