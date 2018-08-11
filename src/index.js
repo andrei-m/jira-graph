@@ -152,10 +152,9 @@ class GraphApp extends React.Component {
     }
 
     componentDidMount() {
-        var pathparts = window.location.pathname.split('/');
-        var epicKey = pathparts[pathparts.length - 1];
-
+        const epicKey = this.props.epicKey;
         console.log('loading ' + epicKey);
+
         fetch("/api/epics/" + epicKey)
             .then(res => res.json())
             .then(
@@ -185,7 +184,7 @@ class Menu extends React.Component {
 		<div className="menu">
 			Related epics
 			<hr />
-            <RelatedEpics />
+            <RelatedEpics epicKey={this.props.epicKey} />
 		</div>
       </span>
         )
@@ -233,9 +232,7 @@ class RelatedEpics extends React.Component {
     }
 
     componentDidMount() {
-        //TODO: DRY - pass in from above
-        var pathparts = window.location.pathname.split('/');
-        var epicKey = pathparts[pathparts.length - 1];
+        const epicKey = this.props.epicKey
 
         console.log('loading related epics for ' + epicKey);
         fetch("/api/epics/" + epicKey + "/related")
@@ -382,22 +379,22 @@ class Graph extends React.Component {
 }
 
 class App extends React.Component {
-	render() {
-		const issueURL = "https://" + this.props.jiraHost + "/browse/" + this.props.issueKey;
-		const issueLabel = this.props.issueKey + " - " + this.props.issueSummary;
-		return (
-			<div>
+    render() {
+        const issueURL = "https://" + this.props.jiraHost + "/browse/" + this.props.epicKey;
+        const issueLabel = this.props.epicKey + " - " + this.props.issueSummary;
+        return (
+            <div>
 				<h1>
-					<Menu />
+					<Menu epicKey={this.props.epicKey} />
 					<a href={issueURL} target="_blank">{issueLabel}</a>
 				</h1>
-				<GraphApp />
+				<GraphApp epicKey={this.props.epicKey} />
 			</div>
-		)
-	}
+        )
+    }
 }
 
 var root = document.getElementById('root');
-ReactDOM.render(<App issueKey={root.dataset.issueKey}
+ReactDOM.render(<App epicKey={root.dataset.issueKey}
 		issueSummary={root.dataset.issueSummary}
 		jiraHost={root.dataset.jiraHost} />, root);

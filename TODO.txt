@@ -8,6 +8,5 @@
 * quick package script that bundles the binary with 'static' and 'templates'
 
 clean up items:
-* set the epic key & summary in the page as a 'data' element, use that instead of the parsed URL
 * JSX-aware JS formatting; maybe add a linter?
 * JQL parameter sanitization
