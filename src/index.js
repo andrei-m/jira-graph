@@ -137,17 +137,12 @@ class GraphApp extends React.Component {
     }
 
     render() {
-        const {
-            error,
-            isLoaded,
-            epic
-        } = this.state;
-        if (error) {
+        if (this.state.error) {
             return <div>Error: failed to fetch the epic</div>
-        } else if (!isLoaded) {
+        } else if (!this.state.isLoaded) {
             return <div>Loading...</div>
         } else {
-            return <Graph epic={epic} />
+            return <Graph epic={this.state.epic} />
         }
     }
 
@@ -156,22 +151,24 @@ class GraphApp extends React.Component {
         console.log('loading ' + epicKey);
 
         fetch("/api/epics/" + epicKey)
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    this.setState({
-                        isLoaded: true,
-                        epic: result,
-                    });
-                    console.log('loaded ' + epicKey);
-                },
-                (error) => {
-                    this.setState({
-                        isLoaded: false,
-                        error: true,
-                    });
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('not ok');
                 }
-            )
+                return res.json();
+            }).then(result => {
+                this.setState({
+                    isLoaded: true,
+                    epic: result,
+                });
+                console.log('loaded ' + epicKey);
+            }).catch(() => {
+                console.log('failed to load ' + epicKey);
+                this.setState({
+                    isLoaded: false,
+                    error: true,
+                });
+            });
     }
 }
 
@@ -197,21 +194,17 @@ class RelatedEpics extends React.Component {
         this.state = {
             error: null,
             isLoaded: false,
-            epics: {},
+            epics: [],
         };
     }
 
     render() {
-        const {
-            error,
-            isLoaded,
-            epics
-        } = this.state;
-        if (error) {
+        if (this.state.error) {
             return <div>Error: failed to fetch related epics</div>;
-        } else if (!isLoaded) {
+        } else if (!this.state.isLoaded) {
             return <div>Loading...</div>;
         } else {
+            const epics = this.state.epics;
             if (epics.length == 0) {
                 return <div>none!</div>;
             }
@@ -236,22 +229,27 @@ class RelatedEpics extends React.Component {
 
         console.log('loading related epics for ' + epicKey);
         fetch("/api/epics/" + epicKey + "/related")
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    this.setState({
-                        isLoaded: true,
-                        epics: result,
-                    });
-                    console.log('loaded related epics for ' + epicKey);
-                },
-                (error) => {
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('not ok');
+                }
+                return res.json();
+            })
+            .then(result => {
+                this.setState({
+                    isLoaded: true,
+                    epics: result,
+                });
+                console.log('loaded related epics for ' + epicKey);
+            }).catch(
+                () => {
+                    console.log('failed to load related epics for ' + epicKey);
                     this.setState({
                         isLoaded: false,
                         error: true,
+                        epics: [],
                     });
-                }
-            )
+                });
     }
 }
 
