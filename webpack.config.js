@@ -8,4 +8,10 @@ module.exports = {
       }
     ]
   },
+  entry: {
+    graph: './src/graph.js',
+  },
+  output: {
+    filename: '[name].js',
+  },
 };
