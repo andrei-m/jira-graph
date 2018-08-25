@@ -100,7 +100,7 @@ func (gc graphController) redirectToJIRA(c *gin.Context) {
 }
 
 func (gc graphController) index(c *gin.Context) {
-	c.Redirect(http.StatusFound, path.Join("projects", gc.defaultProject, "epics"))
+	c.HTML(http.StatusOK, "index.tmpl", nil)
 }
 
 func (gc graphController) getRelatedEpics(c *gin.Context) {
