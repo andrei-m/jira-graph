@@ -25,7 +25,7 @@ function pushRelatedEpic(epic) {
     }
     for (var i = 0; i < epics.length; i++) {
         if (epics[i].key === epic.key) {
-            return
+            epics.splice(i, 1);
         }
     }
     epics.unshift(epic);
