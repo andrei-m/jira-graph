@@ -5,6 +5,37 @@ import ReactDOM from 'react-dom';
 
 cytoscape.use(dagre);
 
+//TODO: DRY 'recent-epics' related access between graph.js & index.js
+function pushRelatedEpic(epic) {
+    if (typeof(Storage) === "undefined") {
+        return
+    }
+    var epics = [];
+
+    const rawRecentEpics = localStorage.getItem('recent-epics');
+    if (rawRecentEpics) {
+        try {
+            var parsed = JSON.parse(rawRecentEpics);
+            if (parsed && parsed.constructor === Array) {
+                epics = parsed;
+            }
+        } catch (err) {
+            console.log('failed to parse recent-epics from local storage: ' + err);
+        }
+    }
+    for (var i = 0; i < epics.length; i++) {
+        if (epics[i].key === epic.key) {
+            return
+        }
+    }
+    epics.unshift(epic);
+    if (epics.length > 10) {
+        epics.pop();
+    }
+    console.log(epics);
+    localStorage.setItem('recent-epics', JSON.stringify(epics));
+}
+
 function statusToRGB(s) {
     if (s == 'Backlog' || s == 'Ready for Dev') {
         return '#ffffff';
@@ -396,3 +427,9 @@ var root = document.getElementById('root');
 ReactDOM.render(<App epicKey={root.dataset.issueKey}
 		issueSummary={root.dataset.issueSummary}
 		jiraHost={root.dataset.jiraHost} />, root);
+
+var epic = {
+    key: root.dataset.issueKey,
+    summary: root.dataset.issueSummary
+};
+pushRelatedEpic(epic);

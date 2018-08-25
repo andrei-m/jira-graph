@@ -10,6 +10,7 @@ module.exports = {
   },
   entry: {
     graph: './src/graph.js',
+    index: './src/index.js',
   },
   output: {
     filename: '[name].js',
