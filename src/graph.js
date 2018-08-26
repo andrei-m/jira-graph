@@ -32,7 +32,6 @@ function pushRelatedEpic(epic) {
     if (epics.length > 10) {
         epics.pop();
     }
-    console.log(epics);
     localStorage.setItem('recent-epics', JSON.stringify(epics));
 }
 
@@ -388,7 +387,6 @@ class Graph extends React.Component {
         cy.on('tap', 'node', (evt) => {
             const epic = evt.target.data();
             const position = evt.renderedPosition;
-            console.log(position);
             this.setState({
                 selectedEpic: {
                     epic: epic,
