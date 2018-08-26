@@ -7,6 +7,16 @@ h1 {
   font-size: 1em;
 }
 
+a.home {
+  font-size: 2em;
+  text-decoration: none;
+  margin-right: 3px;
+}
+
+a.home:visited {
+  color: black;
+}
+
 .cy {
   width: 100%;
   height: 100%;

@@ -414,6 +414,7 @@ class App extends React.Component {
         return (
             <div>
 				<h1>
+                    <a className="home" href="/">&#8962;</a>
 					<Menu epicKey={this.props.epicKey} />
 					<a href={issueURL} target="_blank">{issueLabel}</a>
 				</h1>
