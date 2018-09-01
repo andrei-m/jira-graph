@@ -181,11 +181,11 @@ func parseSprint(rawSprint string) (sprint, error) {
 	if err != nil {
 		return sprint{}, fmt.Errorf("malformed id %s in: %s", keyVals["id"], rawSprint)
 	}
-	startDate, err := time.Parse(time.RFC3339, keyVals["startDate"])
+	startDate, err := parseDate(keyVals["startDate"])
 	if err != nil {
 		return sprint{}, fmt.Errorf("malformed startDate %s in: %s", keyVals["startDate"], rawSprint)
 	}
-	endDate, err := time.Parse(time.RFC3339, keyVals["endDate"])
+	endDate, err := parseDate(keyVals["endDate"])
 	if err != nil {
 		return sprint{}, fmt.Errorf("malformed endDate %s in: %s", keyVals["endDate"], rawSprint)
 	}
@@ -202,4 +202,15 @@ func parseSprint(rawSprint string) (sprint, error) {
 		EndDate:   endDate,
 		Sequence:  sequence,
 	}, nil
+}
+
+func parseDate(raw string) (time.Time, error) {
+	if raw == "<null>" {
+		return time.Time{}, nil
+	}
+	date, err := time.Parse(time.RFC3339, raw)
+	if err != nil {
+		return time.Time{}, fmt.Errorf("malformed date %s", raw)
+	}
+	return date, nil
 }
