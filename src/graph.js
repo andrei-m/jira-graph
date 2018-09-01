@@ -366,7 +366,17 @@ class Graph extends React.Component {
                         'background-color': function(ele) {
                             return statusToRGB(ele.data('status'))
                         },
-                        'border-width': 1,
+                        'border-width': function(ele) {
+                            const sprints = ele.data('sprints');
+                            if (sprints) {
+                                for (var i = 0; i < sprints.length; i++) {
+                                    if (sprints[i].state == 'ACTIVE' || sprints[i].state == 'CLOSED') {
+                                        return 3;
+                                    }
+                                }
+                            }
+                            return 1;
+                        },
                         'border-color': '#000000'
                     }
                 },
