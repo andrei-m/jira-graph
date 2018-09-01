@@ -1,6 +1,8 @@
 * Filter or highlighting for critical path and unblocked work
 * overall/in-progress/remaining breakdown by epic
 * milestone view overlaying several epics
+* color accents that match the epic's chosen color
+* clicking outside of the 'related epics' menu should close it
 
 * look into D3 force directed graphs for organizing
 * look into gephi
