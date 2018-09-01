@@ -79,12 +79,25 @@ class Popup extends React.Component {
               <PopupEstimate estimate={epic.estimate} />
               <PopupKey epicKey={epic.key} />
               <PopupAssignee assignee={epic.assignee} assigneeImageURL={epic.assigneeImageURL} />
-              <div className="popup-status-text">{epic.status}</div>
+              <div className="popup-status-text">
+                  {epic.status}
+                  <PopupSprint sprints={epic.sprints} />
+              </div>
               <PopupLabels labels={epic.labels} />
             </div>
             <PopupStatus status={epic.status} />
           </div>
         )
+    }
+}
+
+class PopupSprint extends React.Component {
+    render() {
+        const sprints = this.props.sprints;
+        if (sprints.length == 0) {
+            return null;
+        }
+        return <span> {sprints[sprints.length-1].name}</span>;
     }
 }
 
