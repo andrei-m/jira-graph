@@ -1,10 +1,15 @@
 package graph
 
 import (
+	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
+	"sort"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/tidwall/gjson"
 )
@@ -22,6 +27,7 @@ type issue struct {
 	PriorityImageURL string   `json:"priorityImageURL"`
 	Labels           []string `json:"labels"`
 	Flagged          bool     `json:"flagged"`
+	Sprints          []sprint `json:"sprints"`
 	blockedByKeys    []string
 }
 
@@ -31,6 +37,7 @@ type jiraClient struct {
 	pass          string
 	estimateField string
 	flaggedField  string
+	sprintsField  string
 }
 
 func (j jiraClient) Get(path string, q url.Values) (*http.Response, error) {
@@ -76,6 +83,7 @@ func (j jiraClient) getRequestFields() []string {
 		"summary",
 		j.estimateField,
 		j.flaggedField,
+		j.sprintsField,
 	}
 }
 
@@ -109,6 +117,9 @@ func (j jiraClient) unmarshallIssue(r gjson.Result) issue {
 		labels[i] = rawLabels[i].String()
 	}
 
+	sprintsResults := fields.Get(j.sprintsField).Array()
+	sprints := parseSprints(sprintsResults)
+
 	return issue{
 		Key:              key,
 		Type:             issueTypeName,
@@ -122,5 +133,73 @@ func (j jiraClient) unmarshallIssue(r gjson.Result) issue {
 		PriorityImageURL: priorityImageURL,
 		Labels:           labels,
 		Flagged:          flagged,
+		Sprints:          sprints,
 	}
+}
+
+func parseSprints(sprintsResults []gjson.Result) []sprint {
+	sprints := make([]sprint, len(sprintsResults))
+	for i := range sprintsResults {
+		sprint, err := parseSprint(sprintsResults[i].String())
+		if err != nil {
+			log.Printf("bad sprint: %v", err)
+			continue
+		}
+		sprints[i] = sprint
+	}
+	sort.Slice(sprints, func(i, j int) bool { return sprints[i].Sequence < sprints[j].Sequence })
+	return sprints
+}
+
+type sprint struct {
+	ID        int       `json:"id"`
+	State     string    `json:"state"`
+	Name      string    `json:"name"`
+	StartDate time.Time `json:"startDate"`
+	EndDate   time.Time `json:"endDate"`
+	Sequence  int       `json:"sequence"`
+}
+
+func parseSprint(rawSprint string) (sprint, error) {
+	bracketIdx := strings.Index(rawSprint, "[")
+	if bracketIdx == -1 {
+		return sprint{}, fmt.Errorf("couldn't find opening '[' in: %s", rawSprint)
+	}
+	trimmed := rawSprint[bracketIdx+1 : len(rawSprint)-1]
+
+	rawKeyVals := strings.Split(trimmed, ",")
+	keyVals := map[string]string{}
+	for _, raw := range rawKeyVals {
+		keyAndVal := strings.Split(raw, "=")
+		if len(keyAndVal) != 2 {
+			return sprint{}, fmt.Errorf("malformed key=val entry %s in: %s", keyAndVal, rawSprint)
+		}
+		keyVals[keyAndVal[0]] = keyAndVal[1]
+	}
+
+	id, err := strconv.Atoi(keyVals["id"])
+	if err != nil {
+		return sprint{}, fmt.Errorf("malformed id %s in: %s", keyVals["id"], rawSprint)
+	}
+	startDate, err := time.Parse(time.RFC3339, keyVals["startDate"])
+	if err != nil {
+		return sprint{}, fmt.Errorf("malformed startDate %s in: %s", keyVals["startDate"], rawSprint)
+	}
+	endDate, err := time.Parse(time.RFC3339, keyVals["endDate"])
+	if err != nil {
+		return sprint{}, fmt.Errorf("malformed endDate %s in: %s", keyVals["endDate"], rawSprint)
+	}
+	sequence, err := strconv.Atoi(keyVals["sequence"])
+	if err != nil {
+		return sprint{}, fmt.Errorf("malformed sequence %s in: %s", keyVals["sequence"], rawSprint)
+	}
+
+	return sprint{
+		ID:        id,
+		State:     keyVals["state"],
+		Name:      keyVals["name"],
+		StartDate: startDate,
+		EndDate:   endDate,
+		Sequence:  sequence,
+	}, nil
 }
