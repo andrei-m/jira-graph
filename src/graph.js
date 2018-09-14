@@ -185,7 +185,7 @@ class GraphApp extends React.Component {
         } else if (!this.state.isLoaded) {
             return <div>Loading...</div>
         } else {
-            return <Graph epic={this.state.epic} />
+            return <Graph epic={this.state.epic} toggleMenu={this.props.toggleMenu} />
         }
     }
 
@@ -220,7 +220,7 @@ class Menu extends React.Component {
         return (
             <span className="menu-container">
       <label htmlFor="menu-toggle">&#9776;</label>
-		<input type="checkbox" id="menu-toggle" />
+		<input type="checkbox" id="menu-toggle" checked={this.props.showMenu} onChange={() => this.props.toggleMenu()} />
 		<div className="menu">
 			Related epics
 			<hr />
@@ -404,6 +404,7 @@ class Graph extends React.Component {
                 this.setState({
                     selectedEpic: null,
                 });
+                this.props.toggleMenu(false);
             }
         });
 
@@ -429,6 +430,13 @@ class Graph extends React.Component {
 }
 
 class App extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            showMenu: false,
+        }
+    }
+
     render() {
         const issueURL = "https://" + this.props.jiraHost + "/browse/" + this.props.epicKey;
         const issueLabel = this.props.epicKey + " - " + this.props.issueSummary;
@@ -436,12 +444,24 @@ class App extends React.Component {
             <div>
 				<h1>
                     <a className="home" href="/">&#8962;</a>
-					<Menu epicKey={this.props.epicKey} />
+					<Menu epicKey={this.props.epicKey} toggleMenu={(show) => this.toggleMenu(show)} showMenu={this.state.showMenu} />
 					<a href={issueURL} target="_blank">{issueLabel}</a>
 				</h1>
-				<GraphApp epicKey={this.props.epicKey} />
+				<GraphApp epicKey={this.props.epicKey} toggleMenu={(show) => this.toggleMenu(show)} />
 			</div>
         )
+    }
+
+    toggleMenu(show) {
+        if (show === undefined) {
+            this.setState({
+                showMenu: !this.state.showMenu,
+            });
+            return;
+        }
+        this.setState({
+            showMenu: show,
+        });
     }
 }
 
