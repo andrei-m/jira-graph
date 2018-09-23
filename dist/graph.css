@@ -166,3 +166,14 @@ input#menu-toggle {
 #menu-toggle:checked + .menu {
   display: block;
 }
+
+div.epicStats {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  margin: 8px;
+}
+
+div.initialEstimate {
+  font-style: italic;
+}

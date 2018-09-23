@@ -185,7 +185,12 @@ class GraphApp extends React.Component {
         } else if (!this.state.isLoaded) {
             return <div>Loading...</div>
         } else {
-            return <Graph epic={this.state.epic} toggleMenu={this.props.toggleMenu} />
+            return (
+                <div>
+					<Graph epic={this.state.epic} toggleMenu={this.props.toggleMenu} />
+					<EpicStats initialEstimate={this.props.initialEstimate} />
+				</div>
+            );
         }
     }
 
@@ -447,7 +452,9 @@ class App extends React.Component {
 					<Menu epicKey={this.props.epicKey} toggleMenu={(show) => this.toggleMenu(show)} showMenu={this.state.showMenu} />
 					<a href={issueURL} target="_blank">{issueLabel}</a>
 				</h1>
-				<GraphApp epicKey={this.props.epicKey} toggleMenu={(show) => this.toggleMenu(show)} />
+				<GraphApp epicKey={this.props.epicKey} 
+					initialEstimate={this.props.initialEstimate} 
+					toggleMenu={(show) => this.toggleMenu(show)} />
 			</div>
         )
     }
@@ -465,9 +472,20 @@ class App extends React.Component {
     }
 }
 
+class EpicStats extends React.Component {
+    render() {
+        return (
+            <div className="epicStats">
+				<div className="initialEstimate">Initial Estimate: {this.props.initialEstimate}</div>
+			</div>
+        );
+    }
+}
+
 var root = document.getElementById('root');
 ReactDOM.render(<App epicKey={root.dataset.issueKey}
 		issueSummary={root.dataset.issueSummary}
+		initialEstimate={root.dataset.issueInitialEstimate}
 		jiraHost={root.dataset.jiraHost} />, root);
 
 var epic = {
