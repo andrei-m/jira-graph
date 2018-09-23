@@ -9,10 +9,11 @@ import (
 )
 
 var (
-	jiraHost      = flag.String("jira-host", "", "JIRA hostname")
-	estimateField = flag.String("estimate-field", "customfield_10004", "the name of the custom field for work estimation (story points, etc.)")
-	flaggedField  = flag.String("flagged-field", "customfield_10002", "the name of the custom field for impediment flagging")
-	sprintsField  = flag.String("sprints-field", "customfield_10007", "the name of the custom field for Greenhopper sprints")
+	jiraHost             = flag.String("jira-host", "", "JIRA hostname")
+	initialEstimateField = flag.String("initial-estimate-field", "customfield_11000", "the name of the custom field an epic's initial estimate (story points, etc.)")
+	estimateField        = flag.String("estimate-field", "customfield_10004", "the name of the custom field for work estimation (story points, etc.)")
+	flaggedField         = flag.String("flagged-field", "customfield_10002", "the name of the custom field for impediment flagging")
+	sprintsField         = flag.String("sprints-field", "customfield_10007", "the name of the custom field for Greenhopper sprints")
 )
 
 func main() {
@@ -30,7 +31,7 @@ func main() {
 		log.Fatal("-jira-host flag is required")
 	}
 
-	if err := graph.StartServer(user, pass, *jiraHost, *estimateField, *flaggedField, *sprintsField); err != nil {
+	if err := graph.StartServer(user, pass, *jiraHost, *initialEstimateField, *estimateField, *flaggedField, *sprintsField); err != nil {
 		log.Fatalf("server failed with error: %v", err)
 	}
 }

@@ -22,6 +22,7 @@ type issue struct {
 	Status           string   `json:"status"`
 	Assignee         string   `json:"assignee"`
 	AssigneeImageURL string   `json:"assigneeImageURL"`
+	InitialEstimate  float64  `json:"initialEstimate"`
 	Estimate         float64  `json:"estimate"` // note that this doesn't differentiate between '0' and unset
 	Priority         string   `json:"priority"`
 	PriorityImageURL string   `json:"priorityImageURL"`
@@ -32,12 +33,13 @@ type issue struct {
 }
 
 type jiraClient struct {
-	host          string
-	user          string
-	pass          string
-	estimateField string
-	flaggedField  string
-	sprintsField  string
+	host                 string
+	user                 string
+	pass                 string
+	initialEstimateField string
+	estimateField        string
+	flaggedField         string
+	sprintsField         string
 }
 
 func (j jiraClient) Get(path string, q url.Values) (*http.Response, error) {
@@ -81,6 +83,7 @@ func (j jiraClient) getRequestFields() []string {
 		"priority",
 		"status",
 		"summary",
+		j.initialEstimateField,
 		j.estimateField,
 		j.flaggedField,
 		j.sprintsField,
@@ -105,6 +108,7 @@ func (j jiraClient) unmarshallIssue(r gjson.Result) issue {
 	priorityName := priority.Get("name").String()
 	priorityImageURL := priority.Get("iconUrl").String()
 
+	initialEstimate := fields.Get(j.initialEstimateField).Float()
 	estimate := fields.Get(j.estimateField).Float()
 
 	flaggedObj := fields.Get(j.flaggedField).Array()
@@ -128,6 +132,7 @@ func (j jiraClient) unmarshallIssue(r gjson.Result) issue {
 		Status:           status,
 		Assignee:         assigneeName,
 		AssigneeImageURL: assigneeImageURL,
+		InitialEstimate:  initialEstimate,
 		Estimate:         estimate,
 		Priority:         priorityName,
 		PriorityImageURL: priorityImageURL,
