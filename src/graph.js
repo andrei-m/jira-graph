@@ -199,7 +199,7 @@ class GraphApp extends React.Component {
             return (
                 <div>
 					<Graph epic={this.state.epic} toggleMenu={this.props.toggleMenu} />
-					<EpicStats initialEstimate={this.props.initialEstimate} />
+					<EpicStats initialEstimate={this.props.initialEstimate} epic={this.state.epic} />
 				</div>
             );
         }
@@ -485,11 +485,45 @@ class App extends React.Component {
 
 class EpicStats extends React.Component {
     render() {
+        var byStatus = this.getBreakdownByStatus();
+        var rows = [];
+
+        var statusOrder = ['Backlog', 'In Progress', 'Closed'];
+        for (var i = 0; i < statusOrder.length; i++) {
+            var status = statusOrder[i];
+            if (byStatus[status]) {
+                rows.push(<tr><td>{status}</td><td className="points">{byStatus[status]}</td></tr>);
+            }
+        }
+
+        if (this.props.initialEstimate != 0) {
+            rows.push(<tr class="initialEstimate"><td>Initial Estimate</td><td className="points">{this.props.initialEstimate}</td></tr>);
+        }
+
         return (
             <div className="epicStats">
-				<div className="initialEstimate">Initial Estimate: {this.props.initialEstimate}</div>
+                <table>
+                  <thead>
+                    <tr><th colspan="2">Point Breakdown</th></tr>
+                  </thead>
+                  <tbody>{rows}</tbody>
+                </table>
 			</div>
         );
+    }
+
+    getBreakdownByStatus() {
+        var epic = this.props.epic;
+        var result = {};
+        for (var i = 0; i < epic.issues.length; i++) {
+            var status = categorizeStatus(epic.issues[i].status);
+            if (result[status]) {
+                result[status] += epic.issues[i].estimate;
+                continue;
+            }
+            result[status] = epic.issues[i].estimate;
+        }
+        return result;
     }
 }
 
