@@ -181,3 +181,7 @@ td.points {
 tr.initialEstimate td {
   font-style: italic;
 }
+
+tr.total td {
+  font-weight: bold;
+}
