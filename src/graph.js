@@ -487,8 +487,11 @@ class EpicStats extends React.Component {
     render() {
         var byStatus = this.getBreakdownByStatus();
         var rows = [];
-        var totalPoints = 0;
+        if (this.props.initialEstimate != 0) {
+            rows.push(<tr class="initialEstimate"><td>Initial Estimate</td><td className="points">{this.props.initialEstimate}</td></tr>);
+        }
 
+        var totalPoints = 0;
         var statusOrder = ['Backlog', 'In Progress', 'Closed'];
         for (var i = 0; i < statusOrder.length; i++) {
             var status = statusOrder[i];
@@ -500,9 +503,6 @@ class EpicStats extends React.Component {
 
         if (totalPoints > 0) {
             rows.push(<tr class="total"><td>Total</td><td className="points">{totalPoints}</td></tr>);
-        }
-        if (this.props.initialEstimate != 0) {
-            rows.push(<tr class="initialEstimate"><td>Initial Estimate</td><td className="points">{this.props.initialEstimate}</td></tr>);
         }
 
         return (
