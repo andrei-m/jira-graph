@@ -35,14 +35,25 @@ function pushRelatedEpic(epic) {
     localStorage.setItem('recent-epics', JSON.stringify(epics));
 }
 
-function statusToRGB(s) {
+function categorizeStatus(s) {
     if (s == 'Backlog' || s == 'Ready for Dev') {
-        return '#ffffff';
+        return 'Backlog';
     }
     if (s == 'In Progress' || s == 'In QA on feature branch' || s == 'In Code Review' || s == 'Resolved, on staging') {
+        return 'In Progress';
+    }
+    return s;
+}
+
+function statusToRGB(s) {
+    const categorized = categorizeStatus(s);
+    if (categorized == 'Backlog') {
+        return '#ffffff';
+    }
+    if (categorized == 'In Progress') {
         return '#35e82c';
     }
-    if (s == 'Closed') {
+    if (categorized == 'Closed') {
         return '#959595';
     }
     return '#000000';
