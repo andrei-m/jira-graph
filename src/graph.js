@@ -502,7 +502,10 @@ class EpicStats extends React.Component {
         }
 
         if (totalPoints > 0) {
-            rows.push(<tr class="total"><td>Total</td><td className="points">{totalPoints}</td></tr>);
+            rows.push(<tr className="total"><td>Total</td><td className="points">{totalPoints}</td></tr>);
+            const closedPoints = byStatus['Closed'];
+            const closedPercent = Math.round(closedPoints / totalPoints * 100);
+            rows.push(<tr className="total"><td colspan="2">{closedPoints}/{totalPoints} Closed ({closedPercent}%)</td></tr>)
         }
 
         return (
