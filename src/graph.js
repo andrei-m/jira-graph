@@ -39,7 +39,7 @@ function categorizeStatus(s) {
     if (s == 'Backlog' || s == 'Ready for Dev') {
         return 'Backlog';
     }
-    if (s == 'In Progress' || s == 'In QA on feature branch' || s == 'In Code Review' || s == 'Resolved, on staging') {
+    if (s == 'In Progress' || s == 'In QA on feature branch' || s == 'In Code Review') {
         return 'In Progress';
     }
     return s;
@@ -52,6 +52,9 @@ function statusToRGB(s) {
     }
     if (categorized == 'In Progress') {
         return '#35e82c';
+    }
+    if (categorized == 'Resolved, on staging') {
+        return '#2C35E8';
     }
     if (categorized == 'Closed') {
         return '#959595';
