@@ -407,7 +407,7 @@ class Graph extends React.Component {
                             return 1;
                         },
                         'border-color': function(ele) {
-                            return ele.data('flagged') ? '#ffe380' : '#000000'
+                            return ele.data('flagged') ? '#e82c35' : '#000000'
                         }
                     }
                 },
