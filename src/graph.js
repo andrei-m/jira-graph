@@ -35,25 +35,38 @@ function pushRelatedEpic(epic) {
     localStorage.setItem('recent-epics', JSON.stringify(epics));
 }
 
+const statuses = {
+    Backlog: 'Backlog',
+    ReadyForDev: 'Ready for Dev',
+    InProgress: 'In Progress',
+    OnFeatureBranch: 'In QA on feature branch',
+    InCodeReview: 'In Code Review',
+    ResolvedOnStaging: 'Resolved, on staging',
+    Closed: 'Closed'
+}
+
 function categorizeStatus(s) {
-    if (s == 'Backlog' || s == 'Ready for Dev') {
-        return 'Backlog';
+    if (s == statuses.Backlog || s == statuses.ReadyForDev) {
+        return statuses.Backlog;
     }
-    if (s == 'In Progress' || s == 'In QA on feature branch' || s == 'In Code Review' || s == 'Resolved, on staging') {
-        return 'In Progress';
+    if (s == statuses.InProgress || s == statuses.OnFeatureBranch || s == statuses.InCodeReview) {
+        return statuses.InProgress;
     }
     return s;
 }
 
 function statusToRGB(s) {
     const categorized = categorizeStatus(s);
-    if (categorized == 'Backlog') {
+    if (categorized == statuses.Backlog) {
         return '#ffffff';
     }
-    if (categorized == 'In Progress') {
+    if (categorized == statuses.InProgress) {
         return '#35e82c';
     }
-    if (categorized == 'Closed') {
+    if (categorized == statuses.ResolvedOnStaging) {
+        return '#2C35E8';
+    }
+    if (categorized == statuses.Closed) {
         return '#959595';
     }
     return '#000000';
@@ -393,7 +406,9 @@ class Graph extends React.Component {
                             }
                             return 1;
                         },
-                        'border-color': '#000000'
+                        'border-color': function(ele) {
+                            return ele.data('flagged') ? '#e82c35' : '#000000'
+                        }
                     }
                 },
 
@@ -492,7 +507,7 @@ class EpicStats extends React.Component {
         }
 
         var totalPoints = 0;
-        var statusOrder = ['Backlog', 'In Progress', 'Closed'];
+        var statusOrder = [statuses.Backlog, statuses.InProgress, statuses.Closed];
         for (var i = 0; i < statusOrder.length; i++) {
             var status = statusOrder[i];
             if (byStatus[status]) {
@@ -525,6 +540,9 @@ class EpicStats extends React.Component {
         var result = {};
         for (var i = 0; i < epic.issues.length; i++) {
             var status = categorizeStatus(epic.issues[i].status);
+            if (status == statuses.ResolvedOnStaging) {
+                status = statuses.InProgress;
+            }
             if (result[status]) {
                 result[status] += epic.issues[i].estimate;
                 continue;
