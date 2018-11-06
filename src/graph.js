@@ -541,7 +541,7 @@ class EpicStats extends React.Component {
         for (var i = 0; i < epic.issues.length; i++) {
             var status = categorizeStatus(epic.issues[i].status);
             if (status == statuses.ResolvedOnStaging) {
-                status = statuses.InProgress
+                status = statuses.InProgress;
             }
             if (result[status]) {
                 result[status] += epic.issues[i].estimate;
