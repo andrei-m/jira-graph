@@ -248,7 +248,7 @@ class Menu extends React.Component {
     render() {
         return (
             <span className="menu-container">
-      <label htmlFor="menu-toggle">&#9776;</label>
+      <label htmlFor="menu-toggle" className={`menu-toggle-label ${this.props.epicColor}`} >&#9776;</label>
 		<input type="checkbox" id="menu-toggle" checked={this.props.showMenu} onChange={() => this.props.toggleMenu()} />
 		<div className="menu">
 			Related epics
@@ -475,7 +475,9 @@ class App extends React.Component {
             <div>
 				<h1>
                     <a className="home" href="/">&#8962;</a>
-					<Menu epicKey={this.props.epicKey} toggleMenu={(show) => this.toggleMenu(show)} showMenu={this.state.showMenu} />
+					<Menu epicKey={this.props.epicKey}
+						epicColor={this.props.epicColor}
+						toggleMenu={(show) => this.toggleMenu(show)} showMenu={this.state.showMenu} />
 					<a href={issueURL} target="_blank">{issueLabel}</a>
 				</h1>
 				<GraphApp epicKey={this.props.epicKey} 
@@ -555,6 +557,7 @@ class EpicStats extends React.Component {
 
 var root = document.getElementById('root');
 ReactDOM.render(<App epicKey={root.dataset.issueKey}
+		epicColor={root.dataset.issueColor}
 		issueSummary={root.dataset.issueSummary}
 		initialEstimate={root.dataset.issueInitialEstimate}
 		jiraHost={root.dataset.jiraHost} />, root);

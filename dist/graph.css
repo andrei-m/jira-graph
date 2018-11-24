@@ -136,6 +136,68 @@ input#menu-toggle {
   display: none;
 }
 
+label.menu-toggle-label {
+  padding: 2px 3px 2px 3px;
+  border-radius: 3px;
+}
+
+label.menu-toggle-label.color_1 {
+  color: white;
+  background-color: #42526E;
+}
+
+label.menu-toggle-label.color_2 {
+  background-color: #FFC400;
+}
+
+label.menu-toggle-label.color_3 {
+  background-color: #FFF0B3;
+}
+
+label.menu-toggle-label.color_4 {
+  background-color: #4C9AFF;
+}
+
+label.menu-toggle-label.color_5 {
+  background-color: #00C7E6;
+}
+
+label.menu-toggle-label.color_6 {
+  background-color: #ABF5D1;
+}
+
+label.menu-toggle-label.color_7 {
+  background-color: #8777D9;
+}
+
+label.menu-toggle-label.color_8 {
+  background-color: #998DD9;
+}
+
+label.menu-toggle-label.color_9 {
+  background-color: #FF7452;
+}
+
+label.menu-toggle-label.color_10 {
+  background-color: #4C9AFF;
+}
+
+label.menu-toggle-label.color_11 {
+  background-color: #79E2F2;
+}
+
+label.menu-toggle-label.color_12 {
+  background-color: #7A869A;
+}
+
+label.menu-toggle-label.color_13 {
+  background-color: #57D9A3;
+}
+
+label.menu-toggle-label.color_14 {
+  background-color: #FF8F73;
+}
+
 .menu {
   display: none;
   position: fixed;
