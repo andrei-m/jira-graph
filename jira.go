@@ -29,6 +29,7 @@ type issue struct {
 	Labels           []string `json:"labels"`
 	Flagged          bool     `json:"flagged"`
 	Sprints          []sprint `json:"sprints"`
+	Color            string   `json:"color"`
 	blockedByKeys    []string
 }
 

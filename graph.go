@@ -3,6 +3,7 @@ package graph
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 
@@ -49,7 +50,17 @@ func getSingleIssue(jc jiraClient, key string) (issue, error) {
 		return issue{}, err
 	}
 	parsed := gjson.ParseBytes(resultBytes)
-	return jc.unmarshallIssue(parsed), nil
+	issue := jc.unmarshallIssue(parsed)
+
+	if issue.Type == "Epic" {
+		colorCode, err := getEpicColorCode(jc, key)
+		if err != nil {
+			log.Printf("failed to get epic color code: %v", err)
+		}
+		issue.Color = colorCode
+	}
+
+	return issue, nil
 }
 
 func getEpicColorCode(jc jiraClient, key string) (string, error) {
