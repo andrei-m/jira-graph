@@ -52,6 +52,23 @@ func getSingleIssue(jc jiraClient, key string) (issue, error) {
 	return jc.unmarshallIssue(parsed), nil
 }
 
+func getEpicColorCode(jc jiraClient, key string) (string, error) {
+	resp, err := jc.Get(fmt.Sprintf("/rest/agile/1.0/epic/%s", key), url.Values{})
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	resultBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	parsed := gjson.ParseBytes(resultBytes)
+
+	color := parsed.Get("color.key").String()
+	return color, nil
+}
+
 func getIssues(jc jiraClient, epicKey string) ([]issue, error) {
 	jql := fmt.Sprintf(`"Epic Link" = %s`, epicKey)
 
