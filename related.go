@@ -32,12 +32,13 @@ func getRelatedEpics(jc jiraClient, epicKey string) ([]issue, error) {
 	}
 	log.Println("related milestones:", milestoneKeys)
 
-	milestoneClauses := make([]string, len(milestoneKeys))
-	for i := range milestoneKeys {
-		milestoneClauses[i] = fmt.Sprintf("issue IN linkedIssues(%s)", milestoneKeys[i])
+	relatedKeys := append(milestoneKeys, epicKey)
+	linkedIssueClauses := make([]string, len(relatedKeys))
+	for i := range relatedKeys {
+		linkedIssueClauses[i] = fmt.Sprintf("issue IN linkedIssues(%s)", relatedKeys[i])
 	}
 
-	epicJQL := fmt.Sprintf("(%s) AND type=Epic AND key != %s ORDER BY key", strings.Join(milestoneClauses, " OR "), epicKey)
+	epicJQL := fmt.Sprintf("(%s) AND type=Epic AND key != %s ORDER BY key", strings.Join(linkedIssueClauses, " OR "), epicKey)
 	fields = jc.getRequestFields()
 	result := []issue{}
 	for {
