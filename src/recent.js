@@ -1,3 +1,5 @@
+const localStorageKey = 'recent-epics';
+
 const hasLocalStorage = () => {
     return typeof(Storage) !== "undefined"
 };
@@ -6,7 +8,7 @@ const getRecentEpics = () => {
     if (!hasLocalStorage) {
         return
     }
-    const rawRecentEpics = localStorage.getItem('recent-epics');
+    const rawRecentEpics = localStorage.getItem(localStorageKey);
     if (rawRecentEpics) {
         var parsed = [];
         try {
@@ -18,7 +20,7 @@ const getRecentEpics = () => {
             return parsed;
         }
     } else {
-        console.log('no recent-epics in local storage');
+        console.log(`no ${localStorageKey} in local storage`);
     }
     return [];
 };
@@ -37,7 +39,7 @@ const pushRecentEpic = (epic) => {
     if (epics.length > 10) {
         epics.pop();
     }
-    localStorage.setItem('recent-epics', JSON.stringify(epics));
+    localStorage.setItem(localStorageKey, JSON.stringify(epics));
 };
 
 export {
