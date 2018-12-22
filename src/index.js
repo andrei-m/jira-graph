@@ -1,5 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {
+    getRecentEpics
+} from './recent';
 
 class EpicList extends React.Component {
     constructor(props) {
@@ -27,26 +30,11 @@ class EpicList extends React.Component {
     }
 
     componentDidMount() {
-        if (typeof(Storage) === "undefined") {
-            return
-        }
-
-        const rawRecentEpics = localStorage.getItem('recent-epics');
-        if (rawRecentEpics) {
-            var parsed = [];
-            try {
-                parsed = JSON.parse(rawRecentEpics);
-            } catch (err) {
-                console.log('failed to parse recent-epics from local storage: ' + err);
-                return
-            }
-            if (parsed && parsed.constructor === Array) {
-                this.setState({
-                    epics: parsed
-                });
-            }
-        } else {
-            console.log('no recent-epics in local storage');
+        const recentEpics = getRecentEpics();
+        if (recentEpics) {
+            this.setState({
+                epics: recentEpics
+            });
         }
     }
 }
