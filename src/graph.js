@@ -2,38 +2,11 @@ import cytoscape from 'cytoscape';
 import dagre from 'cytoscape-dagre';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {
+    pushRecentEpic
+} from './recent';
 
 cytoscape.use(dagre);
-
-//TODO: DRY 'recent-epics' related access between graph.js & index.js
-function pushRelatedEpic(epic) {
-    if (typeof(Storage) === "undefined") {
-        return
-    }
-    var epics = [];
-
-    const rawRecentEpics = localStorage.getItem('recent-epics');
-    if (rawRecentEpics) {
-        try {
-            var parsed = JSON.parse(rawRecentEpics);
-            if (parsed && parsed.constructor === Array) {
-                epics = parsed;
-            }
-        } catch (err) {
-            console.log('failed to parse recent-epics from local storage: ' + err);
-        }
-    }
-    for (var i = 0; i < epics.length; i++) {
-        if (epics[i].key === epic.key) {
-            epics.splice(i, 1);
-        }
-    }
-    epics.unshift(epic);
-    if (epics.length > 10) {
-        epics.pop();
-    }
-    localStorage.setItem('recent-epics', JSON.stringify(epics));
-}
 
 const statuses = {
     Backlog: 'Backlog',
@@ -566,4 +539,4 @@ var epic = {
     key: root.dataset.issueKey,
     summary: root.dataset.issueSummary
 };
-pushRelatedEpic(epic);
+pushRecentEpic(epic);

@@ -1,5 +1,9 @@
+const hasLocalStorage = () => {
+    return typeof(Storage) !== "undefined"
+};
+
 const getRecentEpics = () => {
-    if (typeof(Storage) === "undefined") {
+    if (!hasLocalStorage) {
         return
     }
     const rawRecentEpics = localStorage.getItem('recent-epics');
@@ -19,6 +23,24 @@ const getRecentEpics = () => {
     return [];
 };
 
+const pushRecentEpic = (epic) => {
+    if (!hasLocalStorage) {
+        return
+    }
+    var epics = getRecentEpics();
+    for (var i = 0; i < epics.length; i++) {
+        if (epics[i].key === epic.key) {
+            epics.splice(i, 1);
+        }
+    }
+    epics.unshift(epic);
+    if (epics.length > 10) {
+        epics.pop();
+    }
+    localStorage.setItem('recent-epics', JSON.stringify(epics));
+};
+
 export {
-    getRecentEpics
+    getRecentEpics,
+    pushRecentEpic
 };
