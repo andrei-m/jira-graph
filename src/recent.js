@@ -1,4 +1,5 @@
 const localStorageKey = 'recent-epics';
+const maxEpicCount = 10;
 
 const hasLocalStorage = () => {
     return typeof(Storage) !== "undefined"
@@ -36,7 +37,7 @@ const pushRecentEpic = (epic) => {
         }
     }
     epics.unshift(epic);
-    if (epics.length > 10) {
+    if (epics.length > maxEpicCount) {
         epics.pop();
     }
     localStorage.setItem(localStorageKey, JSON.stringify(epics));
