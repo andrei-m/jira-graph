@@ -253,7 +253,26 @@ class RelatedEpics extends React.Component {
         if (epics.length == 0) {
             return <div>none!</div>;
         }
-        return <RelatedEpicsSection epics={epics} />;
+
+        var statusToEpics = {};
+
+        for (var i = 0; i < epics.length; i++) {
+            const epicStatus = epics[i].status;
+            if (statusToEpics[epicStatus] === undefined) {
+                statusToEpics[epicStatus] = [epics[i]];
+                continue
+            }
+            statusToEpics[epicStatus].push(epics[i]);
+        }
+
+        if (Object.keys(statusToEpics).length == 1) {
+            return <RelatedEpicsSection epics={epics} />;
+        }
+        var sections = [];
+        Object.keys(statusToEpics).forEach(function(key) {
+            sections.push(<RelatedEpicsSection epics={statusToEpics[key]} header={key} />);
+        })
+        return <div>{sections}</div>;
     }
 
     componentDidMount() {
@@ -288,17 +307,22 @@ class RelatedEpics extends React.Component {
 class RelatedEpicsSection extends React.Component {
     render() {
         var epics = this.props.epics;
-        var anchors = [];
+
+        var elements = [];
+        if (this.props.header != undefined) {
+            elements.push(<span className="subHeader">{this.props.header}</span>);
+        }
+
         for (var i = 0; i < epics.length; i++) {
             const url = '/epics/' + epics[i].key;
-            anchors.push(
+            elements.push(
                 <a href={url}>
 				<img src={epics[i].typeImageURL} />
 				{epics[i].key} - {epics[i].summary}
 			  </a>
             );
         }
-        return <div>{anchors}</div>;
+        return <div className="relatedEpicsSection">{elements}</div>;
     }
 }
 

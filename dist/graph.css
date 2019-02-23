@@ -247,3 +247,11 @@ tr.initialEstimate td {
 tr.total td {
   font-weight: bold;
 }
+
+span.subHeader {
+  font-size: 12px;
+}
+
+div.relatedEpicsSection {
+  margin-top: 6px;
+}
