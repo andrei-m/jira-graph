@@ -248,25 +248,12 @@ class RelatedEpics extends React.Component {
             return <div>Error: failed to fetch related epics</div>;
         } else if (!this.state.isLoaded) {
             return <div>Loading...</div>;
-        } else {
-            const epics = this.state.epics;
-            if (epics.length == 0) {
-                return <div>none!</div>;
-            }
-
-            var anchors = [];
-            for (var i = 0; i < epics.length; i++) {
-                const url = '/epics/' + epics[i].key;
-                anchors.push(
-                    <a href={url}>
-                    <img src={epics[i].typeImageURL} />
-                    {epics[i].key} - {epics[i].summary}
-                  </a>
-                );
-            }
-
-            return <div>{anchors}</div>;
         }
+        const epics = this.state.epics;
+        if (epics.length == 0) {
+            return <div>none!</div>;
+        }
+        return <RelatedEpicsSection epics={epics} />;
     }
 
     componentDidMount() {
@@ -295,6 +282,23 @@ class RelatedEpics extends React.Component {
                         epics: [],
                     });
                 });
+    }
+}
+
+class RelatedEpicsSection extends React.Component {
+    render() {
+        var epics = this.props.epics;
+        var anchors = [];
+        for (var i = 0; i < epics.length; i++) {
+            const url = '/epics/' + epics[i].key;
+            anchors.push(
+                <a href={url}>
+				<img src={epics[i].typeImageURL} />
+				{epics[i].key} - {epics[i].summary}
+			  </a>
+            );
+        }
+        return <div>{anchors}</div>;
     }
 }
 
