@@ -233,6 +233,13 @@ class Menu extends React.Component {
     }
 }
 
+const epicStatuses = {
+    Backlog: 'Backlog',
+    OnHold: 'On Hold',
+    DevelopmentActive: 'Development Active',
+    Resolved: 'Resolved'
+}
+
 class RelatedEpics extends React.Component {
     constructor(props) {
         super(props);
@@ -268,10 +275,15 @@ class RelatedEpics extends React.Component {
         if (Object.keys(statusToEpics).length == 1) {
             return <RelatedEpicsSection epics={epics} />;
         }
+
         var sections = [];
-        Object.keys(statusToEpics).forEach(function(key) {
-            sections.push(<RelatedEpicsSection epics={statusToEpics[key]} header={key} />);
-        })
+        var statusOrder = [epicStatuses.DevelopmentActive, epicStatuses.OnHold, epicStatuses.Backlog, epicStatuses.Resolved];
+        for (var i = 0; i < statusOrder.length; i++) {
+            const epicStatus = statusOrder[i];
+            if (statusToEpics[epicStatus]) {
+                sections.push(<RelatedEpicsSection epics={statusToEpics[epicStatus]} header={epicStatus} />);
+            }
+        }
         return <div>{sections}</div>;
     }
 
