@@ -408,6 +408,20 @@ class Graph extends React.Component {
                         },
                         'border-color': function(ele) {
                             return ele.data('flagged') ? '#e82c35' : '#000000'
+                        },
+                        'shape': function(ele) {
+                            const labels = ele.data('labels');
+                            if (labels.indexOf('devops') > -1) {
+                                return 'octagon';
+                            }
+                            if (labels.indexOf('platform') > -1) {
+                                return 'square';
+                            }
+                            if (labels.indexOf('ui') > -1) {
+                                return 'ellipse';
+                            }
+                            return 'diamond';
+
                         }
                     }
                 },
