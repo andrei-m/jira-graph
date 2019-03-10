@@ -496,18 +496,18 @@ class App extends React.Component {
     }
 
     render() {
-        const issueURL = "https://" + this.props.jiraHost + "/browse/" + this.props.epicKey;
-        const issueLabel = this.props.epicKey + " - " + this.props.issueSummary;
+        const issueURL = "https://" + this.props.jiraHost + "/browse/" + this.props.issueKey;
+        const issueLabel = this.props.issueKey + " - " + this.props.issueSummary;
         return (
             <div>
 				<h1>
                     <a className="home" href="/">&#8962;</a>
-					<Menu epicKey={this.props.epicKey}
-						epicColor={this.props.epicColor}
+					<Menu epicKey={this.props.issueKey}
+						epicColor={this.props.issueColor}
 						toggleMenu={(show) => this.toggleMenu(show)} showMenu={this.state.showMenu} />
 					<a href={issueURL} target="_blank">{issueLabel}</a>
 				</h1>
-				<GraphApp epicKey={this.props.epicKey} 
+				<GraphApp epicKey={this.props.issueKey}
 					initialEstimate={this.props.initialEstimate} 
 					toggleMenu={(show) => this.toggleMenu(show)} />
 			</div>
@@ -583,8 +583,8 @@ class EpicStats extends React.Component {
 }
 
 var root = document.getElementById('root');
-ReactDOM.render(<App epicKey={root.dataset.issueKey}
-		epicColor={root.dataset.issueColor}
+ReactDOM.render(<App issueKey={root.dataset.issueKey}
+		issueColor={root.dataset.issueColor}
 		issueSummary={root.dataset.issueSummary}
 		initialEstimate={root.dataset.issueInitialEstimate}
 		jiraHost={root.dataset.jiraHost} />, root);
