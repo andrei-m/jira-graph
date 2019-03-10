@@ -172,30 +172,31 @@ class GraphApp extends React.Component {
         this.state = {
             error: null,
             isLoaded: false,
-            epic: {},
+            issueGraph: {},
         };
     }
 
     render() {
         if (this.state.error) {
-            return <div>Error: failed to fetch the epic</div>
+            return <div>Error: failed to fetch the issue</div>
         } else if (!this.state.isLoaded) {
             return <div>Loading...</div>
         } else {
             return (
                 <div>
-					<Graph epic={this.state.epic} toggleMenu={this.props.toggleMenu} />
-					<EpicStats initialEstimate={this.props.initialEstimate} epic={this.state.epic} />
+					<Graph epic={this.state.issueGraph} toggleMenu={this.props.toggleMenu} />
+					<EpicStats initialEstimate={this.props.initialEstimate} epic={this.state.issueGraph} />
 				</div>
             );
         }
     }
 
     componentDidMount() {
-        const epicKey = this.props.epicKey;
-        console.log('loading ' + epicKey);
+        const issueKey = this.props.issueKey;
+        console.log('loading ' + issueKey);
+        const uriPrefix = this.props.issueType == "Milestone" ? "/api/milestones/" : "/api/epics/";
 
-        fetch("/api/epics/" + epicKey)
+        fetch(uriPrefix + issueKey)
             .then(res => {
                 if (!res.ok) {
                     throw new Error('not ok');
@@ -204,11 +205,11 @@ class GraphApp extends React.Component {
             }).then(result => {
                 this.setState({
                     isLoaded: true,
-                    epic: result,
+                    issueGraph: result,
                 });
-                console.log('loaded ' + epicKey);
+                console.log('loaded ' + issueKey);
             }).catch(() => {
-                console.log('failed to load ' + epicKey);
+                console.log('failed to load ' + issueKey);
                 this.setState({
                     isLoaded: false,
                     error: true,
@@ -507,7 +508,8 @@ class App extends React.Component {
 						toggleMenu={(show) => this.toggleMenu(show)} showMenu={this.state.showMenu} />
 					<a href={issueURL} target="_blank">{issueLabel}</a>
 				</h1>
-				<GraphApp epicKey={this.props.issueKey}
+				<GraphApp issueKey={this.props.issueKey}
+                    issueType={this.props.issueType}
 					initialEstimate={this.props.initialEstimate} 
 					toggleMenu={(show) => this.toggleMenu(show)} />
 			</div>
@@ -584,6 +586,7 @@ class EpicStats extends React.Component {
 
 var root = document.getElementById('root');
 ReactDOM.render(<App issueKey={root.dataset.issueKey}
+        issueType={root.dataset.issueType}
 		issueColor={root.dataset.issueColor}
 		issueSummary={root.dataset.issueSummary}
 		initialEstimate={root.dataset.issueInitialEstimate}
