@@ -1,19 +1,19 @@
 const localStorageKey = 'recent-epics';
-const maxEpicCount = 10;
+const maxIssueCount = 10;
 
 const hasLocalStorage = () => {
     return typeof(Storage) !== "undefined"
 };
 
-const getRecentEpics = () => {
+const getRecentIssues = () => {
     if (!hasLocalStorage) {
         return
     }
-    const rawRecentEpics = localStorage.getItem(localStorageKey);
-    if (rawRecentEpics) {
+    const rawRecentIssues = localStorage.getItem(localStorageKey);
+    if (rawRecentIssues) {
         var parsed = [];
         try {
-            parsed = JSON.parse(rawRecentEpics);
+            parsed = JSON.parse(rawRecentIssues);
         } catch (e) {
             console.log('failed to parse recent-epics from local storage: ' + err);
         }
@@ -26,24 +26,24 @@ const getRecentEpics = () => {
     return [];
 };
 
-const pushRecentEpic = (epic) => {
+const pushRecentIssue = (issue) => {
     if (!hasLocalStorage) {
         return
     }
-    var epics = getRecentEpics();
-    for (var i = 0; i < epics.length; i++) {
-        if (epics[i].key === epic.key) {
-            epics.splice(i, 1);
+    var issues = getRecentIssues();
+    for (var i = 0; i < issues.length; i++) {
+        if (issues[i].key === issue.key) {
+            issues.splice(i, 1);
         }
     }
-    epics.unshift(epic);
-    if (epics.length > maxEpicCount) {
-        epics.pop();
+    issues.unshift(issue);
+    if (issues.length > maxIssueCount) {
+        issues.pop();
     }
-    localStorage.setItem(localStorageKey, JSON.stringify(epics));
+    localStorage.setItem(localStorageKey, JSON.stringify(issues));
 };
 
 export {
-    getRecentEpics,
-    pushRecentEpic
+    getRecentIssues,
+    pushRecentIssue
 };

@@ -1,53 +1,53 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {
-    getRecentEpics
+    getRecentIssues
 } from './recent';
 
-class EpicList extends React.Component {
+class IssueList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            epics: [],
+            issues: [],
         };
     }
 
     render() {
-        if (this.state.epics.length == 0) {
-            return <div>no recent epics </div>;
+        if (this.state.issues.length == 0) {
+            return <div>no recent issues </div>;
         }
-        var epics = [];
-        for (var i = 0; i < this.state.epics.length; i++) {
-            const e = this.state.epics[i];
-            epics.push(<Epic epicKey={e.key} summary={e.summary} />);
+        var issues = [];
+        for (var i = 0; i < this.state.issues.length; i++) {
+            const e = this.state.issues[i];
+            issues.push(<Issue issueKey={e.key} summary={e.summary} />);
         }
         return (
             <div>
-            <h3>Recently viewed epics</h3>
-            <ul>{epics}</ul>
+            <h3>Recently viewed issues</h3>
+            <ul>{issues}</ul>
           </div>
         );
     }
 
     componentDidMount() {
-        const recentEpics = getRecentEpics();
-        if (recentEpics) {
+        const recentIssues = getRecentIssues();
+        if (recentIssues) {
             this.setState({
-                epics: recentEpics
+                issues: recentIssues
             });
         }
     }
 }
 
-class Epic extends React.Component {
+class Issue extends React.Component {
     render() {
-        const path = '/epics/' + this.props.epicKey;
+        const path = '/epics/' + this.props.issueKey;
         return (
             <li>
-        <a href={path}>{this.props.epicKey} - {this.props.summary}</a>
+        <a href={path}>{this.props.issueKey} - {this.props.summary}</a>
       </li>
         );
     }
 }
 
-ReactDOM.render(<EpicList />, document.getElementById('root'));
+ReactDOM.render(<IssueList />, document.getElementById('root'));

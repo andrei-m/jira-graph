@@ -3,7 +3,7 @@ import dagre from 'cytoscape-dagre';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {
-    pushRecentEpic
+    pushRecentIssue
 } from './recent';
 
 cytoscape.use(dagre);
@@ -593,4 +593,4 @@ var epic = {
     key: root.dataset.issueKey,
     summary: root.dataset.issueSummary
 };
-pushRecentEpic(epic);
+pushRecentIssue(epic);
