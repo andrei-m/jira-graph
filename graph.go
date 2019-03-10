@@ -1,11 +1,13 @@
 package graph
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"github.com/tidwall/gjson"
 )
@@ -80,8 +82,11 @@ func getEpicColorCode(jc jiraClient, key string) (string, error) {
 	return color, nil
 }
 
-func getIssues(jc jiraClient, epicKey string) ([]issue, error) {
-	jql := fmt.Sprintf(`"Epic Link" = %s`, epicKey)
+func getIssues(jc jiraClient, epicKeys ...string) ([]issue, error) {
+	if len(epicKeys) == 0 {
+		return nil, errors.New("at least one epic key is required")
+	}
+	jql := fmt.Sprintf(`"Epic Link" IN (%s)`, strings.Join(epicKeys, ","))
 
 	result := []issue{}
 	for {
