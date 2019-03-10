@@ -87,7 +87,10 @@ func getIssues(jc jiraClient, epicKeys ...string) ([]issue, error) {
 		return nil, errors.New("at least one epic key is required")
 	}
 	jql := fmt.Sprintf(`"Epic Link" IN (%s)`, strings.Join(epicKeys, ","))
+	return getIssuesJQL(jc, jql)
+}
 
+func getIssuesJQL(jc jiraClient, jql string) ([]issue, error) {
 	result := []issue{}
 	for {
 		b, err := jc.Search(jql, jc.getRequestFields(), len(result))
