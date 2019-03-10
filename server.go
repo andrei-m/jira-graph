@@ -26,8 +26,10 @@ func StartServer(user, pass, jiraHost string, fc FieldConfig) error {
 	r.GET("/api/epics/:key", gc.getEpicGraph)
 	r.GET("/api/epics/:key/related", gc.getRelatedEpics)
 	r.GET("/api/milestones/:key", gc.getMilestoneGraph)
-	r.GET("/epics/:key", gc.getEpic)
+	r.GET("/epics/:key", gc.getIssue)
 	r.GET("/epics/:key/details", gc.redirectToJIRA)
+	r.GET("/issues/:key", gc.getIssue)
+	r.GET("/issues/:key/details", gc.redirectToJIRA)
 	r.GET("/", gc.index)
 
 	return r.Run()
@@ -95,7 +97,7 @@ func (gc graphController) getMilestoneGraph(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-func (gc graphController) getEpic(c *gin.Context) {
+func (gc graphController) getIssue(c *gin.Context) {
 	key := c.Param("key")
 	issue, err := getSingleIssue(gc.jc, key)
 	if err != nil {
@@ -110,12 +112,12 @@ func (gc graphController) getEpic(c *gin.Context) {
 		return
 	}
 
-	if issue.Type != "Epic" {
+	if issue.Type != "Epic" && issue.Type != "Milestone" {
 		c.HTML(http.StatusNotFound, "404.tmpl", gin.H{})
 		return
 	}
 
-	c.HTML(http.StatusOK, "epic.tmpl", gin.H{
+	c.HTML(http.StatusOK, "issue.tmpl", gin.H{
 		"issue":    issue,
 		"jiraHost": gc.jc.host,
 	})

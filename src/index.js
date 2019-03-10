@@ -41,7 +41,7 @@ class IssueList extends React.Component {
 
 class Issue extends React.Component {
     render() {
-        const path = '/epics/' + this.props.issueKey;
+        const path = '/issues/' + this.props.issueKey;
         return (
             <li>
         <a href={path}>{this.props.issueKey} - {this.props.summary}</a>
