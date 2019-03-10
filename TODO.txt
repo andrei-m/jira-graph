@@ -1,5 +1,4 @@
 * Filter or highlighting for critical path and unblocked work
-* overall/in-progress/remaining breakdown by epic
 * milestone view overlaying several epics
 
 * look into D3 force directed graphs for organizing
