@@ -30,6 +30,7 @@ type issue struct {
 	Flagged          bool     `json:"flagged"`
 	Sprints          []sprint `json:"sprints"`
 	Color            string   `json:"color"`
+	EpicKey          string   `json:"epicKey"`
 	blockedByKeys    []string
 }
 
@@ -41,6 +42,7 @@ type jiraClient struct {
 	estimateField        string
 	flaggedField         string
 	sprintsField         string
+	epicLinkField        string
 }
 
 func (j jiraClient) Get(path string, q url.Values) (*http.Response, error) {
@@ -88,6 +90,7 @@ func (j jiraClient) getRequestFields() []string {
 		j.estimateField,
 		j.flaggedField,
 		j.sprintsField,
+		j.epicLinkField,
 	}
 }
 
@@ -96,6 +99,7 @@ func (j jiraClient) unmarshallIssue(r gjson.Result) issue {
 	fields := r.Get("fields")
 	summary := fields.Get("summary").String()
 	status := fields.Get("status.name").String()
+	epicKey := fields.Get(j.epicLinkField).String()
 
 	assignee := fields.Get("assignee")
 	assigneeName := assignee.Get("displayName").String()
@@ -140,6 +144,7 @@ func (j jiraClient) unmarshallIssue(r gjson.Result) issue {
 		Labels:           labels,
 		Flagged:          flagged,
 		Sprints:          sprints,
+		EpicKey:          epicKey,
 	}
 }
 

@@ -8,7 +8,7 @@ import (
 	"gopkg.in/gin-gonic/gin.v1"
 )
 
-func StartServer(user, pass, jiraHost, initialEstimateField, estimateField, flaggedField, sprintsField string) error {
+func StartServer(user, pass, jiraHost, initialEstimateField, estimateField, flaggedField, sprintsField, epicLinkField string) error {
 	jc := jiraClient{
 		host:                 jiraHost,
 		user:                 user,
@@ -17,6 +17,7 @@ func StartServer(user, pass, jiraHost, initialEstimateField, estimateField, flag
 		estimateField:        estimateField,
 		flaggedField:         flaggedField,
 		sprintsField:         sprintsField,
+		epicLinkField:        epicLinkField,
 	}
 	gc := graphController{
 		jc: jc,
