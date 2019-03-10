@@ -1,5 +1,6 @@
 * Filter or highlighting for critical path and unblocked work
 * milestone view overlaying several epics
+** no color for milestones - use grey?
 
 * look into D3 force directed graphs for organizing
 * look into gephi

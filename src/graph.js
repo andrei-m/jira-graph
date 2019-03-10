@@ -241,6 +241,7 @@ const epicStatuses = {
     Resolved: 'Resolved'
 }
 
+//TODO: parent prop should include the key and the type; call a different related API if the type is Milestone
 class RelatedEpics extends React.Component {
     constructor(props) {
         super(props);
@@ -529,6 +530,7 @@ class App extends React.Component {
     }
 }
 
+//TODO: rename 'epic' to match graphResponse
 class EpicStats extends React.Component {
     render() {
         var byStatus = this.getBreakdownByStatus();
