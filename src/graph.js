@@ -589,8 +589,8 @@ ReactDOM.render(<App epicKey={root.dataset.issueKey}
 		initialEstimate={root.dataset.issueInitialEstimate}
 		jiraHost={root.dataset.jiraHost} />, root);
 
-var epic = {
+var issue = {
     key: root.dataset.issueKey,
     summary: root.dataset.issueSummary
 };
-pushRecentIssue(epic);
+pushRecentIssue(issue);
