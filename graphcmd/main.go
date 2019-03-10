@@ -32,7 +32,15 @@ func main() {
 		log.Fatal("-jira-host flag is required")
 	}
 
-	if err := graph.StartServer(user, pass, *jiraHost, *initialEstimateField, *estimateField, *flaggedField, *sprintsField, *epicLinkField); err != nil {
+	fc := graph.FieldConfig{
+		InitialEstimate: *initialEstimateField,
+		Estimate:        *estimateField,
+		Flagged:         *flaggedField,
+		Sprints:         *sprintsField,
+		EpicLink:        *epicLinkField,
+	}
+
+	if err := graph.StartServer(user, pass, *jiraHost, fc); err != nil {
 		log.Fatalf("server failed with error: %v", err)
 	}
 }

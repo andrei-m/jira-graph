@@ -35,14 +35,10 @@ type issue struct {
 }
 
 type jiraClient struct {
-	host                 string
-	user                 string
-	pass                 string
-	initialEstimateField string
-	estimateField        string
-	flaggedField         string
-	sprintsField         string
-	epicLinkField        string
+	host        string
+	user        string
+	pass        string
+	fieldConfig FieldConfig
 }
 
 func (j jiraClient) Get(path string, q url.Values) (*http.Response, error) {
@@ -86,11 +82,11 @@ func (j jiraClient) getRequestFields() []string {
 		"priority",
 		"status",
 		"summary",
-		j.initialEstimateField,
-		j.estimateField,
-		j.flaggedField,
-		j.sprintsField,
-		j.epicLinkField,
+		j.fieldConfig.InitialEstimate,
+		j.fieldConfig.Estimate,
+		j.fieldConfig.Flagged,
+		j.fieldConfig.Sprints,
+		j.fieldConfig.EpicLink,
 	}
 }
 
@@ -99,7 +95,7 @@ func (j jiraClient) unmarshallIssue(r gjson.Result) issue {
 	fields := r.Get("fields")
 	summary := fields.Get("summary").String()
 	status := fields.Get("status.name").String()
-	epicKey := fields.Get(j.epicLinkField).String()
+	epicKey := fields.Get(j.fieldConfig.EpicLink).String()
 
 	assignee := fields.Get("assignee")
 	assigneeName := assignee.Get("displayName").String()
@@ -113,10 +109,10 @@ func (j jiraClient) unmarshallIssue(r gjson.Result) issue {
 	priorityName := priority.Get("name").String()
 	priorityImageURL := priority.Get("iconUrl").String()
 
-	initialEstimate := fields.Get(j.initialEstimateField).Float()
-	estimate := fields.Get(j.estimateField).Float()
+	initialEstimate := fields.Get(j.fieldConfig.InitialEstimate).Float()
+	estimate := fields.Get(j.fieldConfig.Estimate).Float()
 
-	flaggedObj := fields.Get(j.flaggedField).Array()
+	flaggedObj := fields.Get(j.fieldConfig.Flagged).Array()
 	//TODO: the 'Impediment' constant should be configurable alongside the field name
 	flagged := len(flaggedObj) == 1 && flaggedObj[0].Get("value").String() == "Impediment"
 
@@ -126,7 +122,7 @@ func (j jiraClient) unmarshallIssue(r gjson.Result) issue {
 		labels[i] = rawLabels[i].String()
 	}
 
-	sprintsResults := fields.Get(j.sprintsField).Array()
+	sprintsResults := fields.Get(j.fieldConfig.Sprints).Array()
 	sprints := parseSprints(sprintsResults)
 
 	return issue{
