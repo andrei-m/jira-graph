@@ -25,6 +25,7 @@ func StartServer(user, pass, jiraHost string, fc FieldConfig) error {
 
 	r.GET("/api/epics/:key", gc.getEpicGraph)
 	r.GET("/api/epics/:key/related", gc.getRelatedEpics)
+	r.GET("/api/milestones/:key", gc.getMilestoneGraph)
 	r.GET("/epics/:key", gc.getEpic)
 	r.GET("/epics/:key/details", gc.redirectToJIRA)
 	r.GET("/", gc.index)
@@ -43,6 +44,40 @@ type graphResponse struct {
 
 func (gc graphController) getEpicGraph(c *gin.Context) {
 	issues, err := getIssues(gc.jc, c.Param("key"))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"status": http.StatusText(http.StatusInternalServerError)})
+		return
+	}
+
+	if len(issues) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"status": http.StatusText(http.StatusNotFound)})
+		return
+	}
+
+	resp := graphResponse{
+		Issues: issues,
+		Graph:  issuesToBlocksGraph(issues),
+	}
+	c.JSON(http.StatusOK, resp)
+}
+
+func (gc graphController) getMilestoneGraph(c *gin.Context) {
+	epics, err := getMilestoneEpics(gc.jc, c.Param("key"))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"status": http.StatusText(http.StatusInternalServerError)})
+		return
+	}
+	if len(epics) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"status": http.StatusText(http.StatusNotFound)})
+		return
+	}
+
+	epicKeys := make([]string, len(epics))
+	for i := range epics {
+		epicKeys[i] = epics[i].Key
+	}
+
+	issues, err := getIssues(gc.jc, epicKeys...)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"status": http.StatusText(http.StatusInternalServerError)})
 		return

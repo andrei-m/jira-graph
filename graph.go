@@ -90,6 +90,11 @@ func getIssues(jc jiraClient, epicKeys ...string) ([]issue, error) {
 	return getIssuesJQL(jc, jql)
 }
 
+func getMilestoneEpics(jc jiraClient, milestoneKey string) ([]issue, error) {
+	jql := fmt.Sprintf(`issue IN linkedIssues("%s") AND type=epic`, milestoneKey)
+	return getIssuesJQL(jc, jql)
+}
+
 func getIssuesJQL(jc jiraClient, jql string) ([]issue, error) {
 	result := []issue{}
 	for {
