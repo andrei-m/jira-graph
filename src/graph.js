@@ -5,6 +5,9 @@ import ReactDOM from 'react-dom';
 import {
     pushRecentIssue
 } from './recent';
+import {
+    colors
+} from './colors';
 
 cytoscape.use(dagre);
 
@@ -372,6 +375,11 @@ class Graph extends React.Component {
             }
         });
 
+        var allColors = data.issues.map(function(elem) {
+            return elem.color;
+        })
+        var distinctColors = Array.from(new Set(allColors));
+
         var issueEdges = [];
         for (var i = 0; i < issues.length; i++) {
             var blockingIssue = issues[i].data.id;
@@ -422,7 +430,16 @@ class Graph extends React.Component {
                             return 1;
                         },
                         'border-color': function(ele) {
-                            return ele.data('flagged') ? '#e82c35' : '#000000'
+                            if (ele.data('flagged')) {
+                                return '#e82c35';
+                            }
+                            if (distinctColors.length <= 1) {
+                                return '#000000';
+                            }
+                            if (ele.data('color') in colors) {
+                                return colors[ele.data('color')];
+                            }
+                            return '#000000';
                         },
                         'shape': function(ele) {
                             const labels = ele.data('labels');
