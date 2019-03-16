@@ -223,9 +223,13 @@ class GraphApp extends React.Component {
 
 class Menu extends React.Component {
     render() {
+        var labelStyle = {
+            "background-color": colors[this.props.issueColor]
+        };
+
         return (
             <span className="menu-container">
-      <label htmlFor="menu-toggle" className={`menu-toggle-label ${this.props.issueColor}`} >&#9776;</label>
+      <label htmlFor="menu-toggle" className={`menu-toggle-label ${this.props.issueColor}`} style={labelStyle} >&#9776;</label>
 		<input type="checkbox" id="menu-toggle" checked={this.props.showMenu} onChange={() => this.props.toggleMenu()} />
 		<div className="menu">
 			Related epics
