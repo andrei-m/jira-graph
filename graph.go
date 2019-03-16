@@ -36,33 +36,15 @@ func (e errBadStatus) Error() string {
 }
 
 func getSingleIssue(jc jiraClient, key string) (issue, error) {
-	q := url.Values{"fields": jc.getRequestFields()}
-	resp, err := jc.Get(fmt.Sprintf("/rest/api/2/issue/%s", key), q)
+	jql := fmt.Sprintf(`id=%s`, key)
+	issues, err := getIssuesJQL(jc, jql)
 	if err != nil {
 		return issue{}, err
 	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return issue{}, errBadStatus{resp.StatusCode}
+	if len(issues) == 0 {
+		return issue{}, errBadStatus{http.StatusNotFound}
 	}
-
-	resultBytes, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return issue{}, err
-	}
-	parsed := gjson.ParseBytes(resultBytes)
-	issue := jc.unmarshallIssue(parsed)
-
-	if issue.Type == "Epic" {
-		colorCode, err := getEpicColorCode(jc, key)
-		if err != nil {
-			log.Printf("failed to get epic color code: %v", err)
-		}
-		issue.Color = colorCode
-	}
-
-	return issue, nil
+	return issues[0], nil
 }
 
 func getEpicColorCodes(jc jiraClient, keys []string) map[string]string {

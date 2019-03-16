@@ -105,6 +105,11 @@ func (j jiraClient) unmarshallIssue(r gjson.Result) issue {
 	issueTypeName := issueType.Get("name").String()
 	issueTypeImageURL := issueType.Get("iconUrl").String()
 
+	// Shim so that each issue's EpicKey relates the relevant epic, including an Epic to itself
+	if issueTypeName == "Epic" && len(epicKey) == 0 {
+		epicKey = key
+	}
+
 	priority := fields.Get("priority")
 	priorityName := priority.Get("name").String()
 	priorityImageURL := priority.Get("iconUrl").String()
