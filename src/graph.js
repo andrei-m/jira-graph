@@ -185,7 +185,7 @@ class GraphApp extends React.Component {
             return (
                 <div>
 					<Graph epic={this.state.issueGraph} toggleMenu={this.props.toggleMenu} />
-					<EpicStats initialEstimate={this.props.initialEstimate} epic={this.state.issueGraph} />
+					<EpicStats initialEstimate={this.props.initialEstimate} issueGraph={this.state.issueGraph} />
 				</div>
             );
         }
@@ -530,7 +530,6 @@ class App extends React.Component {
     }
 }
 
-//TODO: rename 'epic' to match graphResponse
 class EpicStats extends React.Component {
     render() {
         var byStatus = this.getBreakdownByStatus();
@@ -569,18 +568,18 @@ class EpicStats extends React.Component {
     }
 
     getBreakdownByStatus() {
-        var epic = this.props.epic;
+        var issueGraph = this.props.issueGraph;
         var result = {};
-        for (var i = 0; i < epic.issues.length; i++) {
-            var status = categorizeStatus(epic.issues[i].status);
+        for (var i = 0; i < issueGraph.issues.length; i++) {
+            var status = categorizeStatus(issueGraph.issues[i].status);
             if (status == statuses.ResolvedOnStaging) {
                 status = statuses.InProgress;
             }
             if (result[status]) {
-                result[status] += epic.issues[i].estimate;
+                result[status] += issueGraph.issues[i].estimate;
                 continue;
             }
-            result[status] = epic.issues[i].estimate;
+            result[status] = issueGraph.issues[i].estimate;
         }
         return result;
     }
