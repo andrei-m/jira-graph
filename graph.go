@@ -65,6 +65,33 @@ func getSingleIssue(jc jiraClient, key string) (issue, error) {
 	return issue, nil
 }
 
+func getEpicColorCodes(jc jiraClient, keys []string) map[string]string {
+	type singleEpicResult struct {
+		key       string
+		colorCode string
+	}
+	ch := make(chan singleEpicResult)
+
+	for _, key := range keys {
+		go func(key string) {
+			code, err := getEpicColorCode(jc, key)
+			if err != nil {
+				log.Printf("failed to get epic color code: %v", err)
+				ch <- singleEpicResult{key: key}
+				return
+			}
+			ch <- singleEpicResult{key: key, colorCode: code}
+		}(key)
+	}
+
+	result := map[string]string{}
+	for _ = range keys {
+		r := <-ch
+		result[r.key] = r.colorCode
+	}
+	return result
+}
+
 func getEpicColorCode(jc jiraClient, key string) (string, error) {
 	resp, err := jc.Get(fmt.Sprintf("/rest/agile/1.0/epic/%s", key), url.Values{})
 	if err != nil {
@@ -97,6 +124,8 @@ func getMilestoneEpics(jc jiraClient, milestoneKey string) ([]issue, error) {
 
 func getIssuesJQL(jc jiraClient, jql string) ([]issue, error) {
 	result := []issue{}
+	epicKeys := map[string]struct{}{}
+
 	for {
 		b, err := jc.Search(jql, jc.getRequestFields(), len(result))
 		if err != nil {
@@ -114,12 +143,23 @@ func getIssuesJQL(jc jiraClient, jql string) ([]issue, error) {
 			}
 
 			result = append(result, iss)
+			epicKeys[iss.EpicKey] = struct{}{}
 		}
 
 		total := parsed.Get("total").Int()
 		if len(result) >= int(total) {
 			break
 		}
+	}
+
+	dedupedEpicKeys := make([]string, 0, len(epicKeys))
+	for k := range epicKeys {
+		dedupedEpicKeys = append(dedupedEpicKeys, k)
+	}
+
+	epicToColorCode := getEpicColorCodes(jc, dedupedEpicKeys)
+	for i := range result {
+		result[i].Color = epicToColorCode[result[i].EpicKey]
 	}
 
 	return result, nil
