@@ -427,11 +427,11 @@ class Graph extends React.Component {
                             if (sprints) {
                                 for (var i = 0; i < sprints.length; i++) {
                                     if (sprints[i].state == 'ACTIVE' || sprints[i].state == 'CLOSED') {
-                                        return 3;
+                                        return 5;
                                     }
                                 }
                             }
-                            return 1;
+                            return 2;
                         },
                         'border-color': function(ele) {
                             if (ele.data('flagged')) {
