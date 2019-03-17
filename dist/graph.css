@@ -183,6 +183,13 @@ div.epicStats {
   margin: 8px;
 }
 
+div.legend {
+  position: absolute;
+  top: 32px;
+  left: 0px;
+  margin: 8px;
+}
+
 td.points {
   text-align: right;
 }
@@ -201,4 +208,13 @@ span.subHeader {
 
 div.relatedEpicsSection {
   margin-top: 6px;
+}
+
+span.epicHighlight {
+  font-size: 20px;
+}
+
+div.legendHeader {
+  font-weight: bold;
+  text-align: center;
 }

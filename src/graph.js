@@ -189,6 +189,7 @@ class GraphApp extends React.Component {
                 <div>
 					<Graph epic={this.state.issueGraph} toggleMenu={this.props.toggleMenu} />
 					<EpicStats initialEstimate={this.props.initialEstimate} issueGraph={this.state.issueGraph} />
+                    <Legend issueGraph={this.state.issueGraph} />
 				</div>
             );
         }
@@ -603,6 +604,41 @@ class EpicStats extends React.Component {
             result[status] = issueGraph.issues[i].estimate;
         }
         return result;
+    }
+}
+
+class Legend extends React.Component {
+    render() {
+        var issues = this.props.issueGraph.issues;
+        var epicToColor = {};
+        for (var i = 0; i < issues.length; i++) {
+            epicToColor[issues[i].epicKey] = issues[i].color;
+        }
+        if (Object.keys(epicToColor).length <= 1) {
+            return null;
+        }
+
+        var elements = [];
+        for (var epicKey in epicToColor) {
+            var highlightStyle = {
+                "color": colors[epicToColor[epicKey]]
+            };
+
+            elements.push(
+                <div>
+                  <label>
+                    <input type="checkbox" />
+                    <span className="epicHighlight" style={highlightStyle}>&#9679;</span> {epicKey}
+                  </label>
+                </div>
+            );
+        }
+        return (
+            <div className="legend">
+          <div className="legendHeader">Legend</div>
+          {elements}
+        </div>
+        );
     }
 }
 
