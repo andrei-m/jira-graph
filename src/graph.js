@@ -176,7 +176,25 @@ class GraphApp extends React.Component {
             error: null,
             isLoaded: false,
             issueGraph: {},
+            selectedEpics: new Map(),
         };
+    }
+
+    initSelectedEpics(issueGraph) {
+        const issues = issueGraph.issues;
+        var selectedEpics = new Map();
+        for (var i = 0; i < issues.length; i++) {
+            selectedEpics.set(issues[i].epicKey, true);
+        }
+        return selectedEpics;
+    }
+
+    handleEpicSelection(val) {
+        const epicKey = val.target.value;
+        const selected = val.target.checked;
+        this.setState(prevState => ({
+            selectedEpics: prevState.selectedEpics.set(epicKey, selected)
+        }));
     }
 
     render() {
@@ -189,7 +207,9 @@ class GraphApp extends React.Component {
                 <div>
 					<Graph epic={this.state.issueGraph} toggleMenu={this.props.toggleMenu} />
 					<EpicStats initialEstimate={this.props.initialEstimate} issueGraph={this.state.issueGraph} />
-                    <Legend issueGraph={this.state.issueGraph} />
+                    <Legend issueGraph={this.state.issueGraph}
+                      selectedEpics={this.state.selectedEpics}
+                      handleEpicSelection={(epic) => this.handleEpicSelection(epic)} />
 				</div>
             );
         }
@@ -210,6 +230,7 @@ class GraphApp extends React.Component {
                 this.setState({
                     isLoaded: true,
                     issueGraph: result,
+                    selectedEpics: this.initSelectedEpics(result),
                 });
                 console.log('loaded ' + issueKey);
             }).catch(() => {
@@ -609,7 +630,10 @@ class EpicStats extends React.Component {
 
 class Legend extends React.Component {
     render() {
-        var issues = this.props.issueGraph.issues;
+        const issues = this.props.issueGraph.issues;
+        const selectedEpics = this.props.selectedEpics;
+
+        //TODO: flatten the epics once in GraphApp to resolve a prop of epic->color code and state for epic->selected
         var epicToColor = {};
         for (var i = 0; i < issues.length; i++) {
             epicToColor[issues[i].epicKey] = issues[i].color;
@@ -627,7 +651,9 @@ class Legend extends React.Component {
             elements.push(
                 <div>
                   <label>
-                    <input type="checkbox" />
+                    <input type="checkbox"
+                      checked={selectedEpics.get(epicKey)} value={epicKey}
+                      onChange={(val) => this.props.handleEpicSelection(val)} />
                     <span className="epicHighlight" style={highlightStyle}>&#9679;</span> {epicKey}
                   </label>
                 </div>
