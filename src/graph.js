@@ -205,7 +205,7 @@ class GraphApp extends React.Component {
         } else {
             return (
                 <div>
-					<Graph epic={this.state.issueGraph} toggleMenu={this.props.toggleMenu} />
+					<Graph issueGraph={this.state.issueGraph} toggleMenu={this.props.toggleMenu} />
 					<EpicStats initialEstimate={this.props.initialEstimate} issueGraph={this.state.issueGraph} />
                     <Legend issueGraph={this.state.issueGraph}
                       selectedEpics={this.state.selectedEpics}
@@ -388,7 +388,7 @@ class Graph extends React.Component {
     }
 
     componentDidMount() {
-        this.renderGraph(this.props.epic);
+        this.renderGraph(this.props.issueGraph);
     }
 
     renderGraph(data) {
