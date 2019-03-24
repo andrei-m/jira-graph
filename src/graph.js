@@ -511,14 +511,11 @@ class Graph extends React.Component {
 
     renderGraph(issueGraph, selectedEpics) {
         const filteredIssues = issueGraph.issues.filter(issue => selectedEpics.get(issue.epicKey));
-
-        const issuesToGraph = filteredIssues.map(function(elem) {
-            return {
-                data: Object.assign({
-                    id: elem.key
-                }, elem)
-            }
-        });
+        const issuesToGraph = filteredIssues.map(issue => ({
+            data: Object.assign({
+                id: issue.key
+            }, issue)
+        }));
 
         var issueEdges = [];
         for (var i = 0; i < issuesToGraph.length; i++) {
