@@ -205,7 +205,7 @@ class GraphApp extends React.Component {
         } else {
             return (
                 <div>
-					<Graph issueGraph={this.state.issueGraph} toggleMenu={this.props.toggleMenu} />
+					<Graph issueGraph={this.state.issueGraph} selectedEpics={new Map(this.state.selectedEpics)} toggleMenu={this.props.toggleMenu} />
 					<EpicStats initialEstimate={this.props.initialEstimate} issueGraph={this.state.issueGraph} />
                     <Legend issueGraph={this.state.issueGraph}
                       selectedEpics={this.state.selectedEpics}
@@ -375,6 +375,7 @@ class Graph extends React.Component {
         this.myRef = React.createRef();
         this.state = {
             selectedEpic: null,
+            cy: null,
         };
     }
 
@@ -388,51 +389,33 @@ class Graph extends React.Component {
     }
 
     componentDidMount() {
-        this.renderGraph(this.props.issueGraph);
+        this.initCy(this.myRef.current);
     }
 
-    renderGraph(data) {
-        const root = this.myRef.current;
-        var issues = data.issues.map(function(elem) {
-            return {
-                data: Object.assign({
-                    id: elem.key
-                }, elem)
-            }
-        });
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.cy === null || this.shouldUpdateGraph(prevProps.selectedEpics, this.props.selectedEpics)) {
+            this.renderGraph(this.props.issueGraph, this.props.selectedEpics);
+        }
+    }
 
-        var allColors = data.issues.map(function(elem) {
-            return elem.color;
-        })
-        var distinctColors = Array.from(new Set(allColors));
-
-        var issueEdges = [];
-        for (var i = 0; i < issues.length; i++) {
-            var blockingIssue = issues[i].data.id;
-            var blockedIssues = data.graph[blockingIssue];
-            for (var j = 0; j < blockedIssues.length; j++) {
-                var id = blockingIssue + '_blocks_' + blockedIssues[j];
-                issueEdges.push({
-                    data: {
-                        id: id,
-                        source: blockingIssue,
-                        target: blockedIssues[j]
-                    }
-                });
+    shouldUpdateGraph(prevSelectedEpics, selectedEpics) {
+        for (var key of selectedEpics.keys()) {
+            if (prevSelectedEpics.get(key) != selectedEpics.get(key)) {
+                return true;
             }
         }
+        return false;
+    }
 
-        var cy = cytoscape({
+    initCy(root) {
+        const cy = cytoscape({
             container: root,
-
             boxSelectionEnabled: false,
             autounselectify: true,
-
             layout: {
                 name: 'dagre',
                 directed: true
             },
-
             style: [{
                     selector: 'node',
                     style: {
@@ -459,9 +442,6 @@ class Graph extends React.Component {
                             if (ele.data('flagged')) {
                                 return '#e82c35';
                             }
-                            if (distinctColors.length <= 1) {
-                                return '#000000';
-                            }
                             if (ele.data('color') in colors) {
                                 return colors[ele.data('color')];
                             }
@@ -483,7 +463,6 @@ class Graph extends React.Component {
                         }
                     }
                 },
-
                 {
                     selector: 'edge',
                     style: {
@@ -495,11 +474,6 @@ class Graph extends React.Component {
                     }
                 }
             ],
-
-            elements: {
-                nodes: issues,
-                edges: issueEdges,
-            },
         });
 
         cy.on('tap', (evt) => {
@@ -529,6 +503,49 @@ class Graph extends React.Component {
         cy.on('mouseout', 'node', function() {
             document.body.style.cursor = 'default';
         });
+
+        this.setState({
+            cy: cy
+        });
+    }
+
+    renderGraph(issueGraph, selectedEpics) {
+        const filteredIssues = issueGraph.issues.filter(issue => selectedEpics.get(issue.epicKey));
+
+        const issuesToGraph = filteredIssues.map(function(elem) {
+            return {
+                data: Object.assign({
+                    id: elem.key
+                }, elem)
+            }
+        });
+
+        var issueEdges = [];
+        for (var i = 0; i < issuesToGraph.length; i++) {
+            var blockingIssue = issuesToGraph[i].data.id;
+            var blockedIssues = issueGraph.graph[blockingIssue];
+            for (var j = 0; j < blockedIssues.length; j++) {
+                var id = blockingIssue + '_blocks_' + blockedIssues[j];
+                issueEdges.push({
+                    data: {
+                        id: id,
+                        source: blockingIssue,
+                        target: blockedIssues[j]
+                    }
+                });
+            }
+        }
+
+        this.state.cy.json({
+            elements: {
+                nodes: issuesToGraph,
+                edges: issueEdges
+            }
+        });
+        this.state.cy.layout({
+            name: 'dagre',
+            directed: true
+        }).run();
     }
 }
 
