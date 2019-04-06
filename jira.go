@@ -31,6 +31,7 @@ type issue struct {
 	Sprints          []sprint `json:"sprints"`
 	Color            string   `json:"color"`
 	EpicKey          string   `json:"epicKey"`
+	EpicName         string   `json:"epicName"`
 	blockedByKeys    []string
 }
 

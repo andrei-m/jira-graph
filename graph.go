@@ -47,48 +47,54 @@ func getSingleIssue(jc jiraClient, key string) (issue, error) {
 	return issues[0], nil
 }
 
-func getEpicColorCodes(jc jiraClient, keys []string) map[string]string {
+func getEpicInfos(jc jiraClient, keys []string) map[string]epicInfo {
 	type singleEpicResult struct {
-		key       string
-		colorCode string
+		key  string
+		info epicInfo
 	}
 	ch := make(chan singleEpicResult)
 
 	for _, key := range keys {
 		go func(key string) {
-			code, err := getEpicColorCode(jc, key)
+			info, err := getEpicInfo(jc, key)
 			if err != nil {
-				log.Printf("failed to get epic color code: %v", err)
+				log.Printf("failed to get epic info: %v", err)
 				ch <- singleEpicResult{key: key}
 				return
 			}
-			ch <- singleEpicResult{key: key, colorCode: code}
+			ch <- singleEpicResult{key: key, info: info}
 		}(key)
 	}
 
-	result := map[string]string{}
+	result := map[string]epicInfo{}
 	for _ = range keys {
 		r := <-ch
-		result[r.key] = r.colorCode
+		result[r.key] = r.info
 	}
 	return result
 }
 
-func getEpicColorCode(jc jiraClient, key string) (string, error) {
+type epicInfo struct {
+	name  string
+	color string
+}
+
+func getEpicInfo(jc jiraClient, key string) (epicInfo, error) {
 	resp, err := jc.Get(fmt.Sprintf("/rest/agile/1.0/epic/%s", key), url.Values{})
 	if err != nil {
-		return "", err
+		return epicInfo{}, err
 	}
 	defer resp.Body.Close()
 
 	resultBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return "", err
+		return epicInfo{}, err
 	}
 	parsed := gjson.ParseBytes(resultBytes)
 
+	name := parsed.Get("name").String()
 	color := parsed.Get("color.key").String()
-	return color, nil
+	return epicInfo{name: name, color: color}, nil
 }
 
 func getIssues(jc jiraClient, epicKeys ...string) ([]issue, error) {
@@ -139,9 +145,11 @@ func getIssuesJQL(jc jiraClient, jql string) ([]issue, error) {
 		dedupedEpicKeys = append(dedupedEpicKeys, k)
 	}
 
-	epicToColorCode := getEpicColorCodes(jc, dedupedEpicKeys)
+	epicToInfo := getEpicInfos(jc, dedupedEpicKeys)
 	for i := range result {
-		result[i].Color = epicToColorCode[result[i].EpicKey]
+		info := epicToInfo[result[i].EpicKey]
+		result[i].Color = info.color
+		result[i].EpicName = info.name
 	}
 
 	return result, nil
