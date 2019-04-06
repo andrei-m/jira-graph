@@ -648,18 +648,21 @@ class Legend extends React.Component {
         const selectedEpics = this.props.selectedEpics;
 
         //TODO: flatten the epics once in GraphApp to resolve a prop of epic->color code and state for epic->selected
-        var epicToColor = {};
+        var epicKeyToInfo = {};
         for (var i = 0; i < issues.length; i++) {
-            epicToColor[issues[i].epicKey] = issues[i].color;
+            epicKeyToInfo[issues[i].epicKey] = {
+                color: issues[i].color,
+                epicName: issues[i].epicName
+            };
         }
-        if (Object.keys(epicToColor).length <= 1) {
+        if (Object.keys(epicKeyToInfo).length <= 1) {
             return null;
         }
 
         var elements = [];
-        for (var epicKey in epicToColor) {
+        for (var epicKey in epicKeyToInfo) {
             var highlightStyle = {
-                "color": colors[epicToColor[epicKey]]
+                "color": colors[epicKeyToInfo[epicKey].color]
             };
 
             elements.push(
@@ -668,7 +671,11 @@ class Legend extends React.Component {
                     <input type="checkbox"
                       checked={selectedEpics.get(epicKey)} value={epicKey}
                       onChange={(val) => this.props.handleEpicSelection(val)} />
-                    <span className="epicHighlight" style={highlightStyle}>&#9679;</span> {epicKey}
+                    <span className="epicHighlight" style={highlightStyle}>&#9679;</span>
+                    <span class="legendTooltip">
+                      {epicKey}
+                      <span class="legendTooltipText">{epicKeyToInfo[epicKey].epicName}</span>
+                    </span>
                   </label>
                 </div>
             );
