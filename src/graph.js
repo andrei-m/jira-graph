@@ -408,6 +408,7 @@ class Graph extends React.Component {
     }
 
     initCy(root) {
+        const multipleEpics = this.props.selectedEpics.size > 1;
         const cy = cytoscape({
             container: root,
             boxSelectionEnabled: false,
@@ -441,6 +442,9 @@ class Graph extends React.Component {
                         'border-color': function(ele) {
                             if (ele.data('flagged')) {
                                 return '#e82c35';
+                            }
+                            if (!multipleEpics) {
+                                return '#000000';
                             }
                             if (ele.data('color') in colors) {
                                 return colors[ele.data('color')];
