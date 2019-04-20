@@ -24,7 +24,7 @@ func StartServer(user, pass, jiraHost string, fc FieldConfig) error {
 	r.Static("/assets", "./dist")
 
 	r.GET("/api/epics/:key", gc.getEpicGraph)
-	r.GET("/api/issues/:key/related", gc.getRelatedEpics)
+	r.GET("/api/issues/:key/related", gc.getRelatedIssues)
 	r.GET("/api/milestones/:key", gc.getMilestoneGraph)
 	r.GET("/epics/:key", gc.getIssue)
 	r.GET("/epics/:key/details", gc.redirectToJIRA)
@@ -137,8 +137,8 @@ func (gc graphController) index(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.tmpl", nil)
 }
 
-func (gc graphController) getRelatedEpics(c *gin.Context) {
-	issues, err := getRelatedEpics(gc.jc, c.Param("key"))
+func (gc graphController) getRelatedIssues(c *gin.Context) {
+	issues, err := getRelatedIssues(gc.jc, c.Param("key"))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"status": http.StatusText(http.StatusInternalServerError)})
 		return
