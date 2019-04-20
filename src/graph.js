@@ -256,7 +256,7 @@ class Menu extends React.Component {
 		<div className="menu">
 			Related epics
 			<hr />
-            <RelatedEpics epicKey={this.props.epicKey} />
+            <RelatedIssues epicKey={this.props.epicKey} />
 		</div>
       </span>
         )
@@ -271,7 +271,7 @@ const epicStatuses = {
 }
 
 //TODO: parent prop should include the key and the type; call a different related API if the type is Milestone
-class RelatedEpics extends React.Component {
+class RelatedIssues extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
