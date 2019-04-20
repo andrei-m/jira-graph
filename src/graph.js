@@ -264,7 +264,7 @@ class Menu extends React.Component {
 		<div className="menu">
 			Related issues
 			<hr />
-            <RelatedIssues epicKey={this.props.epicKey} />
+            <RelatedIssues issueKey={this.props.issueKey} />
 		</div>
       </span>
         )
@@ -318,10 +318,10 @@ class RelatedIssues extends React.Component {
     }
 
     componentDidMount() {
-        const epicKey = this.props.epicKey
+        const issueKey = this.props.issueKey;
 
-        console.log('loading related issues for ' + epicKey);
-        fetch("/api/issues/" + epicKey + "/related")
+        console.log('loading related issues for ' + issueKey);
+        fetch("/api/issues/" + issueKey + "/related")
             .then(res => {
                 if (!res.ok) {
                     throw new Error('not ok');
@@ -333,10 +333,10 @@ class RelatedIssues extends React.Component {
                     isLoaded: true,
                     issues: result,
                 });
-                console.log('loaded related issues for ' + epicKey);
+                console.log('loaded related issues for ' + issueKey);
             }).catch(
                 () => {
-                    console.log('failed to load related issues for ' + epicKey);
+                    console.log('failed to load related issues for ' + issueKey);
                     this.setState({
                         isLoaded: false,
                         error: true,
@@ -564,7 +564,7 @@ class App extends React.Component {
             <div>
 				<h1>
                     <a className="home" href="/">&#8962;</a>
-					<Menu epicKey={this.props.issueKey}
+					<Menu issueKey={this.props.issueKey}
 						issueColor={this.props.issueColor}
 						toggleMenu={(show) => this.toggleMenu(show)} showMenu={this.state.showMenu} />
 					<a href={issueURL} target="_blank">{issueLabel}</a>
