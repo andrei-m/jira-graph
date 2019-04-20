@@ -9,10 +9,11 @@ import (
 )
 
 func getRelatedEpics(jc jiraClient, epicKey string) ([]issue, error) {
+	result := []issue{}
 	milestoneKeys := []string{}
 	//TODO: make 'Milestone' configurable; pretty sure it's installation-specific
 	milestoneJQL := fmt.Sprintf("issue IN linkedIssues(%s) AND type=Milestone", epicKey)
-	fields := []string{"key"}
+	fields := jc.getRequestFields()
 
 	for {
 		b, err := jc.Search(milestoneJQL, fields, len(milestoneKeys))
@@ -22,7 +23,9 @@ func getRelatedEpics(jc jiraClient, epicKey string) ([]issue, error) {
 		parsed := gjson.ParseBytes(b)
 
 		for _, parsedIssue := range parsed.Get("issues").Array() {
-			milestoneKeys = append(milestoneKeys, parsedIssue.Get("key").String())
+			issue := jc.unmarshallIssue(parsedIssue)
+			result = append(result, issue)
+			milestoneKeys = append(milestoneKeys, issue.Key)
 		}
 
 		total := parsed.Get("total").Int()
@@ -39,8 +42,6 @@ func getRelatedEpics(jc jiraClient, epicKey string) ([]issue, error) {
 	}
 
 	epicJQL := fmt.Sprintf("(%s) AND type=Epic AND key != %s ORDER BY key", strings.Join(linkedIssueClauses, " OR "), epicKey)
-	fields = jc.getRequestFields()
-	result := []issue{}
 	for {
 		b, err := jc.Search(epicJQL, fields, len(result))
 		if err != nil {
