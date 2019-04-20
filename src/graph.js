@@ -304,7 +304,7 @@ class RelatedIssues extends React.Component {
         }
 
         if (Object.keys(statusToEpics).length == 1) {
-            return <RelatedIssuesSection epics={epics} />;
+            return <RelatedIssuesSection issues={epics} />;
         }
 
         var sections = [];
@@ -312,7 +312,7 @@ class RelatedIssues extends React.Component {
         for (var i = 0; i < statusOrder.length; i++) {
             const epicStatus = statusOrder[i];
             if (statusToEpics[epicStatus]) {
-                sections.push(<RelatedIssuesSection epics={statusToEpics[epicStatus]} header={epicStatus} />);
+                sections.push(<RelatedIssuesSection issues={statusToEpics[epicStatus]} header={epicStatus} />);
             }
         }
         return <div>{sections}</div>;
@@ -349,19 +349,19 @@ class RelatedIssues extends React.Component {
 
 class RelatedIssuesSection extends React.Component {
     render() {
-        var epics = this.props.epics;
+        const issues = this.props.issues;
 
         var elements = [];
         if (this.props.header != undefined) {
             elements.push(<span className="subHeader">{this.props.header}</span>);
         }
 
-        for (var i = 0; i < epics.length; i++) {
-            const url = '/epics/' + epics[i].key;
+        for (var i = 0; i < issues.length; i++) {
+            const url = '/issues/' + issues[i].key;
             elements.push(
                 <a href={url}>
-				<img src={epics[i].typeImageURL} />
-				{epics[i].key} - {epics[i].summary}
+				<img src={issues[i].typeImageURL} />
+				{issues[i].key} - {issues[i].summary}
 			  </a>
             );
         }
