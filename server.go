@@ -24,7 +24,7 @@ func StartServer(user, pass, jiraHost string, fc FieldConfig) error {
 	r.Static("/assets", "./dist")
 
 	r.GET("/api/epics/:key", gc.getEpicGraph)
-	r.GET("/api/epics/:key/related", gc.getRelatedEpics)
+	r.GET("/api/issues/:key/related", gc.getRelatedEpics)
 	r.GET("/api/milestones/:key", gc.getMilestoneGraph)
 	r.GET("/epics/:key", gc.getIssue)
 	r.GET("/epics/:key/details", gc.redirectToJIRA)

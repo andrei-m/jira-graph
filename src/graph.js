@@ -322,7 +322,7 @@ class RelatedEpics extends React.Component {
         const epicKey = this.props.epicKey
 
         console.log('loading related epics for ' + epicKey);
-        fetch("/api/epics/" + epicKey + "/related")
+        fetch("/api/issues/" + epicKey + "/related")
             .then(res => {
                 if (!res.ok) {
                     throw new Error('not ok');
