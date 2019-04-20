@@ -365,7 +365,7 @@ class RelatedIssuesSection extends React.Component {
 			  </a>
             );
         }
-        return <div className="relatedEpicsSection">{elements}</div>;
+        return <div className="relatedIssuesSection">{elements}</div>;
     }
 }
 
