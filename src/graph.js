@@ -11,6 +11,7 @@ import {
 
 cytoscape.use(dagre);
 
+//TODO: these statuses are all implementation-specific and should be made customizable.
 const statuses = {
     Backlog: 'Backlog',
     ReadyForDev: 'Ready for Dev',
@@ -18,8 +19,15 @@ const statuses = {
     OnFeatureBranch: 'In QA on feature branch',
     InCodeReview: 'In Code Review',
     ResolvedOnStaging: 'Resolved, on staging',
-    Closed: 'Closed'
-}
+    Closed: 'Closed',
+};
+
+const epicAndMilestoneStatuses = {
+    DevelopmentActive: 'Development Active',
+    OnHold: 'On Hold',
+    Backlog: 'Backlog',
+    Resolved: 'Resolved',
+};
 
 function categorizeStatus(s) {
     if (s == statuses.Backlog || s == statuses.ReadyForDev) {
@@ -263,13 +271,6 @@ class Menu extends React.Component {
     }
 }
 
-const epicAndMilestoneStatuses = {
-    Backlog: 'Backlog',
-    OnHold: 'On Hold',
-    DevelopmentActive: 'Development Active',
-    Resolved: 'Resolved'
-}
-
 class RelatedIssues extends React.Component {
     constructor(props) {
         super(props);
@@ -307,16 +308,10 @@ class RelatedIssues extends React.Component {
         }
 
         var sections = [];
-        var statusOrder = [
-            epicAndMilestoneStatuses.DevelopmentActive,
-            epicAndMilestoneStatuses.OnHold,
-            epicAndMilestoneStatuses.Backlog,
-            epicAndMilestoneStatuses.Resolved,
-        ];
-        for (var i = 0; i < statusOrder.length; i++) {
-            const epicStatus = statusOrder[i];
-            if (statusToEpics[epicStatus]) {
-                sections.push(<RelatedIssuesSection issues={statusToEpics[epicStatus]} header={epicStatus} />);
+        for (const issueStatus in epicAndMilestoneStatuses) {
+            const statusString = epicAndMilestoneStatuses[issueStatus];
+            if (statusToEpics[statusString]) {
+                sections.push(<RelatedIssuesSection issues={statusToEpics[statusString]} header={statusString} />);
             }
         }
         return <div>{sections}</div>;
