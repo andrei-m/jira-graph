@@ -304,7 +304,7 @@ class RelatedIssues extends React.Component {
         }
 
         if (Object.keys(statusToEpics).length == 1) {
-            return <RelatedEpicsSection epics={epics} />;
+            return <RelatedIssuesSection epics={epics} />;
         }
 
         var sections = [];
@@ -312,7 +312,7 @@ class RelatedIssues extends React.Component {
         for (var i = 0; i < statusOrder.length; i++) {
             const epicStatus = statusOrder[i];
             if (statusToEpics[epicStatus]) {
-                sections.push(<RelatedEpicsSection epics={statusToEpics[epicStatus]} header={epicStatus} />);
+                sections.push(<RelatedIssuesSection epics={statusToEpics[epicStatus]} header={epicStatus} />);
             }
         }
         return <div>{sections}</div>;
@@ -347,7 +347,7 @@ class RelatedIssues extends React.Component {
     }
 }
 
-class RelatedEpicsSection extends React.Component {
+class RelatedIssuesSection extends React.Component {
     render() {
         var epics = this.props.epics;
 
