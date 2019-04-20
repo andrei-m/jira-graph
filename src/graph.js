@@ -254,7 +254,7 @@ class Menu extends React.Component {
       <label htmlFor="menu-toggle" className={`menu-toggle-label ${this.props.issueColor}`} style={labelStyle} >&#9776;</label>
 		<input type="checkbox" id="menu-toggle" checked={this.props.showMenu} onChange={() => this.props.toggleMenu()} />
 		<div className="menu">
-			Related epics
+			Related issues
 			<hr />
             <RelatedIssues epicKey={this.props.epicKey} />
 		</div>
@@ -270,7 +270,6 @@ const epicStatuses = {
     Resolved: 'Resolved'
 }
 
-//TODO: parent prop should include the key and the type; call a different related API if the type is Milestone
 class RelatedIssues extends React.Component {
     constructor(props) {
         super(props);
@@ -283,7 +282,7 @@ class RelatedIssues extends React.Component {
 
     render() {
         if (this.state.error) {
-            return <div>Error: failed to fetch related epics</div>;
+            return <div>Error: failed to fetch related issues</div>;
         } else if (!this.state.isLoaded) {
             return <div>Loading...</div>;
         }
@@ -321,7 +320,7 @@ class RelatedIssues extends React.Component {
     componentDidMount() {
         const epicKey = this.props.epicKey
 
-        console.log('loading related epics for ' + epicKey);
+        console.log('loading related issues for ' + epicKey);
         fetch("/api/issues/" + epicKey + "/related")
             .then(res => {
                 if (!res.ok) {
@@ -334,10 +333,10 @@ class RelatedIssues extends React.Component {
                     isLoaded: true,
                     epics: result,
                 });
-                console.log('loaded related epics for ' + epicKey);
+                console.log('loaded related issues for ' + epicKey);
             }).catch(
                 () => {
-                    console.log('failed to load related epics for ' + epicKey);
+                    console.log('failed to load related issues for ' + epicKey);
                     this.setState({
                         isLoaded: false,
                         error: true,
