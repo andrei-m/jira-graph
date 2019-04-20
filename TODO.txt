@@ -1,5 +1,4 @@
 * Filter or highlighting for critical path and unblocked work
-** no color for milestones - use grey?
 * milestone & epic icons
 * link to the milestone view from milestone-associated epics
 
