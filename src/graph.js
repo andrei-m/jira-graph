@@ -276,7 +276,7 @@ class RelatedIssues extends React.Component {
         this.state = {
             error: null,
             isLoaded: false,
-            epics: [],
+            issues: [],
         };
     }
 
@@ -286,24 +286,24 @@ class RelatedIssues extends React.Component {
         } else if (!this.state.isLoaded) {
             return <div>Loading...</div>;
         }
-        const epics = this.state.epics;
-        if (epics.length == 0) {
+        const issues = this.state.issues;
+        if (issues.length == 0) {
             return <div>none!</div>;
         }
 
         var statusToEpics = {};
 
-        for (var i = 0; i < epics.length; i++) {
-            const epicStatus = epics[i].status;
+        for (var i = 0; i < issues.length; i++) {
+            const epicStatus = issues[i].status;
             if (statusToEpics[epicStatus] === undefined) {
-                statusToEpics[epicStatus] = [epics[i]];
+                statusToEpics[epicStatus] = [issues[i]];
                 continue
             }
-            statusToEpics[epicStatus].push(epics[i]);
+            statusToEpics[epicStatus].push(issues[i]);
         }
 
         if (Object.keys(statusToEpics).length == 1) {
-            return <RelatedIssuesSection issues={epics} />;
+            return <RelatedIssuesSection issues={issues} />;
         }
 
         var sections = [];
@@ -331,7 +331,7 @@ class RelatedIssues extends React.Component {
             .then(result => {
                 this.setState({
                     isLoaded: true,
-                    epics: result,
+                    issues: result,
                 });
                 console.log('loaded related issues for ' + epicKey);
             }).catch(
@@ -340,7 +340,7 @@ class RelatedIssues extends React.Component {
                     this.setState({
                         isLoaded: false,
                         error: true,
-                        epics: [],
+                        issues: [],
                     });
                 });
     }
