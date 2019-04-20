@@ -263,7 +263,7 @@ class Menu extends React.Component {
     }
 }
 
-const epicStatuses = {
+const epicAndMilestoneStatuses = {
     Backlog: 'Backlog',
     OnHold: 'On Hold',
     DevelopmentActive: 'Development Active',
@@ -307,7 +307,12 @@ class RelatedIssues extends React.Component {
         }
 
         var sections = [];
-        var statusOrder = [epicStatuses.DevelopmentActive, epicStatuses.OnHold, epicStatuses.Backlog, epicStatuses.Resolved];
+        var statusOrder = [
+            epicAndMilestoneStatuses.DevelopmentActive,
+            epicAndMilestoneStatuses.OnHold,
+            epicAndMilestoneStatuses.Backlog,
+            epicAndMilestoneStatuses.Resolved,
+        ];
         for (var i = 0; i < statusOrder.length; i++) {
             const epicStatus = statusOrder[i];
             if (statusToEpics[epicStatus]) {
