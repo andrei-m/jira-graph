@@ -1,11 +1,15 @@
+Features:
 * Filter or highlighting for critical path and unblocked work
 * milestone & epic icons
-* link to the milestone view from milestone-associated epics
 
+Libraries:
 * look into D3 force directed graphs for organizing
 * look into gephi
 
+Infrastructure
 * quick package script that bundles the binary with 'static' and 'templates'
+* or single binary deploy
+* systemd unit file for deployment
 
 clean up items:
 * JSX-aware JS formatting; maybe add a linter?
