@@ -31,6 +31,7 @@
     "cytoscape-dagre": "^1.5.0",
     "dagre": "^0.7.4",
     "lodash": "^4.17.14",
+    "mem": "^5.1.1",
     "react": "^16.4.2",
     "react-dom": "^16.4.2"
   },
