@@ -568,6 +568,7 @@ class App extends React.Component {
 						issueColor={this.props.issueColor}
 						toggleMenu={(show) => this.toggleMenu(show)} showMenu={this.state.showMenu} />
 					<a href={issueURL} target="_blank">{issueLabel}</a>
+				    <PopupAssignee assignee={this.props.issueAssignee} assigneeImageURL={this.props.issueAssigneeImageURL} />
 				</h1>
 				<GraphApp issueKey={this.props.issueKey}
                     issueType={this.props.issueType}
@@ -697,6 +698,8 @@ ReactDOM.render(<App issueKey={root.dataset.issueKey}
         issueType={root.dataset.issueType}
 		issueColor={root.dataset.issueColor}
 		issueSummary={root.dataset.issueSummary}
+		issueAssignee={root.dataset.issueAssignee}
+		issueAssigneeImageURL={root.dataset.issueAssigneeImageUrl}
 		initialEstimate={root.dataset.issueInitialEstimate}
 		jiraHost={root.dataset.jiraHost} />, root);
 

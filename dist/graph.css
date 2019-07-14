@@ -85,6 +85,10 @@ div.popup-status-text {
   font-style: italic;
 }
 
+h1 span.popup-avatar {
+  margin-left: 3px;
+}
+
 span.popup-avatar img {
   border-radius: 50%;
   width: 24px;
