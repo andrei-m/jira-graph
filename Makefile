@@ -1,5 +1,5 @@
 build: test preprocess
-	npx webpack
+	npm run-script build
 	go install github.com/andrei-m/jira-graph/graphcmd
 
 test:
