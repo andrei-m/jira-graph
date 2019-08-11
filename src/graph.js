@@ -555,7 +555,8 @@ class Graph extends React.Component {
         });
         this.state.cy.layout({
             name: 'dagre',
-            directed: true
+            directed: true,
+            nodeSep: 100
         }).run();
     }
 }
