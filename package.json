@@ -27,8 +27,8 @@
     "webpack-cli": "3.3.6"
   },
   "dependencies": {
-    "cytoscape": "^3.1.1",
-    "cytoscape-dagre": "^1.5.0",
+    "cytoscape": "3.9.0",
+    "cytoscape-dagre": "2.2.2",
     "react": "16.9.0",
     "react-dom": "16.9.0"
   },
