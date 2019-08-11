@@ -514,6 +514,12 @@ class Graph extends React.Component {
 
     renderGraph(issueGraph, selectedEpics) {
         const filteredIssues = issueGraph.issues.filter(issue => selectedEpics.get(issue.epicKey));
+
+        const issueKeys = new Map();
+        for (var i = 0; i < filteredIssues.length; i++) {
+            issueKeys.set(filteredIssues[i].key, true);
+        }
+
         const issuesToGraph = filteredIssues.map(issue => ({
             data: Object.assign({
                 id: issue.key
@@ -525,6 +531,11 @@ class Graph extends React.Component {
             var blockingIssue = issuesToGraph[i].data.id;
             var blockedIssues = issueGraph.graph[blockingIssue];
             for (var j = 0; j < blockedIssues.length; j++) {
+                if (!issueKeys.has(blockedIssues[j])) {
+                    console.log('skipping edge for unselected epic issue ' + blockedIssues[j]);
+                    continue
+                }
+
                 var id = blockingIssue + '_blocks_' + blockedIssues[j];
                 issueEdges.push({
                     data: {
