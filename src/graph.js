@@ -455,7 +455,7 @@ class Graph extends React.Component {
                             if (labels.indexOf('devops') > -1) {
                                 return 'octagon';
                             }
-                            if (labels.indexOf('platform') > -1) {
+                            if (labels.indexOf('platform') > -1 || labels.indexOf('gillnet') > -1) {
                                 return 'square';
                             }
                             if (labels.indexOf('ui') > -1) {
