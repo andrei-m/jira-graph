@@ -40,7 +40,7 @@ func loadAssets(r *gin.Engine, useLiveFiles bool) {
 	r.StaticFS("/assets", http.FS(assetsFS))
 }
 
-func StartServer(user, pass, jiraHost string, fc FieldConfig) error {
+func StartServer(user, pass, jiraHost string, fc FieldConfig, useLiveFiles bool) error {
 	jc := jiraClient{
 		host:        jiraHost,
 		user:        user,
@@ -52,8 +52,8 @@ func StartServer(user, pass, jiraHost string, fc FieldConfig) error {
 	}
 
 	r := gin.Default()
-	loadTemplates(r, false)
-	loadAssets(r, false)
+	loadTemplates(r, useLiveFiles)
+	loadAssets(r, useLiveFiles)
 
 	r.GET("/api/epics/:key", gc.getEpicGraph)
 	r.GET("/api/issues/:key/related", gc.getRelatedIssues)
