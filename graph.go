@@ -101,7 +101,7 @@ func getIssues(jc jiraClient, epicKeys ...string) ([]issue, error) {
 	if len(epicKeys) == 0 {
 		return nil, errors.New("at least one epic key is required")
 	}
-	jql := fmt.Sprintf(`"Epic Link" IN (%s)`, strings.Join(epicKeys, ","))
+	jql := fmt.Sprintf(`"%s" IN (%s)`, jc.fieldConfig.EpicLink, strings.Join(epicKeys, ","))
 	return getIssuesJQL(jc, jql)
 }
 
