@@ -1,6 +1,7 @@
 package graph
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -176,7 +177,14 @@ type sprint struct {
 func parseSprint(rawSprint string) (sprint, error) {
 	bracketIdx := strings.Index(rawSprint, "[")
 	if bracketIdx == -1 {
-		return sprint{}, fmt.Errorf("couldn't find opening '[' in: %s", rawSprint)
+		var singleSprint sprint
+		if err := json.Unmarshal([]byte(rawSprint), &singleSprint); err != nil {
+			return sprint{}, err
+		}
+		if singleSprint.ID > 0 && len(singleSprint.Name) > 0 {
+			return singleSprint, nil
+		}
+		return sprint{}, fmt.Errorf("couldn't find opening '[' or Cloud-JIRA sprint json in: %s", rawSprint)
 	}
 	trimmed := rawSprint[bracketIdx+1 : len(rawSprint)-1]
 

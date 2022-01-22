@@ -23,6 +23,21 @@ func Test_parseSprint(t *testing.T) {
 		assert.Equal(t, expected, spr)
 	})
 
+	t.Run("cloud JIRA sprint", func(t *testing.T) {
+		raw := `{"id":80,"name":"native JIRA sprint json","state":"closed","boardId":1,"foo":"arbitrary extra field","startDate":"2021-10-12T15:20:44.479Z","endDate":"2021-10-25T04:00:00.000Z","completeDate":"2021-10-25T14:06:51.325Z"}`
+		spr, err := parseSprint(raw)
+		assert.NoError(t, err)
+		expected := sprint{
+			ID:        80,
+			State:     "closed",
+			Name:      "native JIRA sprint json",
+			StartDate: time.Date(2021, 10, 12, 15, 20, 44, int(479*time.Millisecond), time.UTC),
+			EndDate:   time.Date(2021, 10, 25, 4, 0, 0, 0, time.UTC),
+			Sequence:  0,
+		}
+		assert.Equal(t, expected, spr)
+	})
+
 	t.Run("null dates", func(t *testing.T) {
 		raw := "com.atlassian.greenhopper.service.sprint.Sprint@153f4085[id=288,rapidViewId=243,state=FUTURE,name=Alf 9/17 planning,goal=,startDate=<null>,endDate=<null>,completeDate=<null>,sequence=287]"
 		spr, err := parseSprint(raw)
