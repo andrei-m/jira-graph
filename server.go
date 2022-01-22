@@ -1,12 +1,44 @@
 package graph
 
 import (
+	"embed"
+	"fmt"
+	"html/template"
 	"net/http"
 	"net/url"
 	"path"
 
 	"gopkg.in/gin-gonic/gin.v1"
 )
+
+var (
+	//go:embed dist
+	assetsFS embed.FS
+
+	//go:embed templates
+	templateFS embed.FS
+)
+
+func loadTemplates(r *gin.Engine, useLiveFiles bool) {
+	if useLiveFiles {
+		r.LoadHTMLGlob("templates/*")
+		return
+	}
+	t, err := template.ParseFS(templateFS, "templates/*")
+	if err != nil {
+		panic(fmt.Sprintf("failed to parse embedded templates: %v", err))
+	}
+	r.SetHTMLTemplate(t)
+}
+
+func loadAssets(r *gin.Engine, useLiveFiles bool) {
+	if useLiveFiles {
+		// embed includes the target dir in path, accommodate that when we're using live files instead
+		r.StaticFS("/assets/dist", gin.Dir("./dist", false))
+		return
+	}
+	r.StaticFS("/assets", http.FS(assetsFS))
+}
 
 func StartServer(user, pass, jiraHost string, fc FieldConfig) error {
 	jc := jiraClient{
@@ -20,8 +52,8 @@ func StartServer(user, pass, jiraHost string, fc FieldConfig) error {
 	}
 
 	r := gin.Default()
-	r.LoadHTMLGlob("templates/*")
-	r.Static("/assets", "./dist")
+	loadTemplates(r, false)
+	loadAssets(r, false)
 
 	r.GET("/api/epics/:key", gc.getEpicGraph)
 	r.GET("/api/issues/:key/related", gc.getRelatedIssues)
