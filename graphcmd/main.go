@@ -15,7 +15,7 @@ var (
 	flaggedField         = flag.String("flagged-field", "customfield_10002", "the name of the custom field for impediment flagging")
 	sprintsField         = flag.String("sprints-field", "customfield_10007", "the name of the custom field for Greenhopper sprints")
 	epicLinkField        = flag.String("epic-link-field", "customfield_10200", "the name of the custom field for Epic Link")
-	useLiveFiles         = flag.Bool("use-live-files", false, "use live templates and assets instead of embedding, for faster iteration during local development")
+	useLiveFiles         = false
 )
 
 func main() {
@@ -41,7 +41,7 @@ func main() {
 		EpicLink:        *epicLinkField,
 	}
 
-	if err := graph.StartServer(user, pass, *jiraHost, fc, *useLiveFiles); err != nil {
+	if err := graph.StartServer(user, pass, *jiraHost, fc, useLiveFiles); err != nil {
 		log.Fatalf("server failed with error: %v", err)
 	}
 }
