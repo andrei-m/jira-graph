@@ -1,7 +1,7 @@
 build: test preprocess
 	npm install
 	npm run-script build
-	go install -tags=nomsgpack github.com/andrei-m/jira-graph/graphcmd
+	go install -tags=nomsgpack -ldflags="-s -w" github.com/andrei-m/jira-graph/graphcmd
 
 dev: test
 	npm install
