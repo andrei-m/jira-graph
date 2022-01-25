@@ -3,7 +3,7 @@
   <head>
     <title>jiragraph: {{ .issue.Key }} - {{ .issue.Summary }}</title>
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
-    <link href="/assets/graph.css" rel="stylesheet" />
+    <link href="/assets/dist/graph.css" rel="stylesheet" />
   </head>
   <body>
 	<div id="root"
@@ -16,6 +16,6 @@
 		data-issue-assignee-image-url="{{.issue.AssigneeImageURL}}"
 		data-jira-host="{{.jiraHost}}">
 	</div>
-    <script src="/assets/graph.js"></script>
+    <script src="/assets/dist/graph.js"></script>
   </body>
 </html>

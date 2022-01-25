@@ -7,8 +7,6 @@ Libraries:
 * look into gephi
 
 Infrastructure
-* quick package script that bundles the binary with 'static' and 'templates'
-* or single binary deploy
 * systemd unit file for deployment
 
 clean up items:
