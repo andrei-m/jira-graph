@@ -1,7 +1,7 @@
 import cytoscape from 'cytoscape';
 import dagre from 'cytoscape-dagre';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { useParams } from 'react-router-dom';
 import {
     pushRecentIssue
 } from './recent';
@@ -242,8 +242,8 @@ class GraphApp extends React.Component {
                     selectedEpics: this.initSelectedEpics(result),
                 });
                 console.log('loaded ' + issueKey);
-            }).catch(() => {
-                console.log('failed to load ' + issueKey);
+            }).catch((err) => {
+                console.log('failed to load ' + issueKey + ' error: ' + err);
                 this.setState({
                     isLoaded: false,
                     error: true,
@@ -255,7 +255,7 @@ class GraphApp extends React.Component {
 class Menu extends React.Component {
     render() {
         var labelStyle = {
-            "background-color": colors[this.props.issueColor]
+            "backgroundColor": colors[this.props.issueColor]
         };
 
         return (
@@ -562,30 +562,46 @@ class Graph extends React.Component {
     }
 }
 
-class App extends React.Component {
+function RoutedIssueGraph() {
+    let params = useParams();
+    return <IssueGraph issueKey={params.issueKey} />
+}
+
+class IssueGraph extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             showMenu: false,
+            error: null,
+            issue: null,
+            jiraHost: null,
+            isLoaded: false,
         }
     }
 
     render() {
-        const issueURL = "https://" + this.props.jiraHost + "/browse/" + this.props.issueKey;
-        const issueLabel = this.props.issueKey + " - " + this.props.issueSummary;
+        console.log(this.state);
+        if (this.state.error) {
+            return <div>Error: failed to fetch the issue</div>
+        } else if (!this.state.isLoaded) {
+            return <div>Loading...</div>
+        }
+        const issue = this.state.issue;
+        const issueURL = "https://" + this.state.jiraHost + "/browse/" + issue.key;
+        const issueLabel = issue.key + " - " + issue.summary;
         return (
             <div>
 				<h1>
                     <a className="home" href="/">&#8962;</a>
-					<Menu issueKey={this.props.issueKey}
-						issueColor={this.props.issueColor}
+					<Menu issueKey={issue.key}
+						issueColor={issue.color}
 						toggleMenu={(show) => this.toggleMenu(show)} showMenu={this.state.showMenu} />
 					<a href={issueURL} target="_blank">{issueLabel}</a>
-				    <PopupAssignee assignee={this.props.issueAssignee} assigneeImageURL={this.props.issueAssigneeImageURL} />
+				    <PopupAssignee assignee={issue.assignee} assigneeImageURL={this.props.issueAssigneeImageURL} />
 				</h1>
-				<GraphApp issueKey={this.props.issueKey}
-                    issueType={this.props.issueType}
-					initialEstimate={this.props.initialEstimate} 
+				<GraphApp issueKey={issue.key}
+                    issueType={issue.type}
+					initialEstimate={issue.initialEstimate} 
 					toggleMenu={(show) => this.toggleMenu(show)} />
 			</div>
         )
@@ -601,6 +617,39 @@ class App extends React.Component {
         this.setState({
             showMenu: show,
         });
+    }
+
+    componentDidMount() {
+        const issueKey = this.props.issueKey;
+
+        console.log('loading related issues for ' + issueKey);
+        fetch("/api/issues/" + issueKey)
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('not ok');
+                }
+                return res.json();
+            })
+            .then(result => {
+                this.setState({
+                    isLoaded: true,
+                    error: false,
+                    issue: result.issue,
+                    jiraHost: result.jiraHost,
+                    showMenu: this.state.showMenu,
+                });
+                console.log('loaded issue ' + issueKey);
+            }).catch(
+                (err) => {
+                    console.log('failed to load issue ' + issueKey + ' error: ' + err);
+                    this.setState({
+                        isLoaded: false,
+                        error: true,
+                        showMenu: this.state.showMenu,
+                        issue: null,
+                        jiraHost: null,
+                    });
+                });
     }
 }
 
@@ -706,7 +755,11 @@ class Legend extends React.Component {
     }
 }
 
-var root = document.getElementById('root');
+export {
+  RoutedIssueGraph
+};
+
+/*
 ReactDOM.render(<App issueKey={root.dataset.issueKey}
         issueType={root.dataset.issueType}
 		issueColor={root.dataset.issueColor}
@@ -721,3 +774,4 @@ var issue = {
     summary: root.dataset.issueSummary
 };
 pushRecentIssue(issue);
+*/

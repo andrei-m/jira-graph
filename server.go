@@ -25,6 +25,7 @@ func StartServer(user, pass, jiraHost string, fc FieldConfig) error {
 	r.GET("./index.html", func(c *gin.Context) { c.Redirect(http.StatusFound, "/") })
 
 	r.GET("/api/epics/:key", gc.getEpicGraph)
+	r.GET("/api/issues/:key", gc.getIssue)
 	r.GET("/api/issues/:key/related", gc.getRelatedIssues)
 	r.GET("/api/milestones/:key", gc.getMilestoneGraph)
 	r.GET("/epics/:key", gc.getIssue)
