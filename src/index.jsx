@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import {
     getRecentIssues
 } from './recent';
+import './index.css';
 
 class IssueList extends React.Component {
     constructor(props) {

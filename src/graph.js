@@ -8,6 +8,7 @@ import {
 import {
     colors
 } from './colors';
+import './graph.css';
 
 cytoscape.use(dagre);
 

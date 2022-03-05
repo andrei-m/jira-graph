@@ -1,3 +1,9 @@
+vite refactor:
+- bring back asset embedding
+- single entrypoint
+
+
+------------
 Features:
 * Filter or highlighting for critical path and unblocked work
 * milestone & epic icons

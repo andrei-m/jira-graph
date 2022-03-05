@@ -12,18 +12,11 @@ import (
 )
 
 var (
-	//go:embed dist
-	assetsFS embed.FS
-
 	//go:embed templates
 	templateFS embed.FS
 )
 
-func loadTemplates(r *gin.Engine, useLiveFiles bool) {
-	if useLiveFiles {
-		r.LoadHTMLGlob("templates/*")
-		return
-	}
+func loadTemplates(r *gin.Engine) {
 	t, err := template.ParseFS(templateFS, "templates/*")
 	if err != nil {
 		panic(fmt.Sprintf("failed to parse embedded templates: %v", err))
@@ -31,16 +24,7 @@ func loadTemplates(r *gin.Engine, useLiveFiles bool) {
 	r.SetHTMLTemplate(t)
 }
 
-func loadAssets(r *gin.Engine, useLiveFiles bool) {
-	if useLiveFiles {
-		// embed includes the target dir in path, accommodate that when we're using live files instead
-		r.StaticFS("/assets/dist", gin.Dir("./dist", false))
-		return
-	}
-	r.StaticFS("/assets", http.FS(assetsFS))
-}
-
-func StartServer(user, pass, jiraHost string, fc FieldConfig, useLiveFiles bool) error {
+func StartServer(user, pass, jiraHost string, fc FieldConfig) error {
 	jc := jiraClient{
 		host:        jiraHost,
 		user:        user,
@@ -52,8 +36,10 @@ func StartServer(user, pass, jiraHost string, fc FieldConfig, useLiveFiles bool)
 	}
 
 	r := gin.Default()
-	loadTemplates(r, useLiveFiles)
-	loadAssets(r, useLiveFiles)
+	loadTemplates(r)
+	r.Static("/assets", "./dist/assets")
+	r.StaticFile("./", "./dist/index.html")
+	r.GET("./index.html", func(c *gin.Context) { c.Redirect(http.StatusFound, "/") })
 
 	r.GET("/api/epics/:key", gc.getEpicGraph)
 	r.GET("/api/issues/:key/related", gc.getRelatedIssues)
@@ -62,7 +48,6 @@ func StartServer(user, pass, jiraHost string, fc FieldConfig, useLiveFiles bool)
 	r.GET("/epics/:key/details", gc.redirectToJIRA)
 	r.GET("/issues/:key", gc.getIssue)
 	r.GET("/issues/:key/details", gc.redirectToJIRA)
-	r.GET("/", gc.index)
 
 	return r.Run()
 }
@@ -163,10 +148,6 @@ func (gc graphController) redirectToJIRA(c *gin.Context) {
 		Path:   path.Join("browse", key),
 	}
 	c.Redirect(http.StatusFound, u.String())
-}
-
-func (gc graphController) index(c *gin.Context) {
-	c.HTML(http.StatusOK, "index.tmpl", nil)
 }
 
 func (gc graphController) getRelatedIssues(c *gin.Context) {
