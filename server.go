@@ -1,28 +1,12 @@
 package graph
 
 import (
-	"embed"
-	"fmt"
-	"html/template"
 	"net/http"
 	"net/url"
 	"path"
 
 	"github.com/gin-gonic/gin"
 )
-
-var (
-	//go:embed templates
-	templateFS embed.FS
-)
-
-func loadTemplates(r *gin.Engine) {
-	t, err := template.ParseFS(templateFS, "templates/*")
-	if err != nil {
-		panic(fmt.Sprintf("failed to parse embedded templates: %v", err))
-	}
-	r.SetHTMLTemplate(t)
-}
 
 func StartServer(user, pass, jiraHost string, fc FieldConfig) error {
 	jc := jiraClient{
@@ -36,7 +20,6 @@ func StartServer(user, pass, jiraHost string, fc FieldConfig) error {
 	}
 
 	r := gin.Default()
-	loadTemplates(r)
 	r.Static("/assets", "./dist/assets")
 	r.StaticFile("./", "./dist/index.html")
 	r.GET("./index.html", func(c *gin.Context) { c.Redirect(http.StatusFound, "/") })
@@ -114,6 +97,11 @@ func (gc graphController) getMilestoneGraph(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
+type issueResponse struct {
+	JiraHost string `json:"jiraHost"`
+	Issue    issue  `json:"issue"`
+}
+
 func (gc graphController) getIssue(c *gin.Context) {
 	key := c.Param("key")
 	issue, err := getSingleIssue(gc.jc, key)
@@ -121,7 +109,7 @@ func (gc graphController) getIssue(c *gin.Context) {
 		ebs, ok := err.(errBadStatus)
 		if ok {
 			if ebs.statusCode == http.StatusNotFound {
-				c.HTML(http.StatusNotFound, "404.tmpl", gin.H{})
+				c.JSON(http.StatusNotFound, gin.H{"status": http.StatusText(http.StatusNotFound)})
 				return
 			}
 		}
@@ -130,14 +118,11 @@ func (gc graphController) getIssue(c *gin.Context) {
 	}
 
 	if issue.Type != "Epic" && issue.Type != "Milestone" {
-		c.HTML(http.StatusNotFound, "404.tmpl", gin.H{})
+		c.JSON(http.StatusNotFound, gin.H{"status": http.StatusText(http.StatusNotFound)})
 		return
 	}
 
-	c.HTML(http.StatusOK, "issue.tmpl", gin.H{
-		"issue":    issue,
-		"jiraHost": gc.jc.host,
-	})
+	c.JSON(http.StatusOK, issueResponse{JiraHost: gc.jc.host, Issue: issue})
 }
 
 func (gc graphController) redirectToJIRA(c *gin.Context) {
