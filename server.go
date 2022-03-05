@@ -1,11 +1,20 @@
 package graph
 
 import (
+	"embed"
+	"io"
+	"io/fs"
+	"log"
 	"net/http"
 	"net/url"
 	"path"
 
 	"github.com/gin-gonic/gin"
+)
+
+var (
+	//go:embed dist
+	distFS embed.FS
 )
 
 func StartServer(user, pass, jiraHost string, fc FieldConfig) error {
@@ -20,17 +29,38 @@ func StartServer(user, pass, jiraHost string, fc FieldConfig) error {
 	}
 
 	r := gin.Default()
-	r.Static("/assets", "./dist/assets")
-	r.StaticFile("./", "./dist/index.html")
-	r.GET("./index.html", func(c *gin.Context) { c.Redirect(http.StatusFound, "/") })
 
 	r.GET("/api/epics/:key", gc.getEpicGraph)
+	r.GET("/api/issues/:key", gc.getIssue)
 	r.GET("/api/issues/:key/related", gc.getRelatedIssues)
+	r.GET("/api/issues/:key/details", gc.redirectToJIRA)
 	r.GET("/api/milestones/:key", gc.getMilestoneGraph)
-	r.GET("/epics/:key", gc.getIssue)
-	r.GET("/epics/:key/details", gc.redirectToJIRA)
-	r.GET("/issues/:key", gc.getIssue)
-	r.GET("/issues/:key/details", gc.redirectToJIRA)
+
+	// this roundabout way of implementing FileFromFS is needed because of the index.html special case: https://github.com/gin-gonic/gin/issues/2654
+	spaHandler := func(c *gin.Context) {
+		c.Header("Content-Type", "text/html")
+		c.Status(http.StatusOK)
+		f, err := http.FS(distFS).Open("dist/index.html")
+		if err != nil {
+			c.AbortWithError(http.StatusInternalServerError, err)
+			return
+		}
+		_, err = io.Copy(c.Writer, f)
+		if err != nil {
+			c.AbortWithError(http.StatusInternalServerError, err)
+			return
+		}
+	}
+	r.GET("/", spaHandler)
+	r.GET("/index.html", spaHandler)
+	r.NoRoute(spaHandler)
+
+	assets, err := fs.Sub(distFS, "dist/assets")
+	if err != nil {
+		log.Println("dist/assets could not be resolved; the server will only provide '/api' resources")
+	} else {
+		r.StaticFS("/assets", http.FS(assets))
+	}
 
 	return r.Run()
 }

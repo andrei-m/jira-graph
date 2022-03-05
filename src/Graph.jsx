@@ -1,7 +1,8 @@
 import cytoscape from 'cytoscape';
-import dagre from 'cytoscape-dagre';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {
+    useParams
+} from 'react-router-dom';
 import {
     pushRecentIssue
 } from './recent';
@@ -9,8 +10,6 @@ import {
     colors
 } from './colors';
 import './graph.css';
-
-cytoscape.use(dagre);
 
 //TODO: these statuses are all implementation-specific and should be made customizable.
 const statuses = {
@@ -137,7 +136,7 @@ class PopupAssignee extends React.Component {
 
 class PopupKey extends React.Component {
     render() {
-        const url = '/epics/' + this.props.epicKey + '/details';
+        const url = '/api/issues/' + this.props.epicKey + '/details';
 
         return (
             <span className="popup-key">
@@ -242,8 +241,8 @@ class GraphApp extends React.Component {
                     selectedEpics: this.initSelectedEpics(result),
                 });
                 console.log('loaded ' + issueKey);
-            }).catch(() => {
-                console.log('failed to load ' + issueKey);
+            }).catch((err) => {
+                console.log('failed to load ' + issueKey + ' error: ' + err);
                 this.setState({
                     isLoaded: false,
                     error: true,
@@ -255,7 +254,7 @@ class GraphApp extends React.Component {
 class Menu extends React.Component {
     render() {
         var labelStyle = {
-            "background-color": colors[this.props.issueColor]
+            "backgroundColor": colors[this.props.issueColor]
         };
 
         return (
@@ -414,8 +413,9 @@ class Graph extends React.Component {
             boxSelectionEnabled: false,
             autounselectify: true,
             layout: {
-                name: 'dagre',
-                directed: true
+                name: 'breadthfirst',
+                directed: true,
+                padding: 100
             },
             style: [{
                     selector: 'node',
@@ -555,52 +555,106 @@ class Graph extends React.Component {
             }
         });
         this.state.cy.layout({
-            name: 'dagre',
+            name: 'breadthfirst',
             directed: true,
-            nodeSep: 100
+            padding: 100,
         }).run();
     }
 }
 
-class App extends React.Component {
+function RoutedIssueGraph() {
+    let params = useParams();
+    return <IssueGraph issueKey={params.issueKey} />
+}
+
+class IssueGraph extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             showMenu: false,
-        }
+            error: null,
+            issue: null,
+            jiraHost: null,
+            isLoaded: false,
+        };
     }
 
     render() {
-        const issueURL = "https://" + this.props.jiraHost + "/browse/" + this.props.issueKey;
-        const issueLabel = this.props.issueKey + " - " + this.props.issueSummary;
+        if (this.state.error) {
+            return <div>Error: failed to fetch the issue</div>
+        } else if (!this.state.isLoaded) {
+            return <div>Loading...</div>
+        }
+        const issue = this.state.issue;
+        const issueURL = "https://" + this.state.jiraHost + "/browse/" + issue.key;
+        const issueLabel = issue.key + " - " + issue.summary;
         return (
             <div>
 				<h1>
                     <a className="home" href="/">&#8962;</a>
-					<Menu issueKey={this.props.issueKey}
-						issueColor={this.props.issueColor}
+					<Menu issueKey={issue.key}
+						issueColor={issue.color}
 						toggleMenu={(show) => this.toggleMenu(show)} showMenu={this.state.showMenu} />
 					<a href={issueURL} target="_blank">{issueLabel}</a>
-				    <PopupAssignee assignee={this.props.issueAssignee} assigneeImageURL={this.props.issueAssigneeImageURL} />
+				    <PopupAssignee assignee={issue.assignee} assigneeImageURL={this.props.issueAssigneeImageURL} />
 				</h1>
-				<GraphApp issueKey={this.props.issueKey}
-                    issueType={this.props.issueType}
-					initialEstimate={this.props.initialEstimate} 
+				<GraphApp issueKey={issue.key}
+                    issueType={issue.type}
+					initialEstimate={issue.initialEstimate}
 					toggleMenu={(show) => this.toggleMenu(show)} />
 			</div>
         )
     }
 
     toggleMenu(show) {
-        if (show === undefined) {
-            this.setState({
-                showMenu: !this.state.showMenu,
-            });
-            return;
-        }
-        this.setState({
-            showMenu: show,
-        });
+        this.setState(prevState => ({
+            ...prevState,
+            ...{
+                showMenu: show === undefined ? !prevState.showMenu : show,
+            }
+        }));
+    }
+
+    componentDidMount() {
+        const issueKey = this.props.issueKey;
+
+        console.log('loading related issues for ' + issueKey);
+        fetch("/api/issues/" + issueKey)
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('not ok');
+                }
+                return res.json();
+            })
+            .then(result => {
+                this.setState(prevState => ({
+                    ...prevState,
+                    ...{
+                        isLoaded: true,
+                        error: false,
+                        issue: result.issue,
+                        jiraHost: result.jiraHost,
+                    }
+                }));
+                const issue = {
+                    key: this.props.issueKey,
+                    summary: result.issue.summary
+                };
+                pushRecentIssue(issue);
+                console.log('loaded issue ' + issueKey);
+            }).catch(
+                (err) => {
+                    console.log('failed to load issue ' + issueKey + ' error: ' + err);
+                    this.setState(prevState => ({
+                        ...prevState,
+                        ...{
+                            isLoaded: false,
+                            error: true,
+                            issue: null,
+                            jiraHost: null,
+                        }
+                    }));
+                });
     }
 }
 
@@ -706,18 +760,6 @@ class Legend extends React.Component {
     }
 }
 
-var root = document.getElementById('root');
-ReactDOM.render(<App issueKey={root.dataset.issueKey}
-        issueType={root.dataset.issueType}
-		issueColor={root.dataset.issueColor}
-		issueSummary={root.dataset.issueSummary}
-		issueAssignee={root.dataset.issueAssignee}
-		issueAssigneeImageURL={root.dataset.issueAssigneeImageUrl}
-		initialEstimate={root.dataset.issueInitialEstimate}
-		jiraHost={root.dataset.jiraHost} />, root);
-
-var issue = {
-    key: root.dataset.issueKey,
-    summary: root.dataset.issueSummary
+export {
+    RoutedIssueGraph
 };
-pushRecentIssue(issue);

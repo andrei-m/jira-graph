@@ -144,6 +144,7 @@ func getIssuesJQL(jc jiraClient, jql string) ([]issue, error) {
 	for k := range epicKeys {
 		dedupedEpicKeys = append(dedupedEpicKeys, k)
 	}
+	log.Printf("JQL %s returned %s", jql, dedupedEpicKeys)
 
 	epicToInfo := getEpicInfos(jc, dedupedEpicKeys)
 	for i := range result {
