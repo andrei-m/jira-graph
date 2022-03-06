@@ -29,8 +29,6 @@ func StartServer(user, pass, jiraHost string, fc FieldConfig) error {
 	r.GET("/api/issues/:key/related", gc.getRelatedIssues)
 	r.GET("/api/issues/:key/details", gc.redirectToJIRA)
 	r.GET("/api/milestones/:key", gc.getMilestoneGraph)
-	r.GET("/epics/:key", gc.getIssue)
-	r.GET("/issues/:key", gc.getIssue)
 
 	return r.Run()
 }
