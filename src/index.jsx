@@ -1,16 +1,24 @@
-import { render } from 'react-dom';
 import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Outlet,
+    render
+} from 'react-dom';
+import {
+    BrowserRouter,
+    Routes,
+    Route,
+    Outlet,
 } from 'react-router-dom';
-import { IssueList } from './IssueList';
-import { RoutedIssueGraph } from './Graph';
-import { NotFound } from './Errors';
+import {
+    IssueList
+} from './IssueList';
+import {
+    RoutedIssueGraph
+} from './Graph';
+import {
+    NotFound
+} from './Errors';
 
 render(
-  <BrowserRouter>
+    <BrowserRouter>
     <Routes>
       <Route path="/" element={<IssueList />} />
       <Route path="/index.html" element={<IssueList />} />
@@ -24,5 +32,5 @@ render(
       <Route path="*" element={<NotFound />} />
     </Routes>
   </BrowserRouter>,
-  document.getElementById('root')
+    document.getElementById('root')
 );

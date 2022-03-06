@@ -1,5 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import {
+    Link
+} from 'react-router-dom';
 import {
     getRecentIssues
 } from './recent';
@@ -45,7 +47,7 @@ class Issue extends React.Component {
     render() {
         const path = '/issues/' + this.props.issueKey;
         return (
-          <li>
+            <li>
             <Link to={path} key={this.props.issueKey}>{this.props.issueKey} - {this.props.summary}</Link>
           </li>
         );
