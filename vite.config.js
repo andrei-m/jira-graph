@@ -9,5 +9,16 @@ export default defineConfig({
 				target: 'http://localhost:8080'
 			}
 		}
-	}
+	},
+    build: {
+      minify: false,
+      commonjsOptions: {
+        dynamicRequireTargets: [
+          'node_modules/graphlib/lib/alg/*.js',
+          'node_modules/graphlib/lib/data/*.js',
+          'node_modules/graphlib/lib/*.js',
+          'node_modules/graphlib/*.js'
+        ]
+      }
+    }
 })

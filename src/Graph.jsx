@@ -1,6 +1,7 @@
 import cytoscape from 'cytoscape';
 import dagre from 'cytoscape-dagre';
 import React from 'react';
+import { Graph as foo} from 'graphlib';
 import { useParams } from 'react-router-dom';
 import {
     pushRecentIssue
