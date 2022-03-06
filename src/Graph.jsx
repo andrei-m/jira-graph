@@ -137,7 +137,7 @@ class PopupAssignee extends React.Component {
 
 class PopupKey extends React.Component {
     render() {
-        const url = '/epics/' + this.props.epicKey + '/details';
+        const url = '/api/issues/' + this.props.epicKey + '/details';
 
         return (
             <span className="popup-key">

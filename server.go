@@ -27,11 +27,10 @@ func StartServer(user, pass, jiraHost string, fc FieldConfig) error {
 	r.GET("/api/epics/:key", gc.getEpicGraph)
 	r.GET("/api/issues/:key", gc.getIssue)
 	r.GET("/api/issues/:key/related", gc.getRelatedIssues)
+	r.GET("/api/issues/:key/details", gc.redirectToJIRA)
 	r.GET("/api/milestones/:key", gc.getMilestoneGraph)
 	r.GET("/epics/:key", gc.getIssue)
-	r.GET("/epics/:key/details", gc.redirectToJIRA)
 	r.GET("/issues/:key", gc.getIssue)
-	r.GET("/issues/:key/details", gc.redirectToJIRA)
 
 	return r.Run()
 }
