@@ -576,7 +576,7 @@ class IssueGraph extends React.Component {
             issue: null,
             jiraHost: null,
             isLoaded: false,
-        }
+        };
     }
 
     render() {
@@ -600,22 +600,18 @@ class IssueGraph extends React.Component {
 				</h1>
 				<GraphApp issueKey={issue.key}
                     issueType={issue.type}
-					initialEstimate={issue.initialEstimate} 
+					initialEstimate={issue.initialEstimate}
 					toggleMenu={(show) => this.toggleMenu(show)} />
 			</div>
         )
     }
 
     toggleMenu(show) {
-        if (show === undefined) {
-            this.setState({
-                showMenu: !this.state.showMenu,
-            });
-            return;
-        }
-        this.setState({
-            showMenu: show,
-        });
+        this.setState(prevState => ({
+          ...prevState,
+          ...{
+            showMenu: show === undefined ? !prevState.showMenu : show,
+          }}));
     }
 
     componentDidMount() {
@@ -630,14 +626,14 @@ class IssueGraph extends React.Component {
                 return res.json();
             })
             .then(result => {
-                this.setState({
+                this.setState(prevState => ({
+                  ...prevState,
+                  ...{
                     isLoaded: true,
                     error: false,
                     issue: result.issue,
                     jiraHost: result.jiraHost,
-                    showMenu: this.state.showMenu,
-                });
-
+                  }}));
                 const issue = {
                     key: this.props.issueKey,
                     summary: result.issue.summary
@@ -647,14 +643,15 @@ class IssueGraph extends React.Component {
             }).catch(
                 (err) => {
                     console.log('failed to load issue ' + issueKey + ' error: ' + err);
-                    this.setState({
+                    this.setState(prevState => ({
+                      ...prevState,
+                      ...{
                         isLoaded: false,
                         error: true,
-                        showMenu: this.state.showMenu,
                         issue: null,
                         jiraHost: null,
+                      }}));
                     });
-                });
     }
 }
 
