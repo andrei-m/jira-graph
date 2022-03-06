@@ -8,7 +8,6 @@ import {
 import { IssueList } from './IssueList';
 import { RoutedIssueGraph } from './Graph';
 import { NotFound } from './Errors';
-import './index.css';
 
 render(
   <BrowserRouter>

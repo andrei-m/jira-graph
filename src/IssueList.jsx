@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import {
     getRecentIssues
 } from './recent';
+import './issueList.css';
 
 class IssueList extends React.Component {
     constructor(props) {
@@ -22,7 +23,7 @@ class IssueList extends React.Component {
             issues.push(<Issue key={e.key} issueKey={e.key} summary={e.summary} />);
         }
         return (
-            <div>
+            <div className="issueList">
             <h1>jiragraph</h1>
             <h3>Recently viewed issues</h3>
             <ul>{issues}</ul>
