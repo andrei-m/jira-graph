@@ -111,8 +111,6 @@ func getMilestoneEpics(jc jiraClient, milestoneKey string) ([]issue, error) {
 }
 
 func getIssuesJQL(jc jiraClient, jql string) ([]issue, error) {
-	//TODO: temporary
-	log.Printf("JQL: %s\n", jql)
 	result := []issue{}
 	epicKeys := map[string]struct{}{}
 
@@ -146,6 +144,7 @@ func getIssuesJQL(jc jiraClient, jql string) ([]issue, error) {
 	for k := range epicKeys {
 		dedupedEpicKeys = append(dedupedEpicKeys, k)
 	}
+	log.Printf("JQL %s returned %s", jql, dedupedEpicKeys)
 
 	epicToInfo := getEpicInfos(jc, dedupedEpicKeys)
 	for i := range result {
