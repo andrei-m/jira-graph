@@ -580,7 +580,6 @@ class IssueGraph extends React.Component {
     }
 
     render() {
-        console.log(this.state);
         if (this.state.error) {
             return <div>Error: failed to fetch the issue</div>
         } else if (!this.state.isLoaded) {
@@ -638,6 +637,12 @@ class IssueGraph extends React.Component {
                     jiraHost: result.jiraHost,
                     showMenu: this.state.showMenu,
                 });
+
+                const issue = {
+                    key: this.props.issueKey,
+                    summary: result.issue.summary
+                };
+                pushRecentIssue(issue);
                 console.log('loaded issue ' + issueKey);
             }).catch(
                 (err) => {
@@ -758,20 +763,3 @@ class Legend extends React.Component {
 export {
   RoutedIssueGraph
 };
-
-/*
-ReactDOM.render(<App issueKey={root.dataset.issueKey}
-        issueType={root.dataset.issueType}
-		issueColor={root.dataset.issueColor}
-		issueSummary={root.dataset.issueSummary}
-		issueAssignee={root.dataset.issueAssignee}
-		issueAssigneeImageURL={root.dataset.issueAssigneeImageUrl}
-		initialEstimate={root.dataset.issueInitialEstimate}
-		jiraHost={root.dataset.jiraHost} />, root);
-
-var issue = {
-    key: root.dataset.issueKey,
-    summary: root.dataset.issueSummary
-};
-pushRecentIssue(issue);
-*/
