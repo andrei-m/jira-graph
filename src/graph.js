@@ -633,7 +633,7 @@ class EpicStats extends React.Component {
             <div className="epicStats">
                 <table>
                   <thead>
-                    <tr><th colspan="2">Point Breakdown</th></tr>
+                    <tr><th colSpan="2">Point Breakdown</th></tr>
                   </thead>
                   <tbody>{rows}</tbody>
                 </table>
