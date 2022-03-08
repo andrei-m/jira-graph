@@ -1,6 +1,8 @@
 import cytoscape from 'cytoscape';
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import {
+    useParams
+} from 'react-router-dom';
 import {
     pushRecentIssue
 } from './recent';
@@ -606,10 +608,11 @@ class IssueGraph extends React.Component {
 
     toggleMenu(show) {
         this.setState(prevState => ({
-          ...prevState,
-          ...{
-            showMenu: show === undefined ? !prevState.showMenu : show,
-          }}));
+            ...prevState,
+            ...{
+                showMenu: show === undefined ? !prevState.showMenu : show,
+            }
+        }));
     }
 
     componentDidMount() {
@@ -625,13 +628,14 @@ class IssueGraph extends React.Component {
             })
             .then(result => {
                 this.setState(prevState => ({
-                  ...prevState,
-                  ...{
-                    isLoaded: true,
-                    error: false,
-                    issue: result.issue,
-                    jiraHost: result.jiraHost,
-                  }}));
+                    ...prevState,
+                    ...{
+                        isLoaded: true,
+                        error: false,
+                        issue: result.issue,
+                        jiraHost: result.jiraHost,
+                    }
+                }));
                 const issue = {
                     key: this.props.issueKey,
                     summary: result.issue.summary
@@ -642,14 +646,15 @@ class IssueGraph extends React.Component {
                 (err) => {
                     console.log('failed to load issue ' + issueKey + ' error: ' + err);
                     this.setState(prevState => ({
-                      ...prevState,
-                      ...{
-                        isLoaded: false,
-                        error: true,
-                        issue: null,
-                        jiraHost: null,
-                      }}));
-                    });
+                        ...prevState,
+                        ...{
+                            isLoaded: false,
+                            error: true,
+                            issue: null,
+                            jiraHost: null,
+                        }
+                    }));
+                });
     }
 }
 
@@ -756,5 +761,5 @@ class Legend extends React.Component {
 }
 
 export {
-  RoutedIssueGraph
+    RoutedIssueGraph
 };
