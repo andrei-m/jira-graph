@@ -1,7 +1,5 @@
 import cytoscape from 'cytoscape';
-import dagre from 'cytoscape-dagre';
 import React from 'react';
-import { Graph as foo} from 'graphlib';
 import { useParams } from 'react-router-dom';
 import {
     pushRecentIssue
@@ -10,8 +8,6 @@ import {
     colors
 } from './colors';
 import './graph.css';
-
-cytoscape.use(dagre);
 
 //TODO: these statuses are all implementation-specific and should be made customizable.
 const statuses = {
@@ -415,8 +411,9 @@ class Graph extends React.Component {
             boxSelectionEnabled: false,
             autounselectify: true,
             layout: {
-                name: 'dagre',
-                directed: true
+                name: 'breadthfirst',
+                directed: true,
+                padding: 100
             },
             style: [{
                     selector: 'node',
@@ -556,9 +553,9 @@ class Graph extends React.Component {
             }
         });
         this.state.cy.layout({
-            name: 'dagre',
+            name: 'breadthfirst',
             directed: true,
-            nodeSep: 100
+            padding: 100,
         }).run();
     }
 }
