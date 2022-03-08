@@ -21,8 +21,7 @@ func StartServer(user, pass, jiraHost string, fc FieldConfig) error {
 
 	r := gin.Default()
 	r.Static("/assets", "./dist/assets")
-	r.StaticFile("./", "./dist/index.html")
-	r.GET("./index.html", func(c *gin.Context) { c.Redirect(http.StatusFound, "/") })
+	r.NoRoute(func(c *gin.Context) { c.File("./dist/index.html") })
 
 	r.GET("/api/epics/:key", gc.getEpicGraph)
 	r.GET("/api/issues/:key", gc.getIssue)
