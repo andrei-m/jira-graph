@@ -10,11 +10,11 @@ import (
 
 var (
 	jiraHost             = flag.String("jira-host", "", "JIRA hostname")
-	initialEstimateField = flag.String("initial-estimate-field", "customfield_11000", "the name of the custom field an epic's initial estimate (story points, etc.)")
-	estimateField        = flag.String("estimate-field", "customfield_10004", "the name of the custom field for work estimation (story points, etc.)")
+	initialEstimateField = flag.String("initial-estimate-field", "timeoriginalestimate", "the name of the custom field an epic's initial estimate (story points, etc.)")
+	estimateField        = flag.String("estimate-field", "customfield_10031", "the name of the custom field for work estimation (story points, etc.)")
 	flaggedField         = flag.String("flagged-field", "customfield_10002", "the name of the custom field for impediment flagging")
-	sprintsField         = flag.String("sprints-field", "customfield_10007", "the name of the custom field for Greenhopper sprints")
-	epicLinkField        = flag.String("epic-link-field", "customfield_10200", "the name of the custom field for Epic Link")
+	sprintsField         = flag.String("sprints-field", "Sprint", "the name of the custom field for Greenhopper sprints")
+	epicLinkField        = flag.String("epic-link-field", "Epic Link", "the name of the custom field for Epic Link")
 )
 
 func main() {
