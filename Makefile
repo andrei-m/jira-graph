@@ -3,7 +3,7 @@ frontend:
 	npm install
 	npm run-script build
 
-build: test preprocess
+build: test
 	go install -tags=nomsgpack -ldflags="-s -w" github.com/andrei-m/jira-graph/graphcmd
 
 dev: test
@@ -11,6 +11,3 @@ dev: test
 
 test: frontend
 	go test
-
-preprocess:
-	js-beautify -r -X src/*
