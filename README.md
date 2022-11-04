@@ -13,6 +13,8 @@ When built, the backend API server binary, `graphcmd`, will embed all frontend a
 Local Development
 -----------------
 
+Install NodeJS 16 or newer: https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-20-04
+
 1. Build the frontend first, so that the 'dist' folder can be embedded when the backend is compiled:
 ```
 npm install
