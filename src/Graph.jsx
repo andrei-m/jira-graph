@@ -284,16 +284,10 @@ class RelatedIssues extends React.Component {
             return <div>none!</div>;
         }
 
-        var statusToEpics = {};
-
-        for (var i = 0; i < issues.length; i++) {
-            const epicStatus = issues[i].status;
-            if (statusToEpics[epicStatus] === undefined) {
-                statusToEpics[epicStatus] = [issues[i]];
-                continue
-            }
-            statusToEpics[epicStatus].push(issues[i]);
-        }
+        const statusToEpics = issues.reduce((acc, issue) => ({
+            ...acc,
+            [issue.status]: (acc[issue.status] ?? []).concat(issue),
+        }), {});
 
         if (Object.keys(statusToEpics).length === 1) {
             return <RelatedIssuesSection issues={issues} />;
@@ -676,20 +670,18 @@ class EpicStats extends React.Component {
     }
 
     getBreakdownByStatus() {
-        var issueGraph = this.props.issueGraph;
-        var result = {};
-        for (var i = 0; i < issueGraph.issues.length; i++) {
-            var status = categorizeStatus(issueGraph.issues[i].status);
+        const issueGraph = this.props.issueGraph;
+        return issueGraph.issues.reduce((result, iss) => {
+            let status = categorizeStatus(iss.status);
             if (status === statuses.ResolvedOnStaging) {
                 status = statuses.InProgress;
             }
-            if (result[status]) {
-                result[status] += issueGraph.issues[i].estimate;
-                continue;
-            }
-            result[status] = issueGraph.issues[i].estimate;
-        }
-        return result;
+
+            return {
+                ...result,
+                [status]: (result[status] ?? 0) + iss.estimate,
+            };
+        }, {});
     }
 }
 
@@ -699,13 +691,14 @@ class Legend extends React.Component {
         const selectedEpics = this.props.selectedEpics;
 
         //TODO: flatten the epics once in GraphApp to resolve a prop of epic->color code and state for epic->selected
-        var epicKeyToInfo = {};
-        for (var i = 0; i < issues.length; i++) {
-            epicKeyToInfo[issues[i].epicKey] = {
-                color: issues[i].color,
-                epicName: issues[i].epicName
-            };
-        }
+        const epicKeyToInfo = issues.reduce((map, iss) => ({
+            ...map,
+            [iss.epicKey]: {
+                color: iss.color,
+                epicName: iss.epicName,
+            },
+        }), {});
+
         if (Object.keys(epicKeyToInfo).length <= 1) {
             return null;
         }
