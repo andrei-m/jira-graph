@@ -72,7 +72,7 @@ class Popup extends React.Component {
 
         const epic = this.props.selectedEpic.epic;
 
-        var className = 'popup';
+        let className = 'popup';
         if (epic.flagged) {
             className = className + ' flagged';
         }
@@ -245,7 +245,7 @@ class GraphApp extends React.Component {
 
 class Menu extends React.Component {
     render() {
-        var labelStyle = {
+        const labelStyle = {
             "backgroundColor": colors[this.props.issueColor]
         };
 
@@ -382,7 +382,7 @@ class Graph extends React.Component {
     }
 
     shouldUpdateGraph(prevSelectedEpics, selectedEpics) {
-        for (var key of selectedEpics.keys()) {
+        for (let key of selectedEpics.keys()) {
             if (prevSelectedEpics.get(key) !== selectedEpics.get(key)) {
                 return true;
             }
@@ -415,7 +415,7 @@ class Graph extends React.Component {
                         'border-width': function(ele) {
                             const sprints = ele.data('sprints');
                             if (sprints) {
-                                for (var i = 0; i < sprints.length; i++) {
+                                for (let i = 0; i < sprints.length; i++) {
                                     if (sprints[i].state === 'ACTIVE' || sprints[i].state === 'CLOSED') {
                                         return 5;
                                     }
