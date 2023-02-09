@@ -369,14 +369,11 @@ class RelatedIssuesSection extends React.Component {
 }
 
 class Graph extends React.Component {
-    constructor(props) {
-        super(props);
-        this.myRef = React.createRef();
-        this.state = {
-            selectedEpic: null,
-            cy: null,
-        };
-    }
+    myRef = React.createRef();
+    state = {
+        selectedEpic: null,
+        cy: null,
+    };
 
     render() {
         return (
@@ -568,16 +565,13 @@ function RoutedIssueGraph() {
 }
 
 class IssueGraph extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            showMenu: false,
-            error: null,
-            issue: null,
-            jiraHost: null,
-            isLoaded: false,
-        };
-    }
+    state = {
+        showMenu: false,
+        error: null,
+        issue: null,
+        jiraHost: null,
+        isLoaded: false,
+    };
 
     render() {
         if (this.state.error) {
