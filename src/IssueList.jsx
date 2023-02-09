@@ -16,7 +16,7 @@ class IssueList extends React.Component {
     }
 
     render() {
-        if (this.state.issues.length == 0) {
+        if (this.state.issues.length === 0) {
             return <div>no recent issues </div>;
         }
         var issues = [];

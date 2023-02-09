@@ -30,10 +30,10 @@ const epicAndMilestoneStatuses = {
 };
 
 function categorizeStatus(s) {
-    if (s == statuses.Backlog || s == statuses.ReadyForDev) {
+    if (s === statuses.Backlog || s === statuses.ReadyForDev) {
         return statuses.Backlog;
     }
-    if (s == statuses.InProgress || s == statuses.OnFeatureBranch || s == statuses.InCodeReview) {
+    if (s === statuses.InProgress || s === statuses.OnFeatureBranch || s === statuses.InCodeReview) {
         return statuses.InProgress;
     }
     return s;
@@ -41,16 +41,16 @@ function categorizeStatus(s) {
 
 function statusToRGB(s) {
     const categorized = categorizeStatus(s);
-    if (categorized == statuses.Backlog) {
+    if (categorized === statuses.Backlog) {
         return '#ffffff';
     }
-    if (categorized == statuses.InProgress) {
+    if (categorized === statuses.InProgress) {
         return '#35e82c';
     }
-    if (categorized == statuses.ResolvedOnStaging) {
+    if (categorized === statuses.ResolvedOnStaging) {
         return '#2C35E8';
     }
-    if (categorized == statuses.Closed) {
+    if (categorized === statuses.Closed) {
         return '#959595';
     }
     return '#000000';
@@ -102,7 +102,7 @@ class Popup extends React.Component {
 class PopupSprint extends React.Component {
     render() {
         const sprints = this.props.sprints;
-        if (sprints.length == 0) {
+        if (sprints.length === 0) {
             return null;
         }
         return <span> {sprints[sprints.length-1].name}</span>;
@@ -226,7 +226,7 @@ class GraphApp extends React.Component {
     componentDidMount() {
         const issueKey = this.props.issueKey;
         console.log('loading ' + issueKey);
-        const uriPrefix = this.props.issueType == "Milestone" ? "/api/milestones/" : "/api/epics/";
+        const uriPrefix = this.props.issueType === "Milestone" ? "/api/milestones/" : "/api/epics/";
 
         fetch(uriPrefix + issueKey)
             .then(res => {
@@ -288,7 +288,7 @@ class RelatedIssues extends React.Component {
             return <div>Loading...</div>;
         }
         const issues = this.state.issues;
-        if (issues.length == 0) {
+        if (issues.length === 0) {
             return <div>none!</div>;
         }
 
@@ -303,7 +303,7 @@ class RelatedIssues extends React.Component {
             statusToEpics[epicStatus].push(issues[i]);
         }
 
-        if (Object.keys(statusToEpics).length == 1) {
+        if (Object.keys(statusToEpics).length === 1) {
             return <RelatedIssuesSection issues={issues} />;
         }
 
@@ -399,7 +399,7 @@ class Graph extends React.Component {
 
     shouldUpdateGraph(prevSelectedEpics, selectedEpics) {
         for (var key of selectedEpics.keys()) {
-            if (prevSelectedEpics.get(key) != selectedEpics.get(key)) {
+            if (prevSelectedEpics.get(key) !== selectedEpics.get(key)) {
                 return true;
             }
         }
@@ -432,7 +432,7 @@ class Graph extends React.Component {
                             const sprints = ele.data('sprints');
                             if (sprints) {
                                 for (var i = 0; i < sprints.length; i++) {
-                                    if (sprints[i].state == 'ACTIVE' || sprints[i].state == 'CLOSED') {
+                                    if (sprints[i].state === 'ACTIVE' || sprints[i].state === 'CLOSED') {
                                         return 5;
                                     }
                                 }
@@ -700,7 +700,7 @@ class EpicStats extends React.Component {
         var result = {};
         for (var i = 0; i < issueGraph.issues.length; i++) {
             var status = categorizeStatus(issueGraph.issues[i].status);
-            if (status == statuses.ResolvedOnStaging) {
+            if (status === statuses.ResolvedOnStaging) {
                 status = statuses.InProgress;
             }
             if (result[status]) {
