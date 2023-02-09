@@ -128,8 +128,8 @@ class PopupAssignee extends React.Component {
         const alt = 'Assignee: ' + this.props.assignee;
         return (
             <span className="popup-avatar">
-        <img src={this.props.assigneeImageURL} alt={alt} title={alt} />
-      </span>
+                <img src={this.props.assigneeImageURL} alt={alt} title={alt} />
+            </span>
         )
     }
 }
@@ -140,8 +140,8 @@ class PopupKey extends React.Component {
 
         return (
             <span className="popup-key">
-          <a href={url} target="_blank">{this.props.epicKey}</a>
-        </span>
+                <a href={url} target="_blank">{this.props.epicKey}</a>
+            </span>
         );
     }
 }
@@ -171,8 +171,8 @@ class PopupLabels extends React.Component {
         }
         return (
             <div className="popup-labels">
-        <ul>{labelListItems}</ul>
-      </div>
+                <ul>{labelListItems}</ul>
+            </div>
         );
     }
 }
@@ -259,14 +259,14 @@ class Menu extends React.Component {
 
         return (
             <span className="menu-container">
-      <label htmlFor="menu-toggle" className={`menu-toggle-label ${this.props.issueColor}`} style={labelStyle} >&#9776;</label>
-		<input type="checkbox" id="menu-toggle" checked={this.props.showMenu} onChange={() => this.props.toggleMenu()} />
-		<div className="menu">
-			Related issues
-			<hr />
-            <RelatedIssues issueKey={this.props.issueKey} />
-		</div>
-      </span>
+                <label htmlFor="menu-toggle" className={`menu-toggle-label ${this.props.issueColor}`} style={labelStyle} >&#9776;</label>
+                <input type="checkbox" id="menu-toggle" checked={this.props.showMenu} onChange={() => this.props.toggleMenu()} />
+                <div className="menu">
+                    Related issues
+                    <hr />
+                    <RelatedIssues issueKey={this.props.issueKey} />
+                </div>
+            </span>
         )
     }
 }
@@ -381,9 +381,9 @@ class Graph extends React.Component {
     render() {
         return (
             <div>
-          <div className = "cy" ref = {this.myRef} />
-          <Popup selectedEpic={this.state.selectedEpic} />
-        </div>
+                <div className="cy" ref={this.myRef} />
+                <Popup selectedEpic={this.state.selectedEpic} />
+            </div>
         );
     }
 
@@ -753,9 +753,9 @@ class Legend extends React.Component {
         }
         return (
             <div className="legend">
-          <div className="legendHeader">Legend</div>
-          {elements}
-        </div>
+                <div className="legendHeader">Legend</div>
+                {elements}
+            </div>
         );
     }
 }
