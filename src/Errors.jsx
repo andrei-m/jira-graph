@@ -6,7 +6,7 @@ function NotFound() {
             <p>There's nothing here!</p>
         </main>
     );
-};
+}
 
 export {
     NotFound
