@@ -634,36 +634,48 @@ class IssueGraph extends React.Component {
 
 class EpicStats extends React.Component {
     render() {
-        var byStatus = this.getBreakdownByStatus();
-        var rows = [];
-        if (this.props.initialEstimate != 0) {
-            rows.push(<tr class="initialEstimate"><td>Initial Estimate</td><td className="points">{this.props.initialEstimate}</td></tr>);
-        }
+        const byStatus = this.getBreakdownByStatus();
+        const initialEstimateRow = this.props.initialEstimate !== 0 ? (
+            <tr className="initialEstimate">
+                <td>Initial Estimate</td>
+                <td className="points">{this.props.initialEstimate}</td>
+            </tr>
+        ) : undefined;
 
-        var totalPoints = 0;
-        var statusOrder = [statuses.Backlog, statuses.InProgress, statuses.Closed];
-        for (var i = 0; i < statusOrder.length; i++) {
-            var status = statusOrder[i];
-            if (byStatus[status]) {
-                rows.push(<tr><td>{status}</td><td className="points">{byStatus[status]}</td></tr>);
-                totalPoints += byStatus[status];
-            }
-        }
+        const statusRows = [statuses.Backlog, statuses.InProgress, statuses.Closed].flatMap(status => {
+            return byStatus[status] !== undefined ? [(
+                <tr key={status}>
+                    <td>{status}</td>
+                    <td className="points">{byStatus[status]}</td>
+                </tr>
+            )] : [];
+        })
 
-        if (totalPoints > 0) {
-            rows.push(<tr className="total"><td>Total</td><td className="points">{totalPoints}</td></tr>);
-            var closedPoints = byStatus[statuses.Closed] ? byStatus[statuses.Closed] : 0;
-            const closedPercent = Math.round(closedPoints / totalPoints * 100);
-            rows.push(<tr className="total"><td colspan="2">{closedPoints}/{totalPoints} Closed ({closedPercent}%)</td></tr>)
-        }
+        const totalPoints = Object.values(byStatus).reduce((sum, statusPoints) => sum + statusPoints, 0);
+        const totalPointsRow = totalPoints > 0 ? (
+            <tr className="total"><td>Total</td><td className="points">{totalPoints}</td></tr>
+        ) : undefined;
+        const closedPoints = byStatus[statuses.Closed] ?? 0;
+        const closedPointsRow = totalPoints > 0 ? (
+            <tr className="total">
+                <td colSpan="2">
+                    {closedPoints}/{totalPoints} Closed ({Math.round(closedPoints / totalPoints * 100)}%)
+                </td>
+            </tr>
+        ) : undefined;
 
         return (
             <div className="epicStats">
                 <table>
-                  <thead>
-                    <tr><th colSpan="2">Point Breakdown</th></tr>
-                  </thead>
-                  <tbody>{rows}</tbody>
+                    <thead>
+                        <tr><th colSpan="2">Point Breakdown</th></tr>
+                    </thead>
+                    <tbody>
+                        {initialEstimateRow}
+                        {statusRows}
+                        {totalPointsRow}
+                        {closedPointsRow}
+                    </tbody>
                 </table>
 			</div>
         );
