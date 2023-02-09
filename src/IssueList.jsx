@@ -19,11 +19,7 @@ class IssueList extends React.Component {
         if (this.state.issues.length === 0) {
             return <div>no recent issues </div>;
         }
-        var issues = [];
-        for (var i = 0; i < this.state.issues.length; i++) {
-            const e = this.state.issues[i];
-            issues.push(<Issue key={e.key} issueKey={e.key} summary={e.summary} />);
-        }
+        const issues = this.state.issues.map((e) => <Issue key={e.key} issueKey={e.key} summary={e.summary} />);
         return (
             <div className="issueList">
             <h1>jiragraph</h1>
