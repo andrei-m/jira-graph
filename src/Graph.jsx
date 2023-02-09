@@ -165,10 +165,7 @@ class PopupStatus extends React.Component {
 
 class PopupLabels extends React.Component {
     render() {
-        var labelListItems = [];
-        for (var i = 0; i < this.props.labels.length; i++) {
-            labelListItems.push(<li>{this.props.labels[i]}</li>);
-        }
+        const labelListItems = this.props.labels.map(label => <li>{label}</li>);
         return (
             <div className="popup-labels">
                 <ul>{labelListItems}</ul>
@@ -350,21 +347,22 @@ class RelatedIssuesSection extends React.Component {
     render() {
         const issues = this.props.issues;
 
-        var elements = [];
-        if (this.props.header != undefined) {
-            elements.push(<span className="subHeader">{this.props.header}</span>);
-        }
+        const header = this.props.header === undefined
+            ? undefined
+            : (<span className="subHeader">{this.props.header}</span>);
 
-        for (var i = 0; i < issues.length; i++) {
-            const url = '/issues/' + issues[i].key;
-            elements.push(
-                <a href={url}>
-				<img src={issues[i].typeImageURL} />
-				{issues[i].key} - {issues[i].summary}
-			  </a>
-            );
-        }
-        return <div className="relatedIssuesSection">{elements}</div>;
+        const issueLinks = issues.map(iss => (
+            <a key={iss.key} href={`/issues/${iss.key}`}>
+                <img src={iss.typeImageURL} />
+                {iss.key} - {iss.summary}
+            </a>
+        ));
+        return (
+            <div className="relatedIssuesSection">
+                {header}
+                {issueLinks}
+            </div>
+        );
     }
 }
 
@@ -524,26 +522,22 @@ class Graph extends React.Component {
             }, issue)
         }));
 
-        var issueEdges = [];
-        for (var i = 0; i < issuesToGraph.length; i++) {
-            var blockingIssue = issuesToGraph[i].data.id;
-            var blockedIssues = issueGraph.graph[blockingIssue];
-            for (var j = 0; j < blockedIssues.length; j++) {
-                if (!issueKeys.has(blockedIssues[j])) {
-                    console.log('skipping edge for unselected epic issue ' + blockedIssues[j]);
-                    continue
+        const issueEdges = issuesToGraph.flatMap(iss => {
+            const blockingIssue = iss.data.id;
+            return issueGraph.graph[blockingIssue].flatMap(blockedIssue => {
+                if (!issueKeys.has(blockedIssue)) {
+                    console.log('skipping edge for unselected epic issue ' + blockedIssue);
+                    return []
                 }
-
-                var id = blockingIssue + '_blocks_' + blockedIssues[j];
-                issueEdges.push({
+                return [{
                     data: {
-                        id: id,
+                        id: `${blockingIssue}_blocks_${blockedIssue}`,
                         source: blockingIssue,
-                        target: blockedIssues[j]
+                        target: blockedIssue,
                     }
-                });
-            }
-        }
+                }]
+            });
+        });
 
         this.state.cy.json({
             elements: {
@@ -724,27 +718,25 @@ class Legend extends React.Component {
             return null;
         }
 
-        var elements = [];
-        for (var epicKey in epicKeyToInfo) {
-            var highlightStyle = {
-                "color": colors[epicKeyToInfo[epicKey].color]
+        const elements = Object.entries(epicKeyToInfo).map(([epicKey, epicInfo]) => {
+            const highlightStyle = {
+                "color": colors[epicInfo.color]
             };
-
-            elements.push(
-                <div>
-                  <label>
-                    <input type="checkbox"
-                      checked={selectedEpics.get(epicKey)} value={epicKey}
-                      onChange={(val) => this.props.handleEpicSelection(val)} />
-                    <span className="epicHighlight" style={highlightStyle}>&#9679;</span>
-                    <span class="legendTooltip">
-                      {epicKey}
-                      <span class="legendTooltipText">{epicKeyToInfo[epicKey].epicName}</span>
-                    </span>
-                  </label>
+            return (
+                <div key={epicKey}>
+                    <label>
+                        <input type="checkbox"
+                               checked={selectedEpics.get(epicKey)} value={epicKey}
+                               onChange={this.props.handleEpicSelection} />
+                        <span className="epicHighlight" style={highlightStyle}>&#9679;</span>
+                        <span className="legendTooltip">
+                            {epicKey}
+                            <span className="legendTooltipText">{epicInfo.epicName}</span>
+                        </span>
+                    </label>
                 </div>
             );
-        }
+        });
         return (
             <div className="legend">
                 <div className="legendHeader">Legend</div>
