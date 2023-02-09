@@ -186,12 +186,7 @@ class GraphApp extends React.Component {
     }
 
     initSelectedEpics(issueGraph) {
-        const issues = issueGraph.issues;
-        var selectedEpics = new Map();
-        for (var i = 0; i < issues.length; i++) {
-            selectedEpics.set(issues[i].epicKey, true);
-        }
-        return selectedEpics;
+        return new Map(issueGraph.issues.map(({ epicKey }) => [epicKey, true]));
     }
 
     handleEpicSelection(val) {
@@ -511,10 +506,7 @@ class Graph extends React.Component {
     renderGraph(issueGraph, selectedEpics) {
         const filteredIssues = issueGraph.issues.filter(issue => selectedEpics.get(issue.epicKey));
 
-        const issueKeys = new Map();
-        for (var i = 0; i < filteredIssues.length; i++) {
-            issueKeys.set(filteredIssues[i].key, true);
-        }
+        const issueKeys = new Map(filteredIssues.map(({ key }) => [key, true]));
 
         const issuesToGraph = filteredIssues.map(issue => ({
             data: Object.assign({
