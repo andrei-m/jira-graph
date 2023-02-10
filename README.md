@@ -40,3 +40,18 @@ To discover field IDs for passing as flag values, your JIRA instance's [issue fi
 ```
 curl https://subdomain.atlassian.net/rest/api/2/field --user <JIRA_USER>:<JIRA_PASS>
 ```
+
+Jira Cloud setup
+-----------------
+
+This section describes how to set up a sample Jira cloud instance for testing purposes.
+
+1. Sign up for a Jira account from https://www.atlassian.com/software/jira . Note the subdomain you use to sign up; in this example, it is `jiragraph`.
+2. Set up an API token https://id.atlassian.com/manage-profile/security/api-tokens
+3. Find the ID of the estimate field:
+```
+curl https://jiragraph.atlassian.net/rest/api/2/field --user <email you used to sign up>:<api key> | jq '.[] | select(.name=="Story Points") | .id'
+```
+4. Create an epic and a couple of issues with 'Epic Link' set to the epic. Add blocking relationships between the issues. In this example, the epic key is `JG-1`
+5. Use the instructions above to start up jiragraph. Pass the value from step 3 to `-estimate-field`
+6. If running the local Vite dev server, navigate to your epic key, e.g. http://localhost:3000/issues/JG-1
