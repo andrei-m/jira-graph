@@ -30,10 +30,10 @@ const epicAndMilestoneStatuses = {
 };
 
 function categorizeStatus(s) {
-    if (s == statuses.Backlog || s == statuses.ReadyForDev) {
+    if (s === statuses.Backlog || s === statuses.ReadyForDev) {
         return statuses.Backlog;
     }
-    if (s == statuses.InProgress || s == statuses.OnFeatureBranch || s == statuses.InCodeReview) {
+    if (s === statuses.InProgress || s === statuses.OnFeatureBranch || s === statuses.InCodeReview) {
         return statuses.InProgress;
     }
     return s;
@@ -41,16 +41,16 @@ function categorizeStatus(s) {
 
 function statusToRGB(s) {
     const categorized = categorizeStatus(s);
-    if (categorized == statuses.Backlog) {
+    if (categorized === statuses.Backlog) {
         return '#ffffff';
     }
-    if (categorized == statuses.InProgress) {
+    if (categorized === statuses.InProgress) {
         return '#35e82c';
     }
-    if (categorized == statuses.ResolvedOnStaging) {
+    if (categorized === statuses.ResolvedOnStaging) {
         return '#2C35E8';
     }
-    if (categorized == statuses.Closed) {
+    if (categorized === statuses.Closed) {
         return '#959595';
     }
     return '#000000';
@@ -72,7 +72,7 @@ class Popup extends React.Component {
 
         const epic = this.props.selectedEpic.epic;
 
-        var className = 'popup';
+        let className = 'popup';
         if (epic.flagged) {
             className = className + ' flagged';
         }
@@ -102,7 +102,7 @@ class Popup extends React.Component {
 class PopupSprint extends React.Component {
     render() {
         const sprints = this.props.sprints;
-        if (sprints.length == 0) {
+        if (sprints.length === 0) {
             return null;
         }
         return <span> {sprints[sprints.length-1].name}</span>;
@@ -128,8 +128,8 @@ class PopupAssignee extends React.Component {
         const alt = 'Assignee: ' + this.props.assignee;
         return (
             <span className="popup-avatar">
-        <img src={this.props.assigneeImageURL} alt={alt} title={alt} />
-      </span>
+                <img src={this.props.assigneeImageURL} alt={alt} title={alt} />
+            </span>
         )
     }
 }
@@ -140,8 +140,8 @@ class PopupKey extends React.Component {
 
         return (
             <span className="popup-key">
-          <a href={url} target="_blank">{this.props.epicKey}</a>
-        </span>
+                <a href={url} target="_blank">{this.props.epicKey}</a>
+            </span>
         );
     }
 }
@@ -165,14 +165,11 @@ class PopupStatus extends React.Component {
 
 class PopupLabels extends React.Component {
     render() {
-        var labelListItems = [];
-        for (var i = 0; i < this.props.labels.length; i++) {
-            labelListItems.push(<li>{this.props.labels[i]}</li>);
-        }
+        const labelListItems = this.props.labels.map(label => <li>{label}</li>);
         return (
             <div className="popup-labels">
-        <ul>{labelListItems}</ul>
-      </div>
+                <ul>{labelListItems}</ul>
+            </div>
         );
     }
 }
@@ -189,12 +186,7 @@ class GraphApp extends React.Component {
     }
 
     initSelectedEpics(issueGraph) {
-        const issues = issueGraph.issues;
-        var selectedEpics = new Map();
-        for (var i = 0; i < issues.length; i++) {
-            selectedEpics.set(issues[i].epicKey, true);
-        }
-        return selectedEpics;
+        return new Map(issueGraph.issues.map(({ epicKey }) => [epicKey, true]));
     }
 
     handleEpicSelection(val) {
@@ -226,7 +218,7 @@ class GraphApp extends React.Component {
     componentDidMount() {
         const issueKey = this.props.issueKey;
         console.log('loading ' + issueKey);
-        const uriPrefix = this.props.issueType == "Milestone" ? "/api/milestones/" : "/api/epics/";
+        const uriPrefix = this.props.issueType === "Milestone" ? "/api/milestones/" : "/api/epics/";
 
         fetch(uriPrefix + issueKey)
             .then(res => {
@@ -253,20 +245,20 @@ class GraphApp extends React.Component {
 
 class Menu extends React.Component {
     render() {
-        var labelStyle = {
+        const labelStyle = {
             "backgroundColor": colors[this.props.issueColor]
         };
 
         return (
             <span className="menu-container">
-      <label htmlFor="menu-toggle" className={`menu-toggle-label ${this.props.issueColor}`} style={labelStyle} >&#9776;</label>
-		<input type="checkbox" id="menu-toggle" checked={this.props.showMenu} onChange={() => this.props.toggleMenu()} />
-		<div className="menu">
-			Related issues
-			<hr />
-            <RelatedIssues issueKey={this.props.issueKey} />
-		</div>
-      </span>
+                <label htmlFor="menu-toggle" className={`menu-toggle-label ${this.props.issueColor}`} style={labelStyle} >&#9776;</label>
+                <input type="checkbox" id="menu-toggle" checked={this.props.showMenu} onChange={() => this.props.toggleMenu()} />
+                <div className="menu">
+                    Related issues
+                    <hr />
+                    <RelatedIssues issueKey={this.props.issueKey} />
+                </div>
+            </span>
         )
     }
 }
@@ -288,22 +280,16 @@ class RelatedIssues extends React.Component {
             return <div>Loading...</div>;
         }
         const issues = this.state.issues;
-        if (issues.length == 0) {
+        if (issues.length === 0) {
             return <div>none!</div>;
         }
 
-        var statusToEpics = {};
+        const statusToEpics = issues.reduce((acc, issue) => ({
+            ...acc,
+            [issue.status]: (acc[issue.status] ?? []).concat(issue),
+        }), {});
 
-        for (var i = 0; i < issues.length; i++) {
-            const epicStatus = issues[i].status;
-            if (statusToEpics[epicStatus] === undefined) {
-                statusToEpics[epicStatus] = [issues[i]];
-                continue
-            }
-            statusToEpics[epicStatus].push(issues[i]);
-        }
-
-        if (Object.keys(statusToEpics).length == 1) {
+        if (Object.keys(statusToEpics).length === 1) {
             return <RelatedIssuesSection issues={issues} />;
         }
 
@@ -350,40 +336,38 @@ class RelatedIssuesSection extends React.Component {
     render() {
         const issues = this.props.issues;
 
-        var elements = [];
-        if (this.props.header != undefined) {
-            elements.push(<span className="subHeader">{this.props.header}</span>);
-        }
+        const header = this.props.header === undefined
+            ? undefined
+            : (<span className="subHeader">{this.props.header}</span>);
 
-        for (var i = 0; i < issues.length; i++) {
-            const url = '/issues/' + issues[i].key;
-            elements.push(
-                <a href={url}>
-				<img src={issues[i].typeImageURL} />
-				{issues[i].key} - {issues[i].summary}
-			  </a>
-            );
-        }
-        return <div className="relatedIssuesSection">{elements}</div>;
+        const issueLinks = issues.map(iss => (
+            <a key={iss.key} href={`/issues/${iss.key}`}>
+                <img src={iss.typeImageURL} />
+                {iss.key} - {iss.summary}
+            </a>
+        ));
+        return (
+            <div className="relatedIssuesSection">
+                {header}
+                {issueLinks}
+            </div>
+        );
     }
 }
 
 class Graph extends React.Component {
-    constructor(props) {
-        super(props);
-        this.myRef = React.createRef();
-        this.state = {
-            selectedEpic: null,
-            cy: null,
-        };
-    }
+    myRef = React.createRef();
+    state = {
+        selectedEpic: null,
+        cy: null,
+    };
 
     render() {
         return (
             <div>
-          <div className = "cy" ref = {this.myRef} />
-          <Popup selectedEpic={this.state.selectedEpic} />
-        </div>
+                <div className="cy" ref={this.myRef} />
+                <Popup selectedEpic={this.state.selectedEpic} />
+            </div>
         );
     }
 
@@ -398,8 +382,8 @@ class Graph extends React.Component {
     }
 
     shouldUpdateGraph(prevSelectedEpics, selectedEpics) {
-        for (var key of selectedEpics.keys()) {
-            if (prevSelectedEpics.get(key) != selectedEpics.get(key)) {
+        for (let key of selectedEpics.keys()) {
+            if (prevSelectedEpics.get(key) !== selectedEpics.get(key)) {
                 return true;
             }
         }
@@ -431,8 +415,8 @@ class Graph extends React.Component {
                         'border-width': function(ele) {
                             const sprints = ele.data('sprints');
                             if (sprints) {
-                                for (var i = 0; i < sprints.length; i++) {
-                                    if (sprints[i].state == 'ACTIVE' || sprints[i].state == 'CLOSED') {
+                                for (let i = 0; i < sprints.length; i++) {
+                                    if (sprints[i].state === 'ACTIVE' || sprints[i].state === 'CLOSED') {
                                         return 5;
                                     }
                                 }
@@ -516,10 +500,7 @@ class Graph extends React.Component {
     renderGraph(issueGraph, selectedEpics) {
         const filteredIssues = issueGraph.issues.filter(issue => selectedEpics.get(issue.epicKey));
 
-        const issueKeys = new Map();
-        for (var i = 0; i < filteredIssues.length; i++) {
-            issueKeys.set(filteredIssues[i].key, true);
-        }
+        const issueKeys = new Map(filteredIssues.map(({ key }) => [key, true]));
 
         const issuesToGraph = filteredIssues.map(issue => ({
             data: Object.assign({
@@ -527,26 +508,22 @@ class Graph extends React.Component {
             }, issue)
         }));
 
-        var issueEdges = [];
-        for (var i = 0; i < issuesToGraph.length; i++) {
-            var blockingIssue = issuesToGraph[i].data.id;
-            var blockedIssues = issueGraph.graph[blockingIssue];
-            for (var j = 0; j < blockedIssues.length; j++) {
-                if (!issueKeys.has(blockedIssues[j])) {
-                    console.log('skipping edge for unselected epic issue ' + blockedIssues[j]);
-                    continue
+        const issueEdges = issuesToGraph.flatMap(iss => {
+            const blockingIssue = iss.data.id;
+            return issueGraph.graph[blockingIssue].flatMap(blockedIssue => {
+                if (!issueKeys.has(blockedIssue)) {
+                    console.log('skipping edge for unselected epic issue ' + blockedIssue);
+                    return []
                 }
-
-                var id = blockingIssue + '_blocks_' + blockedIssues[j];
-                issueEdges.push({
+                return [{
                     data: {
-                        id: id,
+                        id: `${blockingIssue}_blocks_${blockedIssue}`,
                         source: blockingIssue,
-                        target: blockedIssues[j]
+                        target: blockedIssue,
                     }
-                });
-            }
-        }
+                }]
+            });
+        });
 
         this.state.cy.json({
             elements: {
@@ -568,16 +545,13 @@ function RoutedIssueGraph() {
 }
 
 class IssueGraph extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            showMenu: false,
-            error: null,
-            issue: null,
-            jiraHost: null,
-            isLoaded: false,
-        };
-    }
+    state = {
+        showMenu: false,
+        error: null,
+        issue: null,
+        jiraHost: null,
+        isLoaded: false,
+    };
 
     render() {
         if (this.state.error) {
@@ -660,56 +634,66 @@ class IssueGraph extends React.Component {
 
 class EpicStats extends React.Component {
     render() {
-        var byStatus = this.getBreakdownByStatus();
-        var rows = [];
-        if (this.props.initialEstimate != 0) {
-            rows.push(<tr class="initialEstimate"><td>Initial Estimate</td><td className="points">{this.props.initialEstimate}</td></tr>);
-        }
+        const byStatus = this.getBreakdownByStatus();
+        const initialEstimateRow = this.props.initialEstimate !== 0 ? (
+            <tr className="initialEstimate">
+                <td>Initial Estimate</td>
+                <td className="points">{this.props.initialEstimate}</td>
+            </tr>
+        ) : undefined;
 
-        var totalPoints = 0;
-        var statusOrder = [statuses.Backlog, statuses.InProgress, statuses.Closed];
-        for (var i = 0; i < statusOrder.length; i++) {
-            var status = statusOrder[i];
-            if (byStatus[status]) {
-                rows.push(<tr><td>{status}</td><td className="points">{byStatus[status]}</td></tr>);
-                totalPoints += byStatus[status];
-            }
-        }
+        const statusRows = [statuses.Backlog, statuses.InProgress, statuses.Closed].flatMap(status => {
+            return byStatus[status] !== undefined ? [(
+                <tr key={status}>
+                    <td>{status}</td>
+                    <td className="points">{byStatus[status]}</td>
+                </tr>
+            )] : [];
+        })
 
-        if (totalPoints > 0) {
-            rows.push(<tr className="total"><td>Total</td><td className="points">{totalPoints}</td></tr>);
-            var closedPoints = byStatus[statuses.Closed] ? byStatus[statuses.Closed] : 0;
-            const closedPercent = Math.round(closedPoints / totalPoints * 100);
-            rows.push(<tr className="total"><td colspan="2">{closedPoints}/{totalPoints} Closed ({closedPercent}%)</td></tr>)
-        }
+        const totalPoints = Object.values(byStatus).reduce((sum, statusPoints) => sum + statusPoints, 0);
+        const totalPointsRow = totalPoints > 0 ? (
+            <tr className="total"><td>Total</td><td className="points">{totalPoints}</td></tr>
+        ) : undefined;
+        const closedPoints = byStatus[statuses.Closed] ?? 0;
+        const closedPointsRow = totalPoints > 0 ? (
+            <tr className="total">
+                <td colSpan="2">
+                    {closedPoints}/{totalPoints} Closed ({Math.round(closedPoints / totalPoints * 100)}%)
+                </td>
+            </tr>
+        ) : undefined;
 
         return (
             <div className="epicStats">
                 <table>
-                  <thead>
-                    <tr><th colSpan="2">Point Breakdown</th></tr>
-                  </thead>
-                  <tbody>{rows}</tbody>
+                    <thead>
+                        <tr><th colSpan="2">Point Breakdown</th></tr>
+                    </thead>
+                    <tbody>
+                        {initialEstimateRow}
+                        {statusRows}
+                        {totalPointsRow}
+                        {closedPointsRow}
+                    </tbody>
                 </table>
 			</div>
         );
     }
 
     getBreakdownByStatus() {
-        var issueGraph = this.props.issueGraph;
-        var result = {};
-        for (var i = 0; i < issueGraph.issues.length; i++) {
-            var status = categorizeStatus(issueGraph.issues[i].status);
-            if (status == statuses.ResolvedOnStaging) {
+        const issueGraph = this.props.issueGraph;
+        return issueGraph.issues.reduce((result, iss) => {
+            let status = categorizeStatus(iss.status);
+            if (status === statuses.ResolvedOnStaging) {
                 status = statuses.InProgress;
             }
-            if (result[status]) {
-                result[status] += issueGraph.issues[i].estimate;
-                continue;
-            }
-            result[status] = issueGraph.issues[i].estimate;
-        }
-        return result;
+
+            return {
+                ...result,
+                [status]: (result[status] ?? 0) + iss.estimate,
+            };
+        }, {});
     }
 }
 
@@ -719,43 +703,42 @@ class Legend extends React.Component {
         const selectedEpics = this.props.selectedEpics;
 
         //TODO: flatten the epics once in GraphApp to resolve a prop of epic->color code and state for epic->selected
-        var epicKeyToInfo = {};
-        for (var i = 0; i < issues.length; i++) {
-            epicKeyToInfo[issues[i].epicKey] = {
-                color: issues[i].color,
-                epicName: issues[i].epicName
-            };
-        }
+        const epicKeyToInfo = issues.reduce((map, iss) => ({
+            ...map,
+            [iss.epicKey]: {
+                color: iss.color,
+                epicName: iss.epicName,
+            },
+        }), {});
+
         if (Object.keys(epicKeyToInfo).length <= 1) {
             return null;
         }
 
-        var elements = [];
-        for (var epicKey in epicKeyToInfo) {
-            var highlightStyle = {
-                "color": colors[epicKeyToInfo[epicKey].color]
+        const elements = Object.entries(epicKeyToInfo).map(([epicKey, epicInfo]) => {
+            const highlightStyle = {
+                "color": colors[epicInfo.color]
             };
-
-            elements.push(
-                <div>
-                  <label>
-                    <input type="checkbox"
-                      checked={selectedEpics.get(epicKey)} value={epicKey}
-                      onChange={(val) => this.props.handleEpicSelection(val)} />
-                    <span className="epicHighlight" style={highlightStyle}>&#9679;</span>
-                    <span class="legendTooltip">
-                      {epicKey}
-                      <span class="legendTooltipText">{epicKeyToInfo[epicKey].epicName}</span>
-                    </span>
-                  </label>
+            return (
+                <div key={epicKey}>
+                    <label>
+                        <input type="checkbox"
+                               checked={selectedEpics.get(epicKey)} value={epicKey}
+                               onChange={this.props.handleEpicSelection} />
+                        <span className="epicHighlight" style={highlightStyle}>&#9679;</span>
+                        <span className="legendTooltip">
+                            {epicKey}
+                            <span className="legendTooltipText">{epicInfo.epicName}</span>
+                        </span>
+                    </label>
                 </div>
             );
-        }
+        });
         return (
             <div className="legend">
-          <div className="legendHeader">Legend</div>
-          {elements}
-        </div>
+                <div className="legendHeader">Legend</div>
+                {elements}
+            </div>
         );
     }
 }
