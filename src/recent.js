@@ -15,7 +15,7 @@ const getRecentIssues = () => {
         try {
             parsed = JSON.parse(rawRecentIssues);
         } catch (e) {
-            console.log('failed to parse recent-epics from local storage: ' + e);
+            console.log(`failed to parse recent-epics from local storage: ${e}`);
         }
         if (parsed && parsed.constructor === Array) {
             return parsed;

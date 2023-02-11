@@ -60,23 +60,23 @@ class Popup extends React.Component {
         const yOffset = 45;
 
         const style = {
-            left: this.props.selectedEpic.popupPosition.x + 'px',
-            top: this.props.selectedEpic.popupPosition.y + yOffset + 'px',
+            left: `${this.props.selectedEpic.popupPosition.x}px`,
+            top: `${this.props.selectedEpic.popupPosition.y + yOffset}px`,
         };
 
         const epic = this.props.selectedEpic.epic;
 
         let className = 'popup';
         if (epic.flagged) {
-            className = className + ' flagged';
+            className = `${className} flagged`;
         }
 
         return (
             <div className={className} style={style}>
                 <div className='popup-summary'>{epic.summary}</div>
                 <div className='popup-container'>
-                    <PopupIcon alt={'Type: ' + epic.type} imageURL={epic.typeImageURL} />
-                    <PopupIcon alt={'Priority: ' + epic.priority} imageURL={epic.priorityImageURL} />
+                    <PopupIcon alt={`Type: ${epic.type}`} imageURL={epic.typeImageURL} />
+                    <PopupIcon alt={`Priority: ${epic.priority}`} imageURL={epic.priorityImageURL} />
                     <span className='popup popup-flagged'>{epic.flagged ? '⚑' : ''}</span>
                     <PopupEstimate estimate={epic.estimate} />
                     <PopupKey epicKey={epic.key} />
@@ -119,7 +119,7 @@ class PopupAssignee extends React.Component {
             return <span className='popup-avatar' />;
         }
 
-        const alt = 'Assignee: ' + this.props.assignee;
+        const alt = `Assignee: ${this.props.assignee}`;
         return (
             <span className='popup-avatar'>
                 <img src={this.props.assigneeImageURL} alt={alt} title={alt} />
@@ -130,7 +130,7 @@ class PopupAssignee extends React.Component {
 
 class PopupKey extends React.Component {
     render() {
-        const url = '/api/issues/' + this.props.epicKey + '/details';
+        const url = `/api/issues/${this.props.epicKey}/details`;
 
         return (
             <span className='popup-key'>
@@ -217,7 +217,7 @@ class GraphApp extends React.Component {
 
     componentDidMount() {
         const issueKey = this.props.issueKey;
-        console.log('loading ' + issueKey);
+        console.log(`loading ${issueKey}`);
         const uriPrefix = this.props.issueType === 'Milestone' ? '/api/milestones/' : '/api/epics/';
 
         fetch(uriPrefix + issueKey)
@@ -233,10 +233,10 @@ class GraphApp extends React.Component {
                     issueGraph: result,
                     selectedEpics: this.initSelectedEpics(result),
                 });
-                console.log('loaded ' + issueKey);
+                console.log(`loaded ${issueKey}`);
             })
             .catch((err) => {
-                console.log('failed to load ' + issueKey + ' error: ' + err);
+                console.log(`failed to load ${issueKey} error: ${err}`);
                 this.setState({
                     isLoaded: false,
                     error: true,
@@ -322,8 +322,8 @@ class RelatedIssues extends React.Component {
     componentDidMount() {
         const issueKey = this.props.issueKey;
 
-        console.log('loading related issues for ' + issueKey);
-        fetch('/api/issues/' + issueKey + '/related')
+        console.log(`loading related issues for ${issueKey}`);
+        fetch(`/api/issues/${issueKey}/related`)
             .then((res) => {
                 if (!res.ok) {
                     throw new Error('not ok');
@@ -335,10 +335,10 @@ class RelatedIssues extends React.Component {
                     isLoaded: true,
                     issues: result,
                 });
-                console.log('loaded related issues for ' + issueKey);
+                console.log(`loaded related issues for ${issueKey}`);
             })
             .catch(() => {
-                console.log('failed to load related issues for ' + issueKey);
+                console.log(`failed to load related issues for ${issueKey}`);
                 this.setState({
                     isLoaded: false,
                     error: true,
@@ -530,7 +530,7 @@ class Graph extends React.Component {
             const blockingIssue = iss.data.id;
             return issueGraph.graph[blockingIssue].flatMap((blockedIssue) => {
                 if (!issueKeys.has(blockedIssue)) {
-                    console.log('skipping edge for unselected epic issue ' + blockedIssue);
+                    console.log(`skipping edge for unselected epic issue ${blockedIssue}`);
                     return [];
                 }
                 return [
@@ -582,8 +582,8 @@ class IssueGraph extends React.Component {
             return <div>Loading...</div>;
         }
         const issue = this.state.issue;
-        const issueURL = 'https://' + this.state.jiraHost + '/browse/' + issue.key;
-        const issueLabel = issue.key + ' - ' + issue.summary;
+        const issueURL = `https://${this.state.jiraHost}/browse/${issue.key}`;
+        const issueLabel = `${issue.key} - ${issue.summary}`;
         return (
             <div>
                 <h1>
@@ -623,8 +623,8 @@ class IssueGraph extends React.Component {
     componentDidMount() {
         const issueKey = this.props.issueKey;
 
-        console.log('loading related issues for ' + issueKey);
-        fetch('/api/issues/' + issueKey)
+        console.log(`loading related issues for ${issueKey}`);
+        fetch(`/api/issues/${issueKey}`)
             .then((res) => {
                 if (!res.ok) {
                     throw new Error('not ok');
@@ -646,10 +646,10 @@ class IssueGraph extends React.Component {
                     summary: result.issue.summary,
                 };
                 pushRecentIssue(issue);
-                console.log('loaded issue ' + issueKey);
+                console.log(`loaded issue ${issueKey}`);
             })
             .catch((err) => {
-                console.log('failed to load issue ' + issueKey + ' error: ' + err);
+                console.log(`failed to load issue ${issueKey} error: ${err}`);
                 this.setState((prevState) => ({
                     ...prevState,
                     ...{
