@@ -11,3 +11,5 @@ parserOptions:
   sourceType: module
 ignorePatterns:
   - 'dist'
+rules:
+  no-var: error

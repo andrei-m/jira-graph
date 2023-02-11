@@ -293,7 +293,7 @@ class RelatedIssues extends React.Component {
             return <RelatedIssuesSection issues={issues} />;
         }
 
-        var sections = [];
+        const sections = [];
         for (const issueStatus in epicAndMilestoneStatuses) {
             const statusString = epicAndMilestoneStatuses[issueStatus];
             if (statusToEpics[statusString]) {

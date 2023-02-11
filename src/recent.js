@@ -11,7 +11,7 @@ const getRecentIssues = () => {
     }
     const rawRecentIssues = localStorage.getItem(localStorageKey);
     if (rawRecentIssues) {
-        var parsed = [];
+        let parsed = [];
         try {
             parsed = JSON.parse(rawRecentIssues);
         } catch (e) {
@@ -30,9 +30,9 @@ const pushRecentIssue = (issue) => {
     if (!hasLocalStorage) {
         return
     }
-    var issues = getRecentIssues();
-    for (var i = 0; i < issues.length; i++) {
-        if (issues[i].key === issue.key) {
+    const issues = getRecentIssues();
+    issues.forEach((current, i) => {
+        if (current.key === issue.key) {
             issues.splice(i, 1);
         }
     }
