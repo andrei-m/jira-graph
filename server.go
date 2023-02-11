@@ -2,7 +2,7 @@ package graph
 
 import (
 	"embed"
-	"io"
+	"html/template"
 	"io/fs"
 	"log"
 	"net/http"
@@ -40,19 +40,14 @@ func StartServer(user, pass, jiraHost string, fc FieldConfig) error {
 	r.GET("/api/milestones/:key", gc.getMilestoneGraph)
 
 	// this roundabout way of implementing FileFromFS is needed because of the index.html special case: https://github.com/gin-gonic/gin/issues/2654
+	if templates, err := template.ParseFS(distFS, "dist/*.html"); err != nil {
+		log.Panic(err)
+	} else {
+		r.SetHTMLTemplate(templates)
+	}
+
 	spaHandler := func(c *gin.Context) {
-		c.Header("Content-Type", "text/html")
-		c.Status(http.StatusOK)
-		f, err := http.FS(distFS).Open("dist/index.html")
-		if err != nil {
-			c.AbortWithError(http.StatusInternalServerError, err)
-			return
-		}
-		_, err = io.Copy(c.Writer, f)
-		if err != nil {
-			c.AbortWithError(http.StatusInternalServerError, err)
-			return
-		}
+		c.HTML(http.StatusOK, "index.html", nil)
 	}
 	r.GET("/", spaHandler)
 	r.GET("/index.html", spaHandler)
