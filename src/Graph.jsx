@@ -59,7 +59,7 @@ function statusToRGB(s) {
 class Popup extends React.Component {
     render() {
         if (this.props.selectedEpic == null) {
-            return <div className="empty"></div>
+            return <div className="empty"></div>;
         }
 
         //TODO: a hack until offsetHeight can be figured out
@@ -68,7 +68,7 @@ class Popup extends React.Component {
         const style = {
             left: this.props.selectedEpic.popupPosition.x + 'px',
             top: (this.props.selectedEpic.popupPosition.y + yOffset) + 'px',
-        }
+        };
 
         const epic = this.props.selectedEpic.epic;
 
@@ -95,7 +95,7 @@ class Popup extends React.Component {
             </div>
             <PopupStatus status={epic.status} />
           </div>
-        )
+        );
     }
 }
 
@@ -115,14 +115,14 @@ class PopupIcon extends React.Component {
             <span className="popup">
         <img src={this.props.imageURL} alt={this.props.alt} title={this.props.alt} />
       </span>
-        )
+        );
     }
 }
 
 class PopupAssignee extends React.Component {
     render() {
         if (this.props.assignee === '') {
-            return <span className="popup-avatar" />
+            return <span className="popup-avatar" />;
         }
 
         const alt = 'Assignee: ' + this.props.assignee;
@@ -130,7 +130,7 @@ class PopupAssignee extends React.Component {
             <span className="popup-avatar">
                 <img src={this.props.assigneeImageURL} alt={alt} title={alt} />
             </span>
-        )
+        );
     }
 }
 
@@ -158,8 +158,8 @@ class PopupStatus extends React.Component {
     render() {
         const style = {
             backgroundColor: statusToRGB(this.props.status),
-        }
-        return <div className="popup-status" style={style} />
+        };
+        return <div className="popup-status" style={style} />;
     }
 }
 
@@ -199,9 +199,9 @@ class GraphApp extends React.Component {
 
     render() {
         if (this.state.error) {
-            return <div>Error: failed to fetch the issue</div>
+            return <div>Error: failed to fetch the issue</div>;
         } else if (!this.state.isLoaded) {
-            return <div>Loading...</div>
+            return <div>Loading...</div>;
         } else {
             return (
                 <div>
@@ -259,7 +259,7 @@ class Menu extends React.Component {
                     <RelatedIssues issueKey={this.props.issueKey} />
                 </div>
             </span>
-        )
+        );
     }
 }
 
@@ -410,7 +410,7 @@ class Graph extends React.Component {
                         'font-size': 18,
                         'font-weight': 'bold',
                         'background-color': function(ele) {
-                            return statusToRGB(ele.data('status'))
+                            return statusToRGB(ele.data('status'));
                         },
                         'border-width': function(ele) {
                             const sprints = ele.data('sprints');
@@ -513,7 +513,7 @@ class Graph extends React.Component {
             return issueGraph.graph[blockingIssue].flatMap(blockedIssue => {
                 if (!issueKeys.has(blockedIssue)) {
                     console.log('skipping edge for unselected epic issue ' + blockedIssue);
-                    return []
+                    return [];
                 }
                 return [{
                     data: {
@@ -521,7 +521,7 @@ class Graph extends React.Component {
                         source: blockingIssue,
                         target: blockedIssue,
                     }
-                }]
+                }];
             });
         });
 
@@ -541,7 +541,7 @@ class Graph extends React.Component {
 
 function RoutedIssueGraph() {
     let params = useParams();
-    return <IssueGraph issueKey={params.issueKey} />
+    return <IssueGraph issueKey={params.issueKey} />;
 }
 
 class IssueGraph extends React.Component {
@@ -555,9 +555,9 @@ class IssueGraph extends React.Component {
 
     render() {
         if (this.state.error) {
-            return <div>Error: failed to fetch the issue</div>
+            return <div>Error: failed to fetch the issue</div>;
         } else if (!this.state.isLoaded) {
-            return <div>Loading...</div>
+            return <div>Loading...</div>;
         }
         const issue = this.state.issue;
         const issueURL = "https://" + this.state.jiraHost + "/browse/" + issue.key;
@@ -577,7 +577,7 @@ class IssueGraph extends React.Component {
 					initialEstimate={issue.initialEstimate}
 					toggleMenu={(show) => this.toggleMenu(show)} />
 			</div>
-        )
+        );
     }
 
     toggleMenu(show) {
@@ -649,7 +649,7 @@ class EpicStats extends React.Component {
                     <td className="points">{byStatus[status]}</td>
                 </tr>
             )] : [];
-        })
+        });
 
         const totalPoints = Object.values(byStatus).reduce((sum, statusPoints) => sum + statusPoints, 0);
         const totalPointsRow = totalPoints > 0 ? (

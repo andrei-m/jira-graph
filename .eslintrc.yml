@@ -13,3 +13,4 @@ ignorePatterns:
   - 'dist'
 rules:
   no-var: error
+  semi: error
