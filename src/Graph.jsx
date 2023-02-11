@@ -165,7 +165,7 @@ class PopupStatus extends React.Component {
 
 class PopupLabels extends React.Component {
     render() {
-        const labelListItems = this.props.labels.map(label => <li>{label}</li>);
+        const labelListItems = this.props.labels.map(label => <li key={label}>{label}</li>);
         return (
             <div className="popup-labels">
                 <ul>{labelListItems}</ul>
