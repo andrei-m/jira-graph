@@ -484,7 +484,7 @@ class Graph extends React.Component {
             });
         });
 
-        cy.on('mouseover', 'node', function(evt) {
+        cy.on('mouseover', 'node', function() {
             document.body.style.cursor = 'pointer';
         });
 
