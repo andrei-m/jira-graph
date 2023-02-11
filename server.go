@@ -29,6 +29,9 @@ func StartServer(user, pass, jiraHost string, fc FieldConfig) error {
 	}
 
 	r := gin.Default()
+	if err := r.SetTrustedProxies(nil); err != nil {
+		log.Println("failed to set trusted proxies on gin server")
+	}
 
 	r.GET("/api/epics/:key", gc.getEpicGraph)
 	r.GET("/api/issues/:key", gc.getIssue)
