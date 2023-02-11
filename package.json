@@ -23,6 +23,8 @@
     "@babel/core": "^7.17.5",
     "@babel/preset-env": "^7.16.11",
     "@vitejs/plugin-react": "^1.0.7",
+    "eslint": "^8.34.0",
+    "eslint-plugin-react": "^7.32.2",
     "vite": "^2.9.15"
   },
   "dependencies": {

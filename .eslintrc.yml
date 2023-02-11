@@ -1,0 +1,13 @@
+extends:
+  - 'eslint:recommended'
+  - 'plugin:react/recommended'
+env:
+  browser: true
+  es6: true
+parserOptions:
+  ecmaFeatures:
+    jsx: true
+  ecmaVersion: latest
+  sourceType: module
+ignorePatterns:
+  - 'dist'
