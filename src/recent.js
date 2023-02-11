@@ -2,7 +2,7 @@ const localStorageKey = 'recent-epics';
 const maxIssueCount = 10;
 
 const hasLocalStorage = () => {
-    return typeof(Storage) !== "undefined";
+    return typeof(Storage) !== 'undefined';
 };
 
 const getRecentIssues = () => {

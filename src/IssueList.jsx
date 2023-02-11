@@ -21,7 +21,7 @@ class IssueList extends React.Component {
         }
         const issues = this.state.issues.map((e) => <Issue key={e.key} issueKey={e.key} summary={e.summary} />);
         return (
-            <div className="issueList">
+            <div className='issueList'>
             <h1>jiragraph</h1>
             <h3>Recently viewed issues</h3>
             <ul>{issues}</ul>

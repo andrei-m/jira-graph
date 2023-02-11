@@ -59,7 +59,7 @@ function statusToRGB(s) {
 class Popup extends React.Component {
     render() {
         if (this.props.selectedEpic == null) {
-            return <div className="empty"></div>;
+            return <div className='empty'></div>;
         }
 
         //TODO: a hack until offsetHeight can be figured out
@@ -79,15 +79,15 @@ class Popup extends React.Component {
 
         return (
             <div className={className} style={style}>
-            <div className="popup-summary">{epic.summary}</div>
-            <div className="popup-container">
+            <div className='popup-summary'>{epic.summary}</div>
+            <div className='popup-container'>
               <PopupIcon alt={'Type: ' + epic.type} imageURL={epic.typeImageURL} />
               <PopupIcon alt={'Priority: ' + epic.priority} imageURL={epic.priorityImageURL} />
-              <span className="popup popup-flagged">{epic.flagged ? '⚑' : ''}</span>
+              <span className='popup popup-flagged'>{epic.flagged ? '⚑' : ''}</span>
               <PopupEstimate estimate={epic.estimate} />
               <PopupKey epicKey={epic.key} />
               <PopupAssignee assignee={epic.assignee} assigneeImageURL={epic.assigneeImageURL} />
-              <div className="popup-status-text">
+              <div className='popup-status-text'>
                   {epic.status}
                   <PopupSprint sprints={epic.sprints} />
               </div>
@@ -112,7 +112,7 @@ class PopupSprint extends React.Component {
 class PopupIcon extends React.Component {
     render() {
         return (
-            <span className="popup">
+            <span className='popup'>
         <img src={this.props.imageURL} alt={this.props.alt} title={this.props.alt} />
       </span>
         );
@@ -122,12 +122,12 @@ class PopupIcon extends React.Component {
 class PopupAssignee extends React.Component {
     render() {
         if (this.props.assignee === '') {
-            return <span className="popup-avatar" />;
+            return <span className='popup-avatar' />;
         }
 
         const alt = 'Assignee: ' + this.props.assignee;
         return (
-            <span className="popup-avatar">
+            <span className='popup-avatar'>
                 <img src={this.props.assigneeImageURL} alt={alt} title={alt} />
             </span>
         );
@@ -139,8 +139,8 @@ class PopupKey extends React.Component {
         const url = '/api/issues/' + this.props.epicKey + '/details';
 
         return (
-            <span className="popup-key">
-                <a href={url} target="_blank" rel='noreferrer'>{this.props.epicKey}</a>
+            <span className='popup-key'>
+                <a href={url} target='_blank' rel='noreferrer'>{this.props.epicKey}</a>
             </span>
         );
     }
@@ -149,7 +149,7 @@ class PopupKey extends React.Component {
 class PopupEstimate extends React.Component {
     render() {
         return (
-            <span className="popup-estimate">{this.props.estimate === 0 ? "-" : this.props.estimate}</span>
+            <span className='popup-estimate'>{this.props.estimate === 0 ? '-' : this.props.estimate}</span>
         );
     }
 }
@@ -159,7 +159,7 @@ class PopupStatus extends React.Component {
         const style = {
             backgroundColor: statusToRGB(this.props.status),
         };
-        return <div className="popup-status" style={style} />;
+        return <div className='popup-status' style={style} />;
     }
 }
 
@@ -167,7 +167,7 @@ class PopupLabels extends React.Component {
     render() {
         const labelListItems = this.props.labels.map(label => <li key={label}>{label}</li>);
         return (
-            <div className="popup-labels">
+            <div className='popup-labels'>
                 <ul>{labelListItems}</ul>
             </div>
         );
@@ -218,7 +218,7 @@ class GraphApp extends React.Component {
     componentDidMount() {
         const issueKey = this.props.issueKey;
         console.log('loading ' + issueKey);
-        const uriPrefix = this.props.issueType === "Milestone" ? "/api/milestones/" : "/api/epics/";
+        const uriPrefix = this.props.issueType === 'Milestone' ? '/api/milestones/' : '/api/epics/';
 
         fetch(uriPrefix + issueKey)
             .then(res => {
@@ -246,14 +246,14 @@ class GraphApp extends React.Component {
 class Menu extends React.Component {
     render() {
         const labelStyle = {
-            "backgroundColor": colors[this.props.issueColor]
+            'backgroundColor': colors[this.props.issueColor]
         };
 
         return (
-            <span className="menu-container">
-                <label htmlFor="menu-toggle" className={`menu-toggle-label ${this.props.issueColor}`} style={labelStyle} >&#9776;</label>
-                <input type="checkbox" id="menu-toggle" checked={this.props.showMenu} onChange={() => this.props.toggleMenu()} />
-                <div className="menu">
+            <span className='menu-container'>
+                <label htmlFor='menu-toggle' className={`menu-toggle-label ${this.props.issueColor}`} style={labelStyle} >&#9776;</label>
+                <input type='checkbox' id='menu-toggle' checked={this.props.showMenu} onChange={() => this.props.toggleMenu()} />
+                <div className='menu'>
                     Related issues
                     <hr />
                     <RelatedIssues issueKey={this.props.issueKey} />
@@ -307,7 +307,7 @@ class RelatedIssues extends React.Component {
         const issueKey = this.props.issueKey;
 
         console.log('loading related issues for ' + issueKey);
-        fetch("/api/issues/" + issueKey + "/related")
+        fetch('/api/issues/' + issueKey + '/related')
             .then(res => {
                 if (!res.ok) {
                     throw new Error('not ok');
@@ -338,7 +338,7 @@ class RelatedIssuesSection extends React.Component {
 
         const header = this.props.header === undefined
             ? undefined
-            : (<span className="subHeader">{this.props.header}</span>);
+            : (<span className='subHeader'>{this.props.header}</span>);
 
         const issueLinks = issues.map(iss => (
             <a key={iss.key} href={`/issues/${iss.key}`}>
@@ -347,7 +347,7 @@ class RelatedIssuesSection extends React.Component {
             </a>
         ));
         return (
-            <div className="relatedIssuesSection">
+            <div className='relatedIssuesSection'>
                 {header}
                 {issueLinks}
             </div>
@@ -365,7 +365,7 @@ class Graph extends React.Component {
     render() {
         return (
             <div>
-                <div className="cy" ref={this.myRef} />
+                <div className='cy' ref={this.myRef} />
                 <Popup selectedEpic={this.state.selectedEpic} />
             </div>
         );
@@ -560,16 +560,16 @@ class IssueGraph extends React.Component {
             return <div>Loading...</div>;
         }
         const issue = this.state.issue;
-        const issueURL = "https://" + this.state.jiraHost + "/browse/" + issue.key;
-        const issueLabel = issue.key + " - " + issue.summary;
+        const issueURL = 'https://' + this.state.jiraHost + '/browse/' + issue.key;
+        const issueLabel = issue.key + ' - ' + issue.summary;
         return (
             <div>
 				<h1>
-                    <a className="home" href="/">&#8962;</a>
+                    <a className='home' href='/'>&#8962;</a>
 					<Menu issueKey={issue.key}
 						issueColor={issue.color}
 						toggleMenu={(show) => this.toggleMenu(show)} showMenu={this.state.showMenu} />
-					<a href={issueURL} target="_blank" rel='noreferrer'>{issueLabel}</a>
+					<a href={issueURL} target='_blank' rel='noreferrer'>{issueLabel}</a>
                     <PopupAssignee assignee={issue.assignee} assigneeImageURL={this.props.issueAssigneeImageURL} />
 				</h1>
 				<GraphApp issueKey={issue.key}
@@ -593,7 +593,7 @@ class IssueGraph extends React.Component {
         const issueKey = this.props.issueKey;
 
         console.log('loading related issues for ' + issueKey);
-        fetch("/api/issues/" + issueKey)
+        fetch('/api/issues/' + issueKey)
             .then(res => {
                 if (!res.ok) {
                     throw new Error('not ok');
@@ -636,9 +636,9 @@ class EpicStats extends React.Component {
     render() {
         const byStatus = this.getBreakdownByStatus();
         const initialEstimateRow = this.props.initialEstimate !== 0 ? (
-            <tr className="initialEstimate">
+            <tr className='initialEstimate'>
                 <td>Initial Estimate</td>
-                <td className="points">{this.props.initialEstimate}</td>
+                <td className='points'>{this.props.initialEstimate}</td>
             </tr>
         ) : undefined;
 
@@ -646,29 +646,29 @@ class EpicStats extends React.Component {
             return byStatus[status] !== undefined ? [(
                 <tr key={status}>
                     <td>{status}</td>
-                    <td className="points">{byStatus[status]}</td>
+                    <td className='points'>{byStatus[status]}</td>
                 </tr>
             )] : [];
         });
 
         const totalPoints = Object.values(byStatus).reduce((sum, statusPoints) => sum + statusPoints, 0);
         const totalPointsRow = totalPoints > 0 ? (
-            <tr className="total"><td>Total</td><td className="points">{totalPoints}</td></tr>
+            <tr className='total'><td>Total</td><td className='points'>{totalPoints}</td></tr>
         ) : undefined;
         const closedPoints = byStatus[statuses.Closed] ?? 0;
         const closedPointsRow = totalPoints > 0 ? (
-            <tr className="total">
-                <td colSpan="2">
+            <tr className='total'>
+                <td colSpan='2'>
                     {closedPoints}/{totalPoints} Closed ({Math.round(closedPoints / totalPoints * 100)}%)
                 </td>
             </tr>
         ) : undefined;
 
         return (
-            <div className="epicStats">
+            <div className='epicStats'>
                 <table>
                     <thead>
-                        <tr><th colSpan="2">Point Breakdown</th></tr>
+                        <tr><th colSpan='2'>Point Breakdown</th></tr>
                     </thead>
                     <tbody>
                         {initialEstimateRow}
@@ -717,26 +717,26 @@ class Legend extends React.Component {
 
         const elements = Object.entries(epicKeyToInfo).map(([epicKey, epicInfo]) => {
             const highlightStyle = {
-                "color": colors[epicInfo.color]
+                'color': colors[epicInfo.color]
             };
             return (
                 <div key={epicKey}>
                     <label>
-                        <input type="checkbox"
+                        <input type='checkbox'
                                checked={selectedEpics.get(epicKey)} value={epicKey}
                                onChange={this.props.handleEpicSelection} />
-                        <span className="epicHighlight" style={highlightStyle}>&#9679;</span>
-                        <span className="legendTooltip">
+                        <span className='epicHighlight' style={highlightStyle}>&#9679;</span>
+                        <span className='legendTooltip'>
                             {epicKey}
-                            <span className="legendTooltipText">{epicInfo.epicName}</span>
+                            <span className='legendTooltipText'>{epicInfo.epicName}</span>
                         </span>
                     </label>
                 </div>
             );
         });
         return (
-            <div className="legend">
-                <div className="legendHeader">Legend</div>
+            <div className='legend'>
+                <div className='legendHeader'>Legend</div>
                 {elements}
             </div>
         );
