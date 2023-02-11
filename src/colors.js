@@ -12,9 +12,7 @@ const colors = {
     color_11: '#79E2F2',
     color_12: '#7A869A',
     color_13: '#57D9A3',
-    color_14: '#FF8F73'
+    color_14: '#FF8F73',
 };
 
-export {
-    colors
-};
+export { colors };

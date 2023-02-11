@@ -1,0 +1,7 @@
+singleQuote: true
+jsxSingleQuote: true
+printWidth: 120
+tabWidth: 4
+trailingComma: all
+
+# yaml-language-server: $schema=https://json.schemastore.org/prettierrc.json
