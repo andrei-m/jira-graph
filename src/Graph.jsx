@@ -140,7 +140,7 @@ class PopupKey extends React.Component {
 
         return (
             <span className="popup-key">
-                <a href={url} target="_blank">{this.props.epicKey}</a>
+                <a href={url} target="_blank" rel='noreferrer'>{this.props.epicKey}</a>
             </span>
         );
     }
@@ -569,8 +569,8 @@ class IssueGraph extends React.Component {
 					<Menu issueKey={issue.key}
 						issueColor={issue.color}
 						toggleMenu={(show) => this.toggleMenu(show)} showMenu={this.state.showMenu} />
-					<a href={issueURL} target="_blank">{issueLabel}</a>
-				    <PopupAssignee assignee={issue.assignee} assigneeImageURL={this.props.issueAssigneeImageURL} />
+					<a href={issueURL} target="_blank" rel='noreferrer'>{issueLabel}</a>
+                    <PopupAssignee assignee={issue.assignee} assigneeImageURL={this.props.issueAssigneeImageURL} />
 				</h1>
 				<GraphApp issueKey={issue.key}
                     issueType={issue.type}
