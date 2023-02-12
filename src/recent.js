@@ -2,20 +2,20 @@ const localStorageKey = 'recent-epics';
 const maxIssueCount = 10;
 
 const hasLocalStorage = () => {
-    return typeof(Storage) !== "undefined"
+    return typeof(Storage) !== 'undefined';
 };
 
 const getRecentIssues = () => {
     if (!hasLocalStorage) {
-        return
+        return;
     }
     const rawRecentIssues = localStorage.getItem(localStorageKey);
     if (rawRecentIssues) {
-        var parsed = [];
+        let parsed = [];
         try {
             parsed = JSON.parse(rawRecentIssues);
         } catch (e) {
-            console.log('failed to parse recent-epics from local storage: ' + err);
+            console.log('failed to parse recent-epics from local storage: ' + e);
         }
         if (parsed && parsed.constructor === Array) {
             return parsed;
@@ -28,14 +28,14 @@ const getRecentIssues = () => {
 
 const pushRecentIssue = (issue) => {
     if (!hasLocalStorage) {
-        return
+        return;
     }
-    var issues = getRecentIssues();
-    for (var i = 0; i < issues.length; i++) {
-        if (issues[i].key === issue.key) {
+    const issues = getRecentIssues();
+    issues.forEach((current, i) => {
+        if (current.key === issue.key) {
             issues.splice(i, 1);
         }
-    }
+    });
     issues.unshift(issue);
     if (issues.length > maxIssueCount) {
         issues.pop();

@@ -1,0 +1,19 @@
+extends:
+  - 'eslint:recommended'
+  - 'plugin:react/recommended'
+env:
+  browser: true
+  es6: true
+parserOptions:
+  ecmaFeatures:
+    jsx: true
+  ecmaVersion: latest
+  sourceType: module
+ignorePatterns:
+  - 'dist'
+rules:
+  no-var: error
+  semi: error
+  quotes: ['error', 'single']
+  jsx-quotes: ['error', 'prefer-single']
+  react/prop-types: ['off'] # TODO: enable this, or switch to TypeScript
