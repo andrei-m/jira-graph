@@ -20,6 +20,8 @@ parserOptions:
 ignorePatterns:
   - 'dist'
 rules:
+  no-unused-vars: off
+  '@typescript-eslint/no-unused-vars': error
   no-var: error
   prefer-template: error
   semi: error
