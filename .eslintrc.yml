@@ -6,6 +6,10 @@ extends:
 env:
   browser: true
   es6: true
+parser: '@typescript-eslint/parser'
+plugins:
+  - '@typescript-eslint'
+  - 'prettier'
 parserOptions:
   ecmaFeatures:
     jsx: true
@@ -27,3 +31,4 @@ rules:
       printWidth: 120
       tabWidth: 4
       trailingComma: all
+      parser: typescript

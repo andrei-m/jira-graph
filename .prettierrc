@@ -3,5 +3,6 @@ jsxSingleQuote: true
 printWidth: 120
 tabWidth: 4
 trailingComma: all
+parser: typescript
 
 # yaml-language-server: $schema=https://json.schemastore.org/prettierrc.json
