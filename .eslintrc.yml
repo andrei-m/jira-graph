@@ -1,11 +1,12 @@
 # yaml-language-server: $schema=https://json.schemastore.org/eslintrc.json
 extends:
   - 'eslint:recommended'
+  - 'plugin:@typescript-eslint/eslint-recommended'
   - 'plugin:react/recommended'
   - 'plugin:prettier/recommended'
 env:
   browser: true
-  es6: true
+  es2021: true
 parser: '@typescript-eslint/parser'
 plugins:
   - '@typescript-eslint'
@@ -15,6 +16,7 @@ parserOptions:
     jsx: true
   ecmaVersion: latest
   sourceType: module
+  project: "./tsconfig.json"
 ignorePatterns:
   - 'dist'
 rules:
