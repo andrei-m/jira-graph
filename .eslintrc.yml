@@ -1,6 +1,8 @@
+# yaml-language-server: $schema=https://json.schemastore.org/eslintrc.json
 extends:
   - 'eslint:recommended'
   - 'plugin:react/recommended'
+  - 'plugin:prettier/recommended'
 env:
   browser: true
   es6: true
@@ -13,7 +15,15 @@ ignorePatterns:
   - 'dist'
 rules:
   no-var: error
+  prefer-template: error
   semi: error
   quotes: ['error', 'single']
   jsx-quotes: ['error', 'prefer-single']
   react/prop-types: ['off'] # TODO: enable this, or switch to TypeScript
+  prettier/prettier:
+    - error
+    - singleQuotes: true
+      jsxSingleQuote: true
+      printWidth: 120
+      tabWidth: 4
+      trailingComma: all

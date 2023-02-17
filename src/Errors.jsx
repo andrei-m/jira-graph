@@ -8,6 +8,4 @@ function NotFound() {
     );
 }
 
-export {
-    NotFound
-};
+export { NotFound };
