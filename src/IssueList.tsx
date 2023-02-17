@@ -5,7 +5,7 @@ import './issueList.css';
 
 class IssueList extends React.Component {
     state = {
-        issues: [],
+        issues: getRecentIssues(),
     };
 
     render() {
@@ -21,18 +21,9 @@ class IssueList extends React.Component {
             </div>
         );
     }
-
-    componentDidMount() {
-        const recentIssues = getRecentIssues();
-        if (recentIssues) {
-            this.setState({
-                issues: recentIssues,
-            });
-        }
-    }
 }
 
-class Issue extends React.Component {
+class Issue extends React.Component<{ issueKey: string; summary: string }> {
     render() {
         const path = `/issues/${this.props.issueKey}`;
         return (
