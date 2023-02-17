@@ -27,7 +27,6 @@ rules:
   semi: error
   quotes: ['error', 'single']
   jsx-quotes: ['error', 'prefer-single']
-  react/prop-types: ['off'] # TODO: enable this, or switch to TypeScript
   prettier/prettier:
     - error
     - singleQuotes: true
