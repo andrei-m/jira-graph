@@ -40,11 +40,11 @@ func StartServer(user, pass, jiraHost string, fc FieldConfig) error {
 	r.GET("/api/milestones/:key", gc.getMilestoneGraph)
 
 	// this roundabout way of implementing FileFromFS is needed because of the index.html special case: https://github.com/gin-gonic/gin/issues/2654
-	if templates, err := template.ParseFS(distFS, "dist/*.html"); err != nil {
+	templates, err := template.ParseFS(distFS, "dist/*.html")
+	if err != nil {
 		log.Panic(err)
-	} else {
-		r.SetHTMLTemplate(templates)
 	}
+	r.SetHTMLTemplate(templates)
 
 	spaHandler := func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", nil)
