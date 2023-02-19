@@ -1,25 +1,32 @@
 # yaml-language-server: $schema=https://json.schemastore.org/eslintrc.json
 extends:
   - 'eslint:recommended'
+  - 'plugin:@typescript-eslint/eslint-recommended'
   - 'plugin:react/recommended'
   - 'plugin:prettier/recommended'
 env:
   browser: true
-  es6: true
+  es2021: true
+parser: '@typescript-eslint/parser'
+plugins:
+  - '@typescript-eslint'
+  - 'prettier'
 parserOptions:
   ecmaFeatures:
     jsx: true
   ecmaVersion: latest
   sourceType: module
+  project: "./tsconfig.json"
 ignorePatterns:
   - 'dist'
 rules:
+  no-unused-vars: off
+  '@typescript-eslint/no-unused-vars': error
   no-var: error
   prefer-template: error
   semi: error
   quotes: ['error', 'single']
   jsx-quotes: ['error', 'prefer-single']
-  react/prop-types: ['off'] # TODO: enable this, or switch to TypeScript
   prettier/prettier:
     - error
     - singleQuotes: true
@@ -27,3 +34,4 @@ rules:
       printWidth: 120
       tabWidth: 4
       trailingComma: all
+      parser: typescript

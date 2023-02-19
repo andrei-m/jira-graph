@@ -33,18 +33,18 @@ func StartServer(user, pass, jiraHost string, fc FieldConfig) error {
 		return err
 	}
 
-	r.GET("/api/epics/:key", gc.getEpicGraph)
-	r.GET("/api/issues/:key", gc.getIssue)
-	r.GET("/api/issues/:key/related", gc.getRelatedIssues)
-	r.GET("/api/issues/:key/details", gc.redirectToJIRA)
-	r.GET("/api/milestones/:key", gc.getMilestoneGraph)
-
 	// this roundabout way of implementing FileFromFS is needed because of the index.html special case: https://github.com/gin-gonic/gin/issues/2654
 	templates, err := template.ParseFS(distFS, "dist/*.html")
 	if err != nil {
 		log.Panic(err)
 	}
 	r.SetHTMLTemplate(templates)
+
+	r.GET("/api/epics/:key", gc.getEpicGraph)
+	r.GET("/api/issues/:key", gc.getIssue)
+	r.GET("/api/issues/:key/related", gc.getRelatedIssues)
+	r.GET("/api/issues/:key/details", gc.redirectToJIRA)
+	r.GET("/api/milestones/:key", gc.getMilestoneGraph)
 
 	spaHandler := func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", nil)

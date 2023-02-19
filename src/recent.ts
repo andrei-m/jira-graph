@@ -5,9 +5,14 @@ const hasLocalStorage = () => {
     return typeof Storage !== 'undefined';
 };
 
-const getRecentIssues = () => {
+export type Issue = {
+    key: string;
+    summary: string;
+};
+
+const getRecentIssues = (): Issue[] => {
     if (!hasLocalStorage) {
-        return;
+        return [];
     }
     const rawRecentIssues = localStorage.getItem(localStorageKey);
     if (rawRecentIssues) {
@@ -26,7 +31,7 @@ const getRecentIssues = () => {
     return [];
 };
 
-const pushRecentIssue = (issue) => {
+const pushRecentIssue = (issue: Issue) => {
     if (!hasLocalStorage) {
         return;
     }
